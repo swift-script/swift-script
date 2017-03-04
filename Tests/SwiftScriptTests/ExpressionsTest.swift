@@ -7,7 +7,7 @@ class ExpressionsTests: XCTestCase {
     }
     
     func testSelfExpression() {
-        XCTAssertEqual(SelfExpression().javaScript(with: 0), "self")
+        XCTAssertEqual(SelfExpression().javaScript(with: 0), "this")
     }
 
     func testSuperclassExpression() {
@@ -143,7 +143,7 @@ class ExpressionsTests: XCTestCase {
                 (nil, StringLiteral(value: "xyz")),
                 ],
             trailingClosure: ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: [])
-        ).javaScript(with: 0), "foo(42, \"xyz\") {}")
+        ).javaScript(with: 0), "foo(42, \"xyz\", () => {})")
     }
     
     func testInitializerExpression() {
@@ -170,6 +170,6 @@ class ExpressionsTests: XCTestCase {
         XCTAssertEqual(OptionalChainingExpression(
             expression: IdentifierExpression(identifier: "foo"),
             member: "bar"
-        ).javaScript(with: 0), "foo?.bar")
+        ).javaScript(with: 0), "q(foo, (x) => x.bar")
     }
 }
