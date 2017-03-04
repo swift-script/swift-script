@@ -114,36 +114,45 @@ func exprSuffix(subj: Expression) -> SwiftParser<Expression> {
         <|> (_exprFunctionCall(subj) >>- exprSuffix)
         <|> (_exprSubscript(subj) >>- exprSuffix)
         <|> (_exprOptionalChaining(subj) >>- exprSuffix)
-        <|> (_exprInitializer(subj) >>- exprSuffix)
-        <|> (_exprInitializer(subj) >>- exprSuffix)
         //        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
         <|> pure(subj)
 }
 
 func _exprPostfixSelf(_ subj: Expression) -> SwiftParser<PostfixSelfExpression>  {
-    return fail("not implemented")
+    return { _ in PostfixSelfExpression() }
+        <^> OWS *> period *> kw_self
 }
 
 func _exprFunctionCall(_ subj: Expression) -> SwiftParser<FunctionCallExpression> {
-    return fail("not implemented")
+    let arg = { label in { value in (label, value) }}
+        <^> zeroOrOne(keywordOrIdentifier <* OWS <* colon) <* OWS <*> expr
+    return { args in { trailingClosure in
+        FunctionCallExpression(expression: subj, arguments: args, trailingClosure: trailingClosure) }}
+        <^> (OHWS *> list(l_paren, arg, comma, r_paren))
+        <*> zeroOrOne(OWS *> exprClosure)
 }
 
 func _exprInitializer(_ subj: Expression) -> SwiftParser<InitializerExpression> {
-    return fail("not iomplemented")
+    return { _ in InitializerExpression() }
+        <^> OWS *> period *> kw_init
 }
 
 
 func _exprExplicitMember(_ subj: Expression) -> SwiftParser<ExplicitMemberExpression> {
-    return fail("not implemented")
+    return { name in ExplicitMemberExpression(expression: subj, member: name) }
+        <^> OWS *> period *> keywordOrIdentifier
 }
 
 
 func _exprSubscript(_ subj: Expression) -> SwiftParser<SubscriptExpression> {
-    return fail("not implemented")
+    return { args in
+        SubscriptExpression(expression: subj, arguments: args) }
+        <^> (OHWS *> list(l_square, expr, comma, r_square))
 }
 
 func _exprOptionalChaining(_ subj: Expression) -> SwiftParser<OptionalChainingExpression> {
-    return fail("not implemented")
+    return { name in OptionalChainingExpression(expression: subj, member: name) }
+        <^> char("?") *> OWS *> period *> keywordOrIdentifier
 }
 
 func _exprDynamicType(_ subj: Expression) -> SwiftParser<DynamicTypeExpression> {
