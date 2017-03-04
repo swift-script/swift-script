@@ -20,6 +20,7 @@ public struct RepeatWhileStatement: Statement {
 
 public struct IfStatement: Statement {
     public var condition: Expression
+    public var statements: [Statement]
     public var elseClause: ElseClause?
 }
 
