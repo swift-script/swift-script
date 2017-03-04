@@ -9,8 +9,35 @@
 import Runes
 import TryParsec
 
+fileprivate func asStmt(stmt: Statement) -> Statement {
+    return stmt
+}
+let stmtSep = OHWS *> (VS <|> (OWS *> semi <&> { _ in () })) <* OWS
+
+let stmtBraceItems = _stmtBraceItems()
+func _stmtBraceItems() -> SwiftParser<[Statement]> {
+    return sepEndBy(stmtBraceItem, stmtSep)
+}
+
+let stmtBraceItem = _stmtBraceItem()
+func _stmtBraceItem() -> SwiftParser<Statement> {
+    return (expr <&> asStmt)
+//        <|> (stmt <&> asStmt)
+//        <|> (decl <&> asStmt)
+}
+
+let stmtBrace = _stmtBrace()
+func _stmtBrace() -> SwiftParser<[Statement]> {
+    return  l_brace *> OWS *> stmtBraceItems <* OWS <* r_brace
+}
+
+
 func _stmtForIn() -> SwiftParser<ForInStatement> {
-    return fail("not implemented")
+    return { name in { col in { body in
+        ForInStatement(item: name, collection: col, statements: body) }}}
+        <^> (kw_for *> WS *> identifier)
+        <*> (WS *> kw_in *> expr)
+        <*> (OWS *> stmtBrace)
 }
 
 func _stmtWhile() -> SwiftParser<WhileStatement> {

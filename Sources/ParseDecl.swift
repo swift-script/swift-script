@@ -19,8 +19,27 @@ func _declTypeAlias() -> SwiftParser<TypeAliasDeclaration> {
     return fail("not implemented")
 }
 
+let declParam = _declParam()
+func _declParam() -> SwiftParser<(String?, String, Type_, Expression?)> {
+    let label = (identifier <|> kw__)
+    return { apiName in { paramName in { type in { isVariadic in
+        (apiName, paramName, type, nil) }}}}
+        <^> zeroOrOne(label <* WS)
+        <*> (label <* OWS <* colon)
+        <*> (OWS *> type)
+        <*> zeroOrOne(ellipsis)
+}
+
+
 func _declFunction() -> SwiftParser<FunctionDeclaration> {
-    return fail("not implemented")
+    return  { name in { generic in { params in { isThrows in  { retType in  { body in
+        FunctionDeclaration(name: name, arguments: params, result: retType, hasThrows: isThrows != nil, body: body) }}}}}}
+        <^> (kw_func *> WS *> identifier)
+        <*> zeroOrOne(OWS *> chars("<>"))
+        <*> (OWS *> list(l_paren, declParam, comma, r_paren))
+        <*> zeroOrOne(OWS *> kw_throws)
+        <*> zeroOrOne(OWS *> arrow *> OWS *> type)
+        <*> (OWS *> stmtBrace)
 }
 
 func _declEnum() -> SwiftParser<EnumDeclaration­> {
