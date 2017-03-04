@@ -3,23 +3,23 @@ public protocol Operation: Expression {
 }
 
 public struct BinaryOperation: Operation {
-    var leftOperand: Expression
-    var operatorSymbol: String
-    var rightOperand: Expression
+    public var leftOperand: Expression
+    public var operatorSymbol: String
+    public var rightOperand: Expression
 }
 
 public struct PrefixUnaryOperation: Operation {
-    var operatorSymbol: String
-    var operand: Expression
+    public var operatorSymbol: String
+    public var operand: Expression
 }
 
 public struct PostfixUnaryOperation: Operation {
-    var operand: Expression
-    var operatorSymbol: String
+    public var operand: Expression
+    public var operatorSymbol: String
 }
 
 public struct TernaryOperation: Operation {
-    var firstOperand: Expression
-    var secondOperand: Expression
-    var thirdOperand: Expression
+    public var firstOperand: Expression
+    public var secondOperand: Expression
+    public var thirdOperand: Expression
 }
