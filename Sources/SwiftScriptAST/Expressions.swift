@@ -15,7 +15,10 @@ public struct SuperclassExpression: Expression {
 }
 
 public struct ClosureExpression: Expression {
-    // TODO
+    public var arguments: [(String, Type_?)]
+    public var hasThrows: Bool
+    public var result: Type_?
+    public var statements: [Statement]
 }
 
 public struct ParenthesizedExpression: Expression {
