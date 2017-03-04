@@ -1,6 +1,15 @@
 extension IdentifierExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        return identifier
+        switch identifier {
+            case "print":
+                return "console.log"
+            case "append":
+                return "push"
+            case "removeLast":
+                return "pop"
+            default:
+                return identifier
+        }
     }
 }
 

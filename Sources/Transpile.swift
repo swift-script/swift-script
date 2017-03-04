@@ -8,7 +8,7 @@ public func transpile(code: String) throws -> String {
 public func transpileStatements(statements: [Statement], indentLevel: Int) -> String {
     let jsStatements: [String] = statements.map { statement in
         if statement is Expression {
-            return "\("    " * indentLevel)\(statement.javaScript(with: indentLevel))"
+            return "\("    " * indentLevel)\(statement.javaScript(with: indentLevel));"
         }
         return statement.javaScript(with: indentLevel)
     }
