@@ -35,6 +35,7 @@ public struct WildcardExpression: Expression {
 }
 
 public struct FunctionCallExpression: Expression {
+    public var expression: Expression
     public var arguments: [(String?, Expression)]
     public var trailingClosure: ClosureExpression?
 }
