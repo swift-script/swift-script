@@ -1,3 +1,9 @@
+extension ForInStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        return "for (\(item) of \(collection.javaScript(with: indentLevel))) \(transpileBlock(statements: statements, indentLevel: indentLevel))"
+    }
+}
+
 extension IfStatement {
     public func javaScript(with indentLevel: Int) -> String {
         let jsIf = "\("    " * indentLevel)if (\(self.condition.javaScript(with: indentLevel))) \(transpileBlock(statements: statements, indentLevel: indentLevel))"
