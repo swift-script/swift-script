@@ -6,6 +6,10 @@ fileprivate func asExpr(expr: Expression) -> Expression {
     return expr
 }
 
+let expr = _expr()
+func _expr() -> SwiftParser<Expression> {
+    return _exprSequencceElement()
+}
 
 func _exprSequencceElement() -> SwiftParser<Expression> {
     let parseTry

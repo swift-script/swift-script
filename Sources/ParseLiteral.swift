@@ -33,10 +33,16 @@ func _exprFloatLiteral() -> SwiftParser<FloatingPointLiteral> {
 
 let exprArrayLiteral = _exprArrayLiteral()
 func _exprArrayLiteral() -> SwiftParser<ArrayLiteral> {
-    return fail("not implemented")
+    return { elements in ArrayLiteral(value: elements) }
+        <^> list(l_square, expr, comma, r_square)
 }
 
 let exprDictionaryLiteral = _exprDictionaryLiteral()
 func _exprDictionaryLiteral() -> SwiftParser<DictionaryLiteral> {
-    return fail("not implemented")
+    let item = { key in { val in (key, val) }}
+        <^> (expr <* OWS <* colon) <*> (OWS *> expr)
+    let items = sepBy1(item, OWS *> comma <* OWS)
+        <|> (colon <&> { _ in [/* empty */] })
+    return { items in DictionaryLiteral(value: items) }
+        <^> l_square *> OWS *> items <* OWS <* r_square
 }
