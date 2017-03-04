@@ -2,25 +2,68 @@ import Runes
 import TryParsec
 
 
+fileprivate func asDecl(_ decl: Declaration) -> Declaration {
+    return decl
+}
+
+
+let decl = _decl()
+func _decl() -> SwiftParser<Declaration> {
+    return (declFunction <&> asDecl)
+        <|> (declConstant <&> asDecl)
+        <|> (declVariable <&> asDecl)
+}
 
 func _declImport() -> SwiftParser<ImportDeclaration> {
     return fail("not implemented")
 }
 
+let declConstant = _declConstant()
 func _declConstant() -> SwiftParser<ConstantDeclaration> {
-    return fail("not implemented")
+    return { isStatic in {  name in { ty in { initializer in
+        ConstantDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
+        <^> zeroOrOne(kw_static)
+        <*> (OWS *> kw_let *> OWS *> identifier)
+        <*> zeroOrOne(OWS *> type)
+        <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
 
-func _declVariable() -> SwiftParser<ConstantDeclaration> {
-    return fail("not implemented")
+
+let declVariable = _declVariable()
+func _declVariable() -> SwiftParser<VariableDeclaration> {
+    return { isStatic in {  name in { ty in { initializer in
+        VariableDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
+        <^> zeroOrOne(kw_static)
+        <*> (OWS *> kw_let *> OWS *> identifier)
+        <*> zeroOrOne(OWS *> type)
+        <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
 
 func _declTypeAlias() -> SwiftParser<TypeAliasDeclaration> {
     return fail("not implemented")
 }
 
+let declParam = _declParam()
+func _declParam() -> SwiftParser<(String?, String, Type_, Expression?)> {
+    let label = (identifier <|> kw__)
+    return { apiName in { paramName in { type in { isVariadic in
+        (apiName, paramName, type, nil) }}}}
+        <^> zeroOrOne(label <* WS)
+        <*> (label <* OWS <* colon)
+        <*> (OWS *> type)
+        <*> zeroOrOne(ellipsis)
+}
+
+let declFunction = _declFunction()
 func _declFunction() -> SwiftParser<FunctionDeclaration> {
-    return fail("not implemented")
+    let params = list(l_paren, declParam, comma, r_paren)
+    return  { name in { params in { hasThrows in { retType in { body in
+        FunctionDeclaration(name: name, arguments: params, result: retType, hasThrows: hasThrows != nil, body: body) }}}}}
+        <^> (kw_func *> WS *> identifier)
+        <*> (OWS *> params)
+        <*> zeroOrOne(OWS *> kw_throws)
+        <*> zeroOrOne(OWS *> arrow *> OWS *> type)
+        <*> (OWS *> stmtBrace)
 }
 
 func _declEnum() -> SwiftParser<EnumDeclaration­> {
@@ -32,7 +75,11 @@ func _declStruct() -> SwiftParser<StructDeclaration­> {
 }
 
 func _declClass() -> SwiftParser<ClassDeclaration­> {
-    return fail("not implemented")
+    return { name in { inherits in { members in
+        ClassDeclaration­(name: name, superTypes: inherits ?? [], members: members) }}}
+        <^> (kw_class *> WS *> identifier)
+        <*> zeroOrOne(OWS *> colon *> sepBy1(type, OWS *> comma <* OWS))
+        <*> (OWS *> l_brace *> OWS *> sepEndBy(decl, stmtSep) <* r_brace)
 }
 
 func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
@@ -40,7 +87,13 @@ func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
 }
 
 func _declInitializer() -> SwiftParser<InitializerDeclaration­> {
-    return fail("not implemented")
+    let params = list(l_paren, declParam, comma, r_paren)
+    return  { params in { isFailable in { hasThrows in { body in
+        InitializerDeclaration­(arguments: params, isFailable: isFailable != nil, hasThrows: hasThrows != nil, body: body) }}}}
+        <^> (kw_init *> OWS *> params)
+        <*> zeroOrOne(char("?"))
+        <*> zeroOrOne(OWS *> kw_throws)
+        <*> (OWS *> stmtBrace)
 }
 
 func _declDeinitializer() -> SwiftParser<DeinitializerDeclaration­> {

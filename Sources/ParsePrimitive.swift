@@ -77,9 +77,9 @@ private func _integerLiteral() -> SwiftParser<Int> {
 }
 
 let floatLiteral = _floatLiteral()
-private func _floatLiteral() -> SwiftParser<Double> {
+private func _floatLiteral() -> SwiftParser<Float> {
     return
-        { real in { frac in Double(String(real) + "." + String(frac))! }}
+        { real in { frac in Float(String(real) + "." + String(frac))! }}
             <^> many1(digit) <* period <*> many1(digit)
 }
 

@@ -6,36 +6,43 @@ import TryParsec
 
 let exprNilLiteral = _exprNilLiteral()
 func _exprNilLiteral() -> SwiftParser<NilLiteral> {
-    return fail("not implemented")
+    return { _ in NilLiteral() } <^> kw_nil
 }
 
 let exprBooleanLiteral = _exprBooleanLiteral()
 func _exprBooleanLiteral() -> SwiftParser<BooleanLiteral> {
-    return fail("not implemented")
+    return ({ _ in BooleanLiteral(value: false) } <^> kw_false)
+        <|> ({ _ in BooleanLiteral(value: true) } <^> kw_true)
 }
 
 
 let exprStringLiteral = _exprStringLiteral()
 func _exprStringLiteral() -> SwiftParser<StringLiteral> {
-    return fail("not implemented")
+    return { value in StringLiteral(value: value) } <^> stringLiteral
 }
 
 let exprIntegerLiteral = _exprIntegerLiteral()
 func _exprIntegerLiteral() -> SwiftParser<IntegerLiteral> {
-    return fail("not implemented")
+    return { value in IntegerLiteral(value: value) } <^> integerLiteral
 }
 
 let exprFloatLiteral = _exprFloatLiteral()
 func _exprFloatLiteral() -> SwiftParser<FloatingPointLiteral> {
-    return fail("not implemented")
+    return { value in FloatingPointLiteral(value: value) } <^> floatLiteral
 }
 
 let exprArrayLiteral = _exprArrayLiteral()
 func _exprArrayLiteral() -> SwiftParser<ArrayLiteral> {
-    return fail("not implemented")
+    return { elements in ArrayLiteral(value: elements) }
+        <^> list(l_square, expr, comma, r_square)
 }
 
 let exprDictionaryLiteral = _exprDictionaryLiteral()
 func _exprDictionaryLiteral() -> SwiftParser<DictionaryLiteral> {
-    return fail("not implemented")
+    let item = { key in { val in (key, val) }}
+        <^> (expr <* OWS <* colon) <*> (OWS *> expr)
+    let items = sepBy1(item, OWS *> comma <* OWS)
+        <|> (colon <&> { _ in [/* empty */] })
+    return { items in DictionaryLiteral(value: items) }
+        <^> l_square *> OWS *> items <* OWS <* r_square
 }

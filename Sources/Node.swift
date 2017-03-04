@@ -3,7 +3,7 @@ public protocol Node: JavaScriptConvertible {
 }
 
 extension Node {
-    public var javaScript: String {
+    public func javaScript(with indentLevel: Int) -> String {
         return  "<unimplemented: \(type(of: self))>"
     }
 }

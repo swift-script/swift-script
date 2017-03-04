@@ -1,3 +1,3 @@
 public protocol JavaScriptConvertible {
-    var javaScript: String { get }
+    func javaScript(with indentLevel: Int) -> String
 }
