@@ -5,4 +5,4 @@ import TryParsec
 
 
 
-parse(expr, "{ x in }")
+parse(expr, "{ x in print(\"OK\") }")
