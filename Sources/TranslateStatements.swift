@@ -1,5 +1,14 @@
 extension IfStatement {
     public func javaScript(with indentLevel: Int) -> String {
-        return "    " * indentLevel + "if (" + self.condition.javaScript(with: indentLevel) + ") {\n" + transpileStatements(statements: statements, indentLevel: indentLevel + 1) + "\n}"
+        let jsIf = "\("    " * indentLevel)if (\(self.condition.javaScript(with: indentLevel))) \(transpileBlock(statements: statements, indentLevel: indentLevel))"
+        guard let elseClause = self.elseClause else {
+            return jsIf
+        }
+        switch elseClause {
+        case let .elseIf(ifStatement):
+            return "\(jsIf) else \(ifStatement.javaScript(with: indentLevel))"
+        case let .else_(statements):
+            return "\(jsIf) else \(transpileBlock(statements: statements, indentLevel: indentLevel))"
+        }
     }
 }

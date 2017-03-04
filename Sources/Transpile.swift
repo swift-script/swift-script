@@ -14,3 +14,7 @@ public func transpileStatements(statements: [Statement], indentLevel: Int) -> St
     }
     return jsStatements.joined(separator: "\n")
 }
+
+public func transpileBlock(statements: [Statement], indentLevel: Int) -> String {
+    return "{\n\(transpileStatements(statements: statements, indentLevel: indentLevel + 1))\n\("    " * indentLevel)}"
+}
