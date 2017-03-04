@@ -9,16 +9,16 @@ public struct ImportDeclaration: Declaration {
 public struct ConstantDeclaration: Declaration {
     public var isStatic: Bool
     public var name: String
-    public var type: Type_
-    public var expression: Expression
+    public var type: Type_?
+    public var expression: Expression?
 }
 
 
 public struct VariableDeclaration: Declaration {
     public var isStatic: Bool
     public var name: String
-    public var type: Type_
-    public var expression: Expression
+    public var type: Type_?
+    public var expression: Expression?
     // TODO: Computed Property
 }
 
