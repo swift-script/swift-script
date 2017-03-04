@@ -31,7 +31,7 @@ extension SuperclassExpression {
 extension ClosureExpression {
     public func javaScript(with indentLevel: Int) -> String {
         let args = (arguments.map { $0.0 }).joined(separator: ", ")
-        let lines = statements.map { $0.javaScript(with: indentLevel + 1) }.joined(separator: "\n")
+        let lines = transpileStatements(statements: statements, indentLevel: indentLevel)
         switch statements.count {
         case 0:
             return "(\(args)) => {}"
