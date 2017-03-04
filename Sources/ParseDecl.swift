@@ -9,20 +9,34 @@ fileprivate func asDecl(_ decl: Declaration) -> Declaration {
 
 let decl = _decl()
 func _decl() -> SwiftParser<Declaration> {
-    return
-        (declFunction <&> asDecl)
+    return (declFunction <&> asDecl)
+        <|> (declConstant <&> asDecl)
+        <|> (declVariable <&> asDecl)
 }
 
 func _declImport() -> SwiftParser<ImportDeclaration> {
     return fail("not implemented")
 }
 
+let declConstant = _declConstant()
 func _declConstant() -> SwiftParser<ConstantDeclaration> {
-    return fail("not implemented")
+    return { isStatic in {  name in { ty in { initializer in
+        ConstantDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
+        <^> zeroOrOne(kw_static)
+        <*> (OWS *> kw_let *> OWS *> identifier)
+        <*> (OWS *> type)
+        <*> (OWS *> equal *> OWS *> expr)
 }
 
-func _declVariable() -> SwiftParser<ConstantDeclaration> {
-    return fail("not implemented")
+
+let declVariable = _declVariable()
+func _declVariable() -> SwiftParser<VariableDeclaration> {
+    return { isStatic in {  name in { ty in { initializer in
+        VariableDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
+        <^> zeroOrOne(kw_static)
+        <*> (OWS *> kw_let *> OWS *> identifier)
+        <*> (OWS *> type)
+        <*> (OWS *> equal *> OWS *> expr)
 }
 
 func _declTypeAlias() -> SwiftParser<TypeAliasDeclaration> {
