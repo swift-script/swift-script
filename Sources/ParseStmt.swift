@@ -8,7 +8,6 @@
 
 import Runes
 import TryParsec
-import SwiftScriptAST
 
 func _stmtForIn() -> SwiftParser<ForInStatement> {
     return fail("not implemented")

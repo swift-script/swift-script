@@ -1,6 +1,5 @@
 import Runes
 import TryParsec
-import SwiftScriptAST
 
 
 // Literal expressions
@@ -37,6 +36,6 @@ func _exprArrayLiteral() -> SwiftParser<ArrayLiteral> {
 }
 
 let exprDictionaryLiteral = _exprDictionaryLiteral()
-func _exprDictionaryLiteral() -> SwiftParser<SwiftScriptAST.DictionaryLiteral> {
+func _exprDictionaryLiteral() -> SwiftParser<DictionaryLiteral> {
     return fail("not implemented")
 }
