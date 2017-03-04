@@ -14,7 +14,7 @@ extension BinaryOperation {
         case "??":
             return "qq(\(lhs), \(rhs)"
         case "...":
-            return "range(\(lhs), \(rhs)"
+            return "closedRange(\(lhs), \(rhs)"
         case "..<":
             return "range(\(lhs), \(rhs)" // TODO: should make specific range function
         case "&&=", "||=":
