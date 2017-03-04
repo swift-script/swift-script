@@ -44,7 +44,7 @@ public struct FunctionCallExpression: Expression {
 }
 
 public struct InitializerExpression: Expression {
-    
+    // Unsupported
 }
 
 public struct ExplicitMemberExpression: Expression {
