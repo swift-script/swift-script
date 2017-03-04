@@ -9,16 +9,16 @@ public struct ImportDeclaration: Declaration {
 public struct ConstantDeclaration: Declaration {
     public var isStatic: Bool
     public var name: String
-    public var type: Type_
-    public var expression: Expression
+    public var type: Type_?
+    public var expression: Expression?
 }
 
 
 public struct VariableDeclaration: Declaration {
     public var isStatic: Bool
     public var name: String
-    public var type: Type_
-    public var expression: Expression
+    public var type: Type_?
+    public var expression: Expression?
     // TODO: Computed Property
 }
 
@@ -31,7 +31,7 @@ public struct TypeAliasDeclaration: Declaration {
 
 public struct FunctionDeclaration: Declaration {
     public var name: String
-    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression)]
+    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression?)]
     public var result: Type_?
     public var hasThrows: Bool
     public var body: [Statement]?
@@ -62,7 +62,7 @@ public struct ProtocolDeclaration­: Declaration {
 
 
 public struct InitializerDeclaration­: Declaration {
-    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression)]
+    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression?)]
     public var isFailable: Bool
     public var hasThrows: Bool
     public var body: [Statement]?
