@@ -21,9 +21,9 @@ func _stmtBraceItems() -> SwiftParser<[Statement]> {
 
 let stmtBraceItem = _stmtBraceItem()
 func _stmtBraceItem() -> SwiftParser<Statement> {
-    return (expr <&> asStmt)
+    return (decl <&> asStmt)
         <|> (stmt <&> asStmt)
-        <|> (decl <&> asStmt)
+        <|> (expr <&> asStmt)
 }
 
 

@@ -5,4 +5,4 @@ import TryParsec
 
 
 
-parse(expr, "[1,2,3].foo(x: 1) + 1 + 2")
+parse(expr, "{ x in print(\"OK\") }")

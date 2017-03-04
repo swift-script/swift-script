@@ -68,7 +68,7 @@ func _exprPrimitive() -> SwiftParser<Expression> {
         <|> (exprIdentifier <&> asExpr)
         <|> (exprParenthesized <&> asExpr)
         <|> (exprTuple <&> asExpr)
-        <|> (exprTuple <&> asExpr)
+        <|> (exprClosure <&> asExpr)
 }
 
 
@@ -89,8 +89,20 @@ func _exprSuper() -> SwiftParser<SuperclassExpression>  {
 
 let exprClosure = _exprClosure()
 func _exprClosure() -> SwiftParser<ClosureExpression>  {
-    return { _ in  ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: []) }
-        <^> chars("{}")
+    let params: SwiftParser<[String]> = sepBy1(identifier, OWS *> comma <* OWS)
+    let sig = { args in { th in { ty in (args, th != nil, ty) }}}
+        <^> zeroOrOne(OWS *> params)
+        <*> zeroOrOne(OWS *> kw_throws)
+        <*> zeroOrOne(OWS *> arrow *> type)
+    
+    return { sig in { body in
+        let args: [(String, Type_?)] = (sig?.0?.map({ ($0, nil) })) ?? []
+        let hasThrows = sig == nil ? false : sig!.1
+        let retType  = sig == nil ? nil : sig!.2
+        return ClosureExpression(arguments: args, hasThrows: hasThrows, result: retType, statements: body) }}
+        <^> l_brace
+        *> (zeroOrOne(sig) <* OWS <* kw_in)
+        <*> (OWS *> stmtBraceItems <* r_brace)
 }
 
 let exprParenthesized = _exprParenthesized()
@@ -132,8 +144,9 @@ func exprSuffix(subj: Expression) -> SwiftParser<Expression> {
         <|> (_exprFunctionCall(subj) >>- exprSuffix)
         <|> (_exprSubscript(subj) >>- exprSuffix)
         <|> (_exprOptionalChaining(subj) >>- exprSuffix)
-        //        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
+        <|> (_exprPostfixUnary(subj) >>- exprSuffix)
         <|> pure(subj)
+        //        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
 }
 
 func _exprPostfixSelf(_ subj: Expression) -> SwiftParser<PostfixSelfExpression>  {
@@ -177,3 +190,8 @@ func _exprDynamicType(_ subj: Expression) -> SwiftParser<DynamicTypeExpression> 
     return fail("not implemented")
 }
 
+func _exprPostfixUnary(_ subj: Expression) -> SwiftParser<PostfixUnaryOperation> {
+    return
+        { _ in PostfixUnaryOperation(operand: subj, operatorSymbol: "!") }
+        <^> char("!")
+}
