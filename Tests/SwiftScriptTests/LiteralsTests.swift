@@ -7,7 +7,7 @@ class LiteralsTests: XCTestCase {
             IntegerLiteral(value: 2),
             IntegerLiteral(value: 3),
             IntegerLiteral(value: 5),
-        ]).javaScript, "[2, 3, 5]")
+        ]).javaScript(with: 0), "[2, 3, 5]")
     }
     
     func testDictionaryLiteral() {
@@ -15,27 +15,27 @@ class LiteralsTests: XCTestCase {
             (StringLiteral(value: "foo"), IntegerLiteral(value: 2)),
             (StringLiteral(value: "bar"), IntegerLiteral(value: 3)),
             (StringLiteral(value: "baz"), IntegerLiteral(value: 5)),
-        ]).javaScript, "{\"foo\": 2, \"bar\": 3, \"baz\": 5}")
+        ]).javaScript(with: 0), "{\"foo\": 2, \"bar\": 3, \"baz\": 5}")
     }
     
     func testIntegerLiteral() {
-        XCTAssertEqual(IntegerLiteral(value: 42).javaScript, "42")
+        XCTAssertEqual(IntegerLiteral(value: 42).javaScript(with: 0), "42")
     }
 
     func testFloatingPointLiteral() {
-        XCTAssertEqual(FloatingPointLiteral(value: 12.5).javaScript, "12.5")
+        XCTAssertEqual(FloatingPointLiteral(value: 12.5).javaScript(with: 0), "12.5")
     }
     
     func testStringLiteral() {
-        XCTAssertEqual(StringLiteral(value: "xyz").javaScript, "\"xyz\"")
+        XCTAssertEqual(StringLiteral(value: "xyz").javaScript(with: 0), "\"xyz\"")
     }
     
     func testBooleanLiteral() {
-        XCTAssertEqual(BooleanLiteral(value: true).javaScript, "true")
-        XCTAssertEqual(BooleanLiteral(value: false).javaScript, "false")
+        XCTAssertEqual(BooleanLiteral(value: true).javaScript(with: 0), "true")
+        XCTAssertEqual(BooleanLiteral(value: false).javaScript(with: 0), "false")
     }
     
     func testNilLiteral() {
-        XCTAssertEqual(NilLiteral().javaScript, "nil")
+        XCTAssertEqual(NilLiteral().javaScript(with: 0), "nil")
     }
 }
