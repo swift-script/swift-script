@@ -42,6 +42,6 @@ class LiteralsTests: XCTestCase {
     }
     
     func testNilLiteral() {
-        XCTAssertEqual(NilLiteral().javaScript(with: 0), "nil")
+        XCTAssertEqual(NilLiteral().javaScript(with: 0), "null")
     }
 }

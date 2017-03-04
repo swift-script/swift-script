@@ -21,3 +21,9 @@ extension DictionaryLiteral {
         return "{\n\(keyValues)\n\("    " * indentLevel)}"
     }
 }
+
+extension NilLiteral {
+    public func javaScript(with indentLevel: Int) -> String {
+        return  "null"
+    }
+}
