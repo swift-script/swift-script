@@ -12,7 +12,7 @@ import TryParsec
 fileprivate func asStmt(stmt: Statement) -> Statement {
     return stmt
 }
-let stmtSep = OHWS *> (VS <|> (OWS *> semi <&> { _ in () })) <* OWS
+let stmtSep = OHWS *> (VS <|> (semi <&> { _ in () })) <* OWS
 
 let stmtBraceItems = _stmtBraceItems()
 func _stmtBraceItems() -> SwiftParser<[Statement]> {

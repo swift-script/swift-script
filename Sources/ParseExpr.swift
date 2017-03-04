@@ -63,6 +63,7 @@ func _exprPrimitive() -> SwiftParser<Expression> {
     return (exprStringLiteral <&> asExpr)
         <|> (exprFloatLiteral <&> asExpr)
         <|> (exprIntegerLiteral <&> asExpr)
+        <|> (exprNilLiteral <&> asExpr)
         <|> (exprArrayLiteral <&> asExpr)
         <|> (exprDictionaryLiteral <&> asExpr)
         <|> (exprIdentifier <&> asExpr)
@@ -102,7 +103,7 @@ func _exprClosure() -> SwiftParser<ClosureExpression>  {
         return ClosureExpression(arguments: args, hasThrows: hasThrows, result: retType, statements: body) }}
         <^> l_brace
         *> (zeroOrOne(sig) <* OWS <* kw_in)
-        <*> (OWS *> stmtBraceItems <* r_brace)
+        <*> (OWS *> stmtBraceItems <* OWS <* r_brace)
 }
 
 let exprParenthesized = _exprParenthesized()

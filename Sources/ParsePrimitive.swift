@@ -389,7 +389,7 @@ let oper_infix = (operatorBody <* lookAhead(rightBound())) <|> (WS *> operatorBo
 // ------------------------------------------------------------------------
 // White spaces
 
-private let horizontalWhitespaces: Set<UnicodeScalar> = [ " ", "\t", "\n", "\r" ]
+private let horizontalWhitespaces: Set<UnicodeScalar> = [ " ", "\t" ]
 private let verticalWhitespaces: Set<UnicodeScalar> = [ "\n", "\r" ]
 
 private func isHorizontalSpace(_ c: UnicodeScalar) -> Bool {
@@ -411,7 +411,7 @@ private func _optionalWhitespaces() -> SwiftParser<()> {
 }
 
 private func _verticalSpace() -> SwiftParser<()> {
-    return skipMany1(OWS *> satisfy(isVerticalSpace))
+    return skipMany1(OHWS *> satisfy(isVerticalSpace))
 }
 
 private func _whitespace() -> SwiftParser<()> {

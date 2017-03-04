@@ -12,6 +12,8 @@ func _decl() -> SwiftParser<Declaration> {
     return (declFunction <&> asDecl)
         <|> (declConstant <&> asDecl)
         <|> (declVariable <&> asDecl)
+        <|> (declClass <&> asDecl)
+        <|> (declInitializer <&> asDecl)
 }
 
 func _declImport() -> SwiftParser<ImportDeclaration> {
@@ -34,7 +36,7 @@ func _declVariable() -> SwiftParser<VariableDeclaration> {
     return { isStatic in {  name in { ty in { initializer in
         VariableDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
         <^> zeroOrOne(kw_static)
-        <*> (OWS *> kw_let *> OWS *> identifier)
+        <*> (OWS *> kw_var *> OWS *> identifier)
         <*> zeroOrOne(OWS *> type)
         <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
@@ -74,6 +76,7 @@ func _declStruct() -> SwiftParser<StructDeclaration­> {
     return fail("not implemented")
 }
 
+let declClass = _declClass()
 func _declClass() -> SwiftParser<ClassDeclaration­> {
     return { name in { inherits in { members in
         ClassDeclaration­(name: name, superTypes: inherits ?? [], members: members) }}}
@@ -86,6 +89,7 @@ func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
     return fail("not implemented")
 }
 
+let declInitializer = _declInitializer()
 func _declInitializer() -> SwiftParser<InitializerDeclaration­> {
     let params = list(l_paren, declParam, comma, r_paren)
     return  { params in { isFailable in { hasThrows in { body in
