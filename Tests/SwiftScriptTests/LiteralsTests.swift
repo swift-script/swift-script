@@ -11,17 +11,17 @@ class LiteralsTests: XCTestCase {
     }
     
     func testDictionaryLiteral() {
-        print(SwiftScript.DictionaryLiteral(value: [
-            (StringLiteral(value: "foo"), IntegerLiteral(value: 2)),
-            (StringLiteral(value: "bar"), IntegerLiteral(value: 3)),
-            (StringLiteral(value: "baz"), IntegerLiteral(value: 5)),
-            ]).javaScript(with: 0))
-        
         XCTAssertEqual(SwiftScript.DictionaryLiteral(value: [
             (StringLiteral(value: "foo"), IntegerLiteral(value: 2)),
             (StringLiteral(value: "bar"), IntegerLiteral(value: 3)),
             (StringLiteral(value: "baz"), IntegerLiteral(value: 5)),
         ]).javaScript(with: 0), "{\n    \"foo\": 2,\n    \"bar\": 3,\n    \"baz\": 5\n}")
+        
+        XCTAssertEqual(SwiftScript.DictionaryLiteral(value: [
+            (StringLiteral(value: "foo"), IntegerLiteral(value: 2)),
+            (StringLiteral(value: "bar"), IntegerLiteral(value: 3)),
+            (StringLiteral(value: "baz"), IntegerLiteral(value: 5)),
+            ]).javaScript(with: 1), "{\n        \"foo\": 2,\n        \"bar\": 3,\n        \"baz\": 5\n    }")
     }
     
     func testIntegerLiteral() {
