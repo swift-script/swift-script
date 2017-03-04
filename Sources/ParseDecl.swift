@@ -75,7 +75,11 @@ func _declStruct() -> SwiftParser<StructDeclaration­> {
 }
 
 func _declClass() -> SwiftParser<ClassDeclaration­> {
-    return fail("not implemented")
+    return { name in { inherits in { members in
+        ClassDeclaration­(name: name, superTypes: inherits ?? [], members: members) }}}
+        <^> (kw_class *> WS *> identifier)
+        <*> zeroOrOne(OWS *> colon *> sepBy1(type, OWS *> comma <* OWS))
+        <*> (OWS *> l_brace *> OWS *> sepEndBy(decl, stmtSep) <* r_brace)
 }
 
 func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
@@ -83,7 +87,13 @@ func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
 }
 
 func _declInitializer() -> SwiftParser<InitializerDeclaration­> {
-    return fail("not implemented")
+    let params = list(l_paren, declParam, comma, r_paren)
+    return  { params in { isFailable in { hasThrows in { body in
+        InitializerDeclaration­(arguments: params, isFailable: isFailable != nil, hasThrows: hasThrows != nil, body: body) }}}}
+        <^> (kw_init *> OWS *> params)
+        <*> zeroOrOne(char("?"))
+        <*> zeroOrOne(OWS *> kw_throws)
+        <*> (OWS *> stmtBrace)
 }
 
 func _declDeinitializer() -> SwiftParser<DeinitializerDeclaration­> {

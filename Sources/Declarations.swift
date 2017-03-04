@@ -62,7 +62,7 @@ public struct ProtocolDeclaration­: Declaration {
 
 
 public struct InitializerDeclaration­: Declaration {
-    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression)]
+    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression?)]
     public var isFailable: Bool
     public var hasThrows: Bool
     public var body: [Statement]?
