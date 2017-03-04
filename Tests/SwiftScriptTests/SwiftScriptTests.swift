@@ -3,7 +3,7 @@ import XCTest
 
 class SwiftScriptTests: XCTestCase {
     func testExample() {
-        print(try! transpile(code: ""))
+        print(try! transpile(code: "3 + 5"))
     }
 
     static var allTests : [(String, (SwiftScriptTests) -> () throws -> Void)] {
