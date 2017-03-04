@@ -132,9 +132,9 @@ func exprSuffix(subj: Expression) -> SwiftParser<Expression> {
         <|> (_exprFunctionCall(subj) >>- exprSuffix)
         <|> (_exprSubscript(subj) >>- exprSuffix)
         <|> (_exprOptionalChaining(subj) >>- exprSuffix)
-        <|> (_exprPostfixUnary(subj)) >>- exprSuffix)
-        //        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
+        <|> (_exprPostfixUnary(subj) >>- exprSuffix)
         <|> pure(subj)
+        //        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
 }
 
 func _exprPostfixSelf(_ subj: Expression) -> SwiftParser<PostfixSelfExpression>  {
