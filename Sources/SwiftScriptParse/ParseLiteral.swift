@@ -1,6 +1,6 @@
 import Runes
 import TryParsec
-import 
+import SwiftScriptAST
 
 
 // Literal expressions
@@ -11,12 +11,12 @@ func _exprNilLiteral() -> SwiftParser<NilLiteral> {
 }
 
 let exprBooleanLiteral = _exprBooleanLiteral()
-func exprBooleanLiteral() -> SwiftParser<BooleanLiteral> {
+func _exprBooleanLiteral() -> SwiftParser<BooleanLiteral> {
     return fail("not implemented")
 }
 
 
-let exprStringLiteral = exprStringLiteral()
+let exprStringLiteral = _exprStringLiteral()
 func _exprStringLiteral() -> SwiftParser<StringLiteral> {
     return fail("not implemented")
 }
@@ -27,7 +27,7 @@ func _exprIntegerLiteral() -> SwiftParser<IntegerLiteral> {
 }
 
 let exprFloatLiteral = _exprFloatLiteral()
-func _exprFloatLiteral() -> SwiftParser<FloatLiteral> {
+func _exprFloatLiteral() -> SwiftParser<FloatingPointLiteral> {
     return fail("not implemented")
 }
 
@@ -37,6 +37,6 @@ func _exprArrayLiteral() -> SwiftParser<ArrayLiteral> {
 }
 
 let exprDictionaryLiteral = _exprDictionaryLiteral()
-func _exprDictionaryLiteral() -> SwiftParser<DictionaryLiteral> {
+func _exprDictionaryLiteral() -> SwiftParser<SwiftScriptAST.DictionaryLiteral> {
     return fail("not implemented")
 }

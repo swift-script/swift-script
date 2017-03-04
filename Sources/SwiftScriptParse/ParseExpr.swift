@@ -1,5 +1,6 @@
 import Runes
 import TryParsec
+import SwiftScriptAST
 
 
 ///
@@ -14,7 +15,7 @@ func _exprSelf() -> SwiftParser<SelfExpression>  {
 }
 
 let exprSuper = _exprSuper()
-func _exprSuper() -> SwiftParser<SuperClassExpression>  {
+func _exprSuper() -> SwiftParser<SuperclassExpression>  {
     return fail("not implemented")
 }
 
@@ -59,9 +60,10 @@ func _exprFunctionCall() -> SwiftParser<FunctionCallExpression> {
 }
 
 let exprInitializer =  _exprInitializer()
-func _exprInitializer() -> SwiftParser<InitlializerExpression> {
+func _exprInitializer() -> SwiftParser<InitializerExpression> {
     return fail("not iomplemented")
 }
+
 
 let exprExplicitMemeber = _exprExplicitMember()
 func _exprExplicitMember() -> SwiftParser<ExplicitMemberExpression> {
@@ -74,7 +76,7 @@ func _exprSubscript() -> SwiftParser<SubscriptExpression> {
     return fail("not implemented")
 }
 
-let exprOptionalChanining = _exprOptionalChaning()
+let exprOptionalChanining = _exprOptionalChaining()
 func _exprOptionalChaining() -> SwiftParser<OptionalChainingExpression> {
     return fail("not implemented")
 }
