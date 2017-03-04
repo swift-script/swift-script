@@ -31,12 +31,12 @@ func _declParam() -> SwiftParser<(String?, String, Type_, Expression?)> {
 }
 
 
-func _declFunction() -> SwiftParser<FunctionDeclaration> {
-    return  { name in { generic in { params in { isThrows in  { retType in  { body in
-        FunctionDeclaration(name: name, arguments: params, result: retType, hasThrows: isThrows != nil, body: body) }}}}}}
+func _declFunction() -> SwiftParser<Any> {
+    let params = list(l_paren, declParam, comma, r_paren)
+    return  { name in { params in { hasThrows in { retType in { body in
+        FunctionDeclaration(name: name, arguments: params, result: retType, hasThrows: hasThrows != nil, body: body) }}}}}
         <^> (kw_func *> WS *> identifier)
-        <*> zeroOrOne(OWS *> chars("<>"))
-        <*> (OWS *> list(l_paren, declParam, comma, r_paren))
+        <*> (OWS *> params)
         <*> zeroOrOne(OWS *> kw_throws)
         <*> zeroOrOne(OWS *> arrow *> OWS *> type)
         <*> (OWS *> stmtBrace)

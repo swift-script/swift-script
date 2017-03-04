@@ -31,7 +31,7 @@ public struct TypeAliasDeclaration: Declaration {
 
 public struct FunctionDeclaration: Declaration {
     public var name: String
-    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression)]
+    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression?)]
     public var result: Type_?
     public var hasThrows: Bool
     public var body: [Statement]?
