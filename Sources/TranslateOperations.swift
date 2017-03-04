@@ -29,8 +29,6 @@ extension PrefixUnaryOperation {
     public func javaScript(with indentLevel: Int) -> String {
         let value = operand.javaScript(with: indentLevel + 1)
         switch operatorSymbol {
-        case "!", "+", "-", "~":
-            return "\(operatorSymbol)\(value)"
         case "try":
             return value
         case "try!":
@@ -38,7 +36,7 @@ extension PrefixUnaryOperation {
         case "try?":
             return "tryq(\(value))"
         default:
-            fatalError("unsupported prefix unary operator: \(self)")
+            return "\(operatorSymbol)\(value)"
         }
     }
 }
@@ -52,7 +50,7 @@ extension PostfixUnaryOperation {
         case "!":
             return "x(\(value))"
         default:
-            fatalError("unsupported postfix unary operator: \(self)")
+            return "\(value)\(operatorSymbol)"
         }
     }
 }
