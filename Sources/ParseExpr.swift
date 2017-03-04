@@ -89,8 +89,20 @@ func _exprSuper() -> SwiftParser<SuperclassExpression>  {
 
 let exprClosure = _exprClosure()
 func _exprClosure() -> SwiftParser<ClosureExpression>  {
-    return { _ in  ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: []) }
-        <^> chars("{}")
+    let params: SwiftParser<[String]> = sepBy1(identifier, OWS *> comma <* OWS)
+    let sig = { args in { th in { ty in (args, th != nil, ty) }}}
+        <^> zeroOrOne(params)
+        <*> zeroOrOne(OWS *> kw_throws)
+        <*> zeroOrOne(OWS *> arrow *> type)
+    
+    return { sig in { body in
+        let args: [(String, Type_?)] = (sig?.0?.map({ ($0, nil) })) ?? []
+        let hasThrows = sig == nil ? false : sig!.1
+        let retType  = sig == nil ? nil : sig!.2
+        return ClosureExpression(arguments: args, hasThrows: hasThrows, result: retType, statements: body) }}
+        <^> l_brace
+        *> (zeroOrOne(sig) <* kw_in)
+        <*> (OWS *> stmtBraceItems <* r_brace)
 }
 
 let exprParenthesized = _exprParenthesized()
