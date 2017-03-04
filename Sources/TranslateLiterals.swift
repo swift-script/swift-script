@@ -27,3 +27,22 @@ extension NilLiteral {
         return  "null"
     }
 }
+
+extension FloatingPointLiteral {
+    public func javaScript(with indentLevel: Int) -> String {
+        return  "\(value)"
+    }
+}
+
+extension BooleanLiteral {
+    public func javaScript(with indentLevel: Int) -> String {
+        return  value ? "true" : "false"
+    }
+}
+
+extension ArrayLiteral {
+    public func javaScript(with indentLevel: Int) -> String {
+        let values: String = value.map { $0.javaScript(with: indentLevel + 1) }.joined(separator: ", ")
+        return "[\(values)]"
+    }
+}
