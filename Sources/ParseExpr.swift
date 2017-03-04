@@ -71,28 +71,37 @@ func _exprSuper() -> SwiftParser<SuperclassExpression>  {
 
 let exprClosure = _exprClosure()
 func _exprClosure() -> SwiftParser<ClosureExpression>  {
-    return fail("not implemented")
+    return { _ in  ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: []) }
+        <^> chars("{}")
 }
 
 let exprParenthesized = _exprParenthesized()
 func _exprParenthesized() -> SwiftParser<ParenthesizedExpression>  {
-    return fail("not implemented")
+    return { value in ParenthesizedExpression(expression: value) }
+        <^> l_paren *> OWS *> expr <* OWS <* r_paren
 }
 
 let exprTuple = _exprTuple()
 func _exprTuple() -> SwiftParser<TupleExpression>  {
-    return fail("not implemented")
-}
+    let element = { label in { value in (label, value) }}
+        <^> zeroOrOne(keywordOrIdentifier <* OWS <* colon)
+        <*> (OWS *> expr)
+    
+    return { elements in TupleExpression(elements: elements) }
+        <^> list(l_paren, element, comma, r_paren)
+ }
 
 let exprImplicitMember = _exprImplicitMember()
 func _exprImplicitMember() -> SwiftParser<ImplicitMemberExpression>  {
-    return fail("not implemented")
+    return { ident in ImplicitMemberExpression() }
+        <^> (period *> identifier)
 }
 
 
 let exprWildcard = _exprWildcard()
 func _exprWildcard() -> SwiftParser<WildcardExpression> {
-    return fail("not implemented")
+    return { _ in WildcardExpression() }
+        <^> kw__
 }
 
 //-----------------------------------------------------------------------
@@ -107,7 +116,8 @@ func exprSuffix(subj: Expression) -> SwiftParser<Expression> {
         <|> (_exprOptionalChaining(subj) >>- exprSuffix)
         <|> (_exprInitializer(subj) >>- exprSuffix)
         <|> (_exprInitializer(subj) >>- exprSuffix)
-//        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
+        //        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
+        <|> pure(subj)
 }
 
 func _exprPostfixSelf(_ subj: Expression) -> SwiftParser<PostfixSelfExpression>  {
