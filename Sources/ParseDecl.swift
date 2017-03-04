@@ -2,6 +2,16 @@ import Runes
 import TryParsec
 
 
+fileprivate func asDecl(_ decl: Declaration) -> Declaration {
+    return decl
+}
+
+
+let decl = _decl()
+func _decl() -> SwiftParser<Declaration> {
+    return
+        (declFunction <&> asDecl)
+}
 
 func _declImport() -> SwiftParser<ImportDeclaration> {
     return fail("not implemented")
@@ -30,8 +40,8 @@ func _declParam() -> SwiftParser<(String?, String, Type_, Expression?)> {
         <*> zeroOrOne(ellipsis)
 }
 
-
-func _declFunction() -> SwiftParser<Any> {
+let declFunction = _declFunction()
+func _declFunction() -> SwiftParser<FunctionDeclaration> {
     let params = list(l_paren, declParam, comma, r_paren)
     return  { name in { params in { hasThrows in { retType in { body in
         FunctionDeclaration(name: name, arguments: params, result: retType, hasThrows: hasThrows != nil, body: body) }}}}}

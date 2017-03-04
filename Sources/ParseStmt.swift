@@ -22,8 +22,8 @@ func _stmtBraceItems() -> SwiftParser<[Statement]> {
 let stmtBraceItem = _stmtBraceItem()
 func _stmtBraceItem() -> SwiftParser<Statement> {
     return (expr <&> asStmt)
-//        <|> (stmt <&> asStmt)
-//        <|> (decl <&> asStmt)
+        <|> (stmt <&> asStmt)
+        <|> (decl <&> asStmt)
 }
 
 
@@ -94,11 +94,11 @@ func _stmtBreak() -> SwiftParser<BreakStatement> {
 
 let stmtContinue = _stmtContinue()
 func _stmtContinue() -> SwiftParser<ContinueStatement> {
-    return ContinueStatement.init <^> kw_break *> zeroOrOne(WS *> identifier)
+    return ContinueStatement.init <^> kw_continue *> zeroOrOne(WS *> identifier)
 }
 
 func _stmtFallthrough() -> SwiftParser<FallthroughStatement> {
-    return fail("not implemented")
+    return { _ in FallthroughStatement() } <^> kw_fallthrough
 }
 
 let stmtReturn = _stmtReturn()
@@ -109,11 +109,15 @@ func _stmtReturn() -> SwiftParser<ReturnStatement> {
 }
 
 func _stmtThrow() -> SwiftParser<ThrowStatement> {
-    return fail("not implemented")
+    return { value in
+        ThrowStatement(expression: value) }
+        <^> (kw_throw *> OWS *> expr)
 }
 
 func _stmtDefer() -> SwiftParser<DeferStatement> {
-    return fail("not implemented")
+    return { stmts in
+        DeferStatement(statements: stmts) }
+        <^> (kw_throw *> OWS *> stmtBrace)
 }
 
 
