@@ -26,12 +26,27 @@ func _stmtBraceItem() -> SwiftParser<Statement> {
 //        <|> (decl <&> asStmt)
 }
 
+
 let stmtBrace = _stmtBrace()
 func _stmtBrace() -> SwiftParser<[Statement]> {
     return  l_brace *> OWS *> stmtBraceItems <* OWS <* r_brace
 }
 
+let stmt = _stmt()
+func _stmt() -> SwiftParser<Statement> {
+    return (stmtReturn <&> asStmt)
+//        <|> (stmtThrow <&> asStmt)
+//        <|> (stmtDefer <&> asStmt)
+        <|> (stmtIf <&> asStmt)
+        <|> (stmtForIn <&> asStmt)
+//        <|> (stmtDo <&> asStmt)
+        <|> (stmtBreak <&> asStmt)
+        <|> (stmtContinue <&> asStmt)
+//        <|> (stmtFallthrough <&> asStmt)
+}
 
+
+let stmtForIn = _stmtForIn()
 func _stmtForIn() -> SwiftParser<ForInStatement> {
     return { name in { col in { body in
         ForInStatement(item: name, collection: col, statements: body) }}}
@@ -48,12 +63,20 @@ func _stmtRepeatWhile() -> SwiftParser<RepeatWhileStatement> {
     return fail("not implemented")
 }
 
+let stmtIf = _stmtIf()
 func _stmtIf() -> SwiftParser<IfStatement> {
-    return fail("not implemented")
+    return { cond in { body in { els in
+        IfStatement(condition: cond, statements: body, elseClause: els) }}}
+        <^> (kw_if *> WS *> expr)
+        <*> (OWS *> stmtBrace)
+        <*> stmtElseClause
 }
 
-func _stmtElseClause() -> SwiftParser<ElseClause> {
-    return fail("not implemented")
+let stmtElseClause = _stmtElseClause()
+func _stmtElseClause() -> SwiftParser<ElseClause?> {
+    return (OWS *> kw_else *> stmtIf <&> { .elseIf($0) })
+        <|> (OWS *> kw_else *> stmtBrace <&> { .else_($0)} )
+        <|> pure(nil)
 }
 
 func _stmtSwitch() -> SwiftParser<SwitchStatement> {
@@ -64,20 +87,25 @@ func _stmtLabeled() -> SwiftParser<LabeledStatement> {
     return fail("not implemented")
 }
 
+let stmtBreak = _stmtBreak()
 func _stmtBreak() -> SwiftParser<BreakStatement> {
-    return fail("not implemented")
+    return BreakStatement.init <^> kw_break *> zeroOrOne(WS *> identifier)
 }
 
+let stmtContinue = _stmtContinue()
 func _stmtContinue() -> SwiftParser<ContinueStatement> {
-    return fail("not implemented")
+    return ContinueStatement.init <^> kw_break *> zeroOrOne(WS *> identifier)
 }
 
 func _stmtFallthrough() -> SwiftParser<FallthroughStatement> {
     return fail("not implemented")
 }
 
+let stmtReturn = _stmtReturn()
 func _stmtReturn() -> SwiftParser<ReturnStatement> {
-    return fail("not implemented")
+    return { value in
+        ReturnStatement(expression: value) }
+        <^> (kw_return *> OWS *> expr)
 }
 
 func _stmtThrow() -> SwiftParser<ThrowStatement> {
