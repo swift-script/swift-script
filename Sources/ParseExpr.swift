@@ -68,7 +68,7 @@ func _exprPrimitive() -> SwiftParser<Expression> {
         <|> (exprIdentifier <&> asExpr)
         <|> (exprParenthesized <&> asExpr)
         <|> (exprTuple <&> asExpr)
-        <|> (exprTuple <&> asExpr)
+        <|> (exprClosure <&> asExpr)
 }
 
 
