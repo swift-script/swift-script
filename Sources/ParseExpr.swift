@@ -132,6 +132,7 @@ func exprSuffix(subj: Expression) -> SwiftParser<Expression> {
         <|> (_exprFunctionCall(subj) >>- exprSuffix)
         <|> (_exprSubscript(subj) >>- exprSuffix)
         <|> (_exprOptionalChaining(subj) >>- exprSuffix)
+        <|> (_exprPostfixUnary(subj)) >>- exprSuffix)
         //        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
         <|> pure(subj)
 }
@@ -177,3 +178,8 @@ func _exprDynamicType(_ subj: Expression) -> SwiftParser<DynamicTypeExpression> 
     return fail("not implemented")
 }
 
+func _exprPostfixUnary(_ subj: Expression) -> SwiftParser<PostfixUnaryOperation> {
+    return
+        { _ in PostfixUnaryOperation(operand: subj, operatorSymbol: "!") }
+        <^> char("!")
+}
