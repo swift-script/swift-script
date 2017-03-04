@@ -8,9 +8,27 @@ fileprivate func asExpr(expr: Expression) -> Expression {
 
 let expr = _expr()
 func _expr() -> SwiftParser<Expression> {
-    return _exprSequencceElement()
+    return exprSequence
 }
 
+
+let exprSequence = _exprSequence()
+func _exprSequence() -> SwiftParser<Expression> {
+    return
+        exprSequenceElement >>- binarySuffix
+}
+
+let binOp = oper_infix <|> kw_as <|> kw_is
+
+func binarySuffix(lhs: Expression) -> SwiftParser<Expression> {
+    let bin: SwiftParser<Expression> = { op in { rhs in
+        BinaryOperation(leftOperand: lhs, operatorSymbol: op, rightOperand: rhs) }}
+        <^> binOp <*> expr
+    return (bin >>- binarySuffix)
+        <|> pure(lhs)
+}
+
+let exprSequenceElement = _exprSequencceElement()
 func _exprSequencceElement() -> SwiftParser<Expression> {
     let parseTry
         = ({ _ in "try!" } <^> kw_try *> char("?") *> WS)
