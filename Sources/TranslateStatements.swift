@@ -53,6 +53,12 @@ extension ContinueStatement {
     }
 }
 
+extension FallthroughStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        return ""
+    }
+}
+
 extension ReturnStatement {
     public func javaScript(with indentLevel: Int) -> String {
         if let expression = expression {
