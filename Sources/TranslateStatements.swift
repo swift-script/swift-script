@@ -4,6 +4,12 @@ extension ForInStatement {
     }
 }
 
+extension WhileStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        return "\(indent(of: indentLevel))while (\(condition.javaScript(with: indentLevel))) \(transpileBlock(statements: statements, indentLevel: indentLevel))\n"
+    }
+}
+
 extension IfStatement {
     public func javaScript(with indentLevel: Int) -> String {
         return "\(indent(of: indentLevel))\(_javaScript(with: indentLevel))"
