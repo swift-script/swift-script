@@ -1,11 +1,3 @@
-//
-//  ParseStmt.swift
-//  SwiftScript
-//
-//  Created by Rintaro Ishizaki on 2017/03/04.
-//
-//
-
 import Runes
 import TryParsec
 

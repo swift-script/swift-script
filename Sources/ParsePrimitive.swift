@@ -3,7 +3,6 @@ import TryParsec
 
 /// Haskell `(:)` (cons operator) for replacing slow `[x] + xs`.
 /// Note: copy from TryParsec code
-
 internal func cons<C: RangeReplaceableCollection>(_ x: C.Iterator.Element) -> (C) -> C
 {
     return { xs in
@@ -64,7 +63,7 @@ private func _stringLiteral() -> SwiftParser<String> {
     ]
     let _escapedCharMappingKeys = Set(_escapedCharMappings.keys)
     let _escapedCharKey = satisfy { _escapedCharMappingKeys.contains($0) }
-    let escapedChar = char("\\") *> _escapedCharKey
+    let escapedChar = char("\\") *> _escapedCharKey <&> { x in _escapedCharMappings[x]! }
     let validChar = normChar <|> escapedChar
     
     return (char("\"") *> many(validChar) <* char("\"")) <&> String.init
