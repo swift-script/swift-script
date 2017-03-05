@@ -26,7 +26,7 @@ func _declConstant() -> SwiftParser<ConstantDeclaration> {
         ConstantDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
         <^> zeroOrOne(kw_static)
         <*> (OWS *> kw_let *> OWS *> identifier)
-        <*> zeroOrOne(OWS *> type)
+        <*> zeroOrOne(OWS *> colon *> OWS *> type)
         <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
 
@@ -37,7 +37,7 @@ func _declVariable() -> SwiftParser<VariableDeclaration> {
         VariableDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
         <^> zeroOrOne(kw_static)
         <*> (OWS *> kw_var *> OWS *> identifier)
-        <*> zeroOrOne(OWS *> type)
+        <*> zeroOrOne(OWS *> colon *> OWS *> type)
         <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
 
