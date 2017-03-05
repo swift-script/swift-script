@@ -33,6 +33,16 @@ extension GuardStatement {
     }
 }
 
+extension BreakStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        if let labelName = labelName {
+            return "\(indent(of: indentLevel))break \(labelName);\n"
+        } else {
+            return "\(indent(of: indentLevel))break;\n"
+        }
+    }
+}
+
 extension ReturnStatement {
     public func javaScript(with indentLevel: Int) -> String {
         if let expression = expression {
