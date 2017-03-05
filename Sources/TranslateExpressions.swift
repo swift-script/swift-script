@@ -77,8 +77,10 @@ extension WildcardExpression {
 
 extension ExplicitMemberExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        let variable = expression.javaScript(with: indentLevel + 1)
-        return "\(variable).\(member)"
+        if expression is SuperclassExpression, member == "init" {
+            return "\(expression.javaScript(with: indentLevel))"
+        }
+        return "\(expression.javaScript(with: indentLevel)).\(member)"
     }
 }
 
