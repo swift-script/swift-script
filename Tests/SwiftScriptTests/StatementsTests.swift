@@ -38,11 +38,53 @@ class StatementsScriptTests: XCTestCase {
     }
     
     func testWhileStatement() {
+        XCTAssertEqual(WhileStatement(
+            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
+            statements: [
+                FunctionCallExpression(
+                    expression: IdentifierExpression(identifier: "print"),
+                    arguments: [(nil, StringLiteral(value: "Hello"))],
+                    trailingClosure: nil
+                )
+            ]
+        ).javaScript(with: 0), "while (foo < 42) {\n    console.log(\"Hello\");\n}\n")
         
+        // indent
+        XCTAssertEqual(WhileStatement(
+            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
+            statements: [
+                FunctionCallExpression(
+                    expression: IdentifierExpression(identifier: "print"),
+                    arguments: [(nil, StringLiteral(value: "Hello"))],
+                    trailingClosure: nil
+                )
+            ]
+        ).javaScript(with: 1), "    while (foo < 42) {\n        console.log(\"Hello\");\n    }\n")
     }
     
     func testRepeatWhileStatement() {
+        XCTAssertEqual(RepeatWhileStatement(
+            statements: [
+                FunctionCallExpression(
+                    expression: IdentifierExpression(identifier: "print"),
+                    arguments: [(nil, StringLiteral(value: "Hello"))],
+                    trailingClosure: nil
+                )
+            ],
+            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))
+        ).javaScript(with: 0), "repeat {\n    console.log(\"Hello\");\n} while (foo < 42)\n")
         
+        // indent
+        XCTAssertEqual(RepeatWhileStatement(
+            statements: [
+                FunctionCallExpression(
+                    expression: IdentifierExpression(identifier: "print"),
+                    arguments: [(nil, StringLiteral(value: "Hello"))],
+                    trailingClosure: nil
+                )
+            ],
+            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))
+        ).javaScript(with: 1), "    repeat {\n        console.log(\"Hello\");\n    } while (foo < 42)\n")
     }
     
     func testIfStatement() {
