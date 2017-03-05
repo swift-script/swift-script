@@ -18,3 +18,13 @@ extension IfStatement {
         }
     }
 }
+
+extension ReturnStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        if let expression = expression {
+            return "\(indent(of: indentLevel))return \(expression.javaScript(with: indentLevel));\n"
+        } else {
+            return "\(indent(of: indentLevel))return;\n"
+        }
+    }
+}

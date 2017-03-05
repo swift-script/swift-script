@@ -75,4 +75,12 @@ class StatementsScriptTests: XCTestCase {
             ))
         ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else if (foo == 0) {\n    console.log(\"Bye\");\n}\n")
     }
+    
+    func testReturnStatement() {
+        XCTAssertEqual(ReturnStatement(expression: nil).javaScript(with: 0), "return;\n")
+        XCTAssertEqual(ReturnStatement(expression: IntegerLiteral(value: 42)).javaScript(with: 0), "return 42;\n")
+        
+        // indent
+        XCTAssertEqual(ReturnStatement(expression: nil).javaScript(with: 1), "    return;\n")
+    }
 }
