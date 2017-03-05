@@ -18,6 +18,23 @@ class StatementsScriptTests: XCTestCase {
                 )
             ]
         ).javaScript(with: 0), "for (i of range(0, 10) {\n    console.log(i);\n}\n")
+        
+        // indent
+        XCTAssertEqual(ForInStatement(
+            item: "i",
+            collection: BinaryOperation(
+                leftOperand: IntegerLiteral(value: 0),
+                operatorSymbol: "..<",
+                rightOperand: IntegerLiteral(value: 10)
+            ),
+            statements: [
+                FunctionCallExpression(
+                    expression: IdentifierExpression(identifier: "print"),
+                    arguments: [(nil, IdentifierExpression(identifier: "i"))],
+                    trailingClosure: nil
+                )
+            ]
+        ).javaScript(with: 1), "    for (i of range(0, 10) {\n        console.log(i);\n    }\n")
     }
 
     func testIfStatement() {
@@ -74,6 +91,29 @@ class StatementsScriptTests: XCTestCase {
                 elseClause: nil
             ))
         ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else if (foo == 0) {\n    console.log(\"Bye\");\n}\n")
+        
+        // indent
+        XCTAssertEqual(IfStatement(
+            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
+            statements: [
+                FunctionCallExpression(
+                    expression: IdentifierExpression(identifier: "print"),
+                    arguments: [(nil, StringLiteral(value: "Hello"))],
+                    trailingClosure: nil
+                )
+            ],
+            elseClause: .elseIf(IfStatement(
+                condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "==", rightOperand: IntegerLiteral(value: 0)),
+                statements: [
+                    FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "print"),
+                        arguments: [(nil, StringLiteral(value: "Bye"))],
+                        trailingClosure: nil
+                    ),
+                    ],
+                elseClause: nil
+            ))
+        ).javaScript(with: 1), "    if (foo < 42) {\n        console.log(\"Hello\");\n    } else if (foo == 0) {\n        console.log(\"Bye\");\n    }\n")
     }
     
     func testReturnStatement() {
