@@ -8,7 +8,7 @@ public func transpile(code: String) throws -> String {
 public func transpileStatements(statements: [Statement], indentLevel: Int) -> String {
     let jsStatements: [String] = statements.map { statement in
         if statement is Expression {
-            return "\("    " * indentLevel)\(statement.javaScript(with: indentLevel));"
+            return "\(indent(of: indentLevel))\(statement.javaScript(with: indentLevel));"
         }
         return statement.javaScript(with: indentLevel)
     }
@@ -16,5 +16,9 @@ public func transpileStatements(statements: [Statement], indentLevel: Int) -> St
 }
 
 public func transpileBlock(statements: [Statement], indentLevel: Int) -> String {
-    return "{\n\(transpileStatements(statements: statements, indentLevel: indentLevel + 1))\n\("    " * indentLevel)}"
+    return "{\n\(transpileStatements(statements: statements, indentLevel: indentLevel + 1))\n\(indent(of: indentLevel))}"
+}
+
+public func indent(of level: Int) -> String {
+    return "    " * level
 }
