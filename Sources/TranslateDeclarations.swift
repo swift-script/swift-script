@@ -42,3 +42,13 @@ extension FunctionDeclaration {
         return "\(indent(of: indentLevel))function \(name)(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: body!, indentLevel: indentLevel))\n"
     }
 }
+
+extension ClassDeclaration­ {
+    public func javaScript(with indentLevel: Int) -> String {
+        let decls = members.map { $0.javaScript(with: indentLevel + 1) }.joined(separator: "\n")
+        let spaces = String(repeating: "    ", count: indentLevel)
+        let newLine = decls.isEmpty ? "" : "\n"
+        // TODO: should implement extends
+        return "\(spaces)class \(name) {\n\(decls)\(newLine)\(spaces)}"
+    }
+}
