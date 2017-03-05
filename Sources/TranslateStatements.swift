@@ -45,6 +45,15 @@ extension GuardStatement {
     }
 }
 
+extension LabeledStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        let indentDepth = indent(of: indentLevel).characters.count
+        let characters: String.CharacterView = statement.javaScript(with: indentLevel).characters
+        let statementWithoutIndent = String(characters.dropFirst(indentDepth))
+        return "\(indent(of: indentLevel))\(labelName): \(statementWithoutIndent)"
+    }
+}
+
 extension BreakStatement {
     public func javaScript(with indentLevel: Int) -> String {
         if let labelName = labelName {

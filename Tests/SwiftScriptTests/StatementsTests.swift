@@ -195,7 +195,7 @@ class StatementsScriptTests: XCTestCase {
             statements: [
                 BreakStatement(labelName: "foo"),
             ]
-        )).javaScript(with: 0), "foo: while (true) {\n    break foo;\n}")
+        )).javaScript(with: 0), "foo: while (true) {\n    break foo;\n}\n")
         
         // indent
         XCTAssertEqual(LabeledStatement(labelName: "foo", statement: WhileStatement(
@@ -203,7 +203,7 @@ class StatementsScriptTests: XCTestCase {
             statements: [
                 BreakStatement(labelName: "foo"),
                 ]
-        )).javaScript(with: 1), "    foo: while (true) {\n        break foo;\n    }")
+        )).javaScript(with: 1), "    foo: while (true) {\n        break foo;\n    }\n")
     }
     
     func testBreakStatement() {
