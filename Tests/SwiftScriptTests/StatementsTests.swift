@@ -131,7 +131,7 @@ class StatementsScriptTests: XCTestCase {
                 operatorSymbol: "==",
                 rightOperand: IntegerLiteral(value: 42)),
             statements: [
-                ReturnStatement(expression: IntegerLiteral(value: 42)),
+                ReturnStatement(expression: IntegerLiteral(value: 0)),
             ]
         ).javaScript(with: 0), "if (!(foo == 42)) {\n    return 0;\n}\n")
         
@@ -142,7 +142,7 @@ class StatementsScriptTests: XCTestCase {
                 operatorSymbol: "==",
                 rightOperand: IntegerLiteral(value: 42)),
             statements: [
-                ReturnStatement(expression: IntegerLiteral(value: 42)),
+                ReturnStatement(expression: IntegerLiteral(value: 0)),
                 ]
         ).javaScript(with: 1), "    if (!(foo == 42)) {\n        return 0;\n    }\n")
     }

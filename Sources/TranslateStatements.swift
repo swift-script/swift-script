@@ -23,6 +23,16 @@ extension IfStatement {
     }
 }
 
+extension GuardStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        return IfStatement(
+            condition: PrefixUnaryOperation(operatorSymbol: "!", operand: ParenthesizedExpression(expression: condition)),
+            statements: statements,
+            elseClause: nil
+        ).javaScript(with: indentLevel)
+    }
+}
+
 extension ReturnStatement {
     public func javaScript(with indentLevel: Int) -> String {
         if let expression = expression {
