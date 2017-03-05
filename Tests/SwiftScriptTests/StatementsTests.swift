@@ -224,7 +224,7 @@ class StatementsScriptTests: XCTestCase {
                 )
             ],
             catchClauses: []
-        ).javaScript(with: 0), "{\n    console.log(\"Hello\");\n}")
+        ).javaScript(with: 0), "{\n    console.log(\"Hello\");\n}\n")
         // TODO: catch
         
         // indent
@@ -237,6 +237,6 @@ class StatementsScriptTests: XCTestCase {
                 )
             ],
             catchClauses: []
-        ).javaScript(with: 1), "    {\n        console.log(\"Hello\");\n    }")
+        ).javaScript(with: 1), "    {\n        console.log(\"Hello\");\n    }\n")
     }
 }

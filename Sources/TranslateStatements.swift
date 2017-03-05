@@ -74,3 +74,10 @@ extension ThrowStatement {
         return "\(indent(of: indentLevel))throw \(expression.javaScript(with: indentLevel));\n"
     }
 }
+
+extension DoStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        // TODO: catch
+        return "\(indent(of: indentLevel))\(transpileBlock(statements: statements, indentLevel: indentLevel))\n"
+    }
+}
