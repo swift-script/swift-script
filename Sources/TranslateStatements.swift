@@ -10,6 +10,12 @@ extension WhileStatement {
     }
 }
 
+extension RepeatWhileStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        return "\(indent(of: indentLevel))repeat \(transpileBlock(statements: statements, indentLevel: indentLevel)) while (\(condition.javaScript(with: indentLevel)))\n"
+    }
+}
+
 extension IfStatement {
     public func javaScript(with indentLevel: Int) -> String {
         return "\(indent(of: indentLevel))\(_javaScript(with: indentLevel))"
