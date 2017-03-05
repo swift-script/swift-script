@@ -43,6 +43,16 @@ extension BreakStatement {
     }
 }
 
+extension ContinueStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        if let labelName = labelName {
+            return "\(indent(of: indentLevel))continue \(labelName);\n"
+        } else {
+            return "\(indent(of: indentLevel))continue;\n"
+        }
+    }
+}
+
 extension ReturnStatement {
     public func javaScript(with indentLevel: Int) -> String {
         if let expression = expression {
