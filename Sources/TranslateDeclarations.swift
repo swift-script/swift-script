@@ -27,3 +27,18 @@ extension VariableDeclaration {
         }
     }
 }
+
+extension FunctionDeclaration {
+    public func javaScript(with indentLevel: Int) -> String {
+        let jsArguments: [String] = arguments.map { _, name, _, initialValue in
+            if let initialValue = initialValue {
+                return "name = \(initialValue)"
+            } else {
+                return name
+            }
+        }
+        
+        // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
+        return "\(indent(of: indentLevel))function \(name)(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: body!, indentLevel: indentLevel))\n"
+    }
+}
