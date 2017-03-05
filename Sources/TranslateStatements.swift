@@ -68,3 +68,9 @@ extension ReturnStatement {
         }
     }
 }
+
+extension ThrowStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        return "\(indent(of: indentLevel))throw \(expression.javaScript(with: indentLevel));\n"
+    }
+}

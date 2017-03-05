@@ -200,14 +200,14 @@ class StatementsScriptTests: XCTestCase {
             expression: IdentifierExpression(identifier: "FooError"),
             arguments: [],
             trailingClosure: nil)
-        ).javaScript(with: 0), "throw new FooError();")
+        ).javaScript(with: 0), "throw new FooError();\n")
         
         // indent
         XCTAssertEqual(ThrowStatement(expression: FunctionCallExpression(
             expression: IdentifierExpression(identifier: "FooError"),
             arguments: [],
             trailingClosure: nil)
-        ).javaScript(with: 1), "    throw new FooError();")
+        ).javaScript(with: 1), "    throw new FooError();\n")
     }
     
     func testDeferStatement() {
