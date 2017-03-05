@@ -130,7 +130,7 @@ class DeclarationsTests: XCTestCase {
                     ]
                 ),
             ]
-        ).javaScript(with: 0), "class Foo {\n    constructor(bar) {\n        self.bar = 42;\n        self.baz = \"xyz\";\n    }\n}\n")
+        ).javaScript(with: 0), "class Foo {\n    constructor(bar) {\n        this.bar = 42;\n        this.baz = \"xyz\";\n    }\n}\n")
         
         // methods
         XCTAssertEqual(ClassDeclaration­(
@@ -145,7 +145,7 @@ class DeclarationsTests: XCTestCase {
                     body: []
                 )
             ]
-        ).javaScript(with: 0), "class Foo {\n    bar (){\n    }\n}\n")
+        ).javaScript(with: 0), "class Foo {\n    bar() {\n    }\n}\n")
         
         // indentLevel + 1
         XCTAssertEqual(ClassDeclaration­(
@@ -180,6 +180,56 @@ class DeclarationsTests: XCTestCase {
                     ]
                 ),
                 ]
-            ).javaScript(with: 1), "    class Foo {\n        constructor(bar) {\n            self.bar = 42;\n            self.baz = \"xyz\";\n        }\n    }\n")
+            ).javaScript(with: 1), "    class Foo {\n        constructor(bar) {\n            this.bar = 42;\n            this.baz = \"xyz\";\n        }\n    }\n")
+    }
+    
+    func testInitializerDeclaration­() {
+        XCTAssertEqual(InitializerDeclaration­(
+            arguments: [],
+            isFailable: false,
+            hasThrows: false,
+            body: [
+                BinaryOperation(
+                    leftOperand: ExplicitMemberExpression(expression: SelfExpression(), member: "foo"),
+                    operatorSymbol: "=",
+                    rightOperand: IntegerLiteral(value: 42)
+                )
+            ]
+        ).javaScript(with: 0), "constructor() {\n    this.foo = 42;\n}\n")
+        
+        // arguments
+        XCTAssertEqual(InitializerDeclaration­(
+            arguments: [
+                (nil, "bar", TypeIdentifier­(names: ["Int"]), nil),
+                (nil, "baz", TypeIdentifier­(names: ["String"]), nil),
+            ],
+            isFailable: false,
+            hasThrows: false,
+            body: [
+                BinaryOperation(
+                    leftOperand: ExplicitMemberExpression(expression: SelfExpression(), member: "foo"),
+                    operatorSymbol: "=",
+                    rightOperand: BinaryOperation(
+                        leftOperand: IdentifierExpression(identifier: "bar"),
+                        operatorSymbol: "+",
+                        rightOperand: IdentifierExpression(identifier: "baz")
+                    )
+                )
+            ]
+        ).javaScript(with: 0), "constructor(bar, baz) {\n    this.foo = bar + baz;\n}\n")
+        
+        // indent
+        XCTAssertEqual(InitializerDeclaration­(
+            arguments: [],
+            isFailable: false,
+            hasThrows: false,
+            body: [
+                BinaryOperation(
+                    leftOperand: ExplicitMemberExpression(expression: SelfExpression(), member: "foo"),
+                    operatorSymbol: "=",
+                    rightOperand: IntegerLiteral(value: 42)
+                )
+            ]
+        ).javaScript(with: 1), "    constructor() {\n        this.foo = 42;\n    }\n")
     }
 }

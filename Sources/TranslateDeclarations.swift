@@ -32,7 +32,7 @@ extension FunctionDeclaration {
     public func javaScript(with indentLevel: Int) -> String {
         let jsArguments: [String] = arguments.map { _, name, _, initialValue in
             if let initialValue = initialValue {
-                return "name = \(initialValue)"
+                return "\(name) = \(initialValue)"
             } else {
                 return name
             }
@@ -45,10 +45,73 @@ extension FunctionDeclaration {
 
 extension ClassDeclaration­ {
     public func javaScript(with indentLevel: Int) -> String {
-        let decls = members.map { $0.javaScript(with: indentLevel + 1) }.joined(separator: "\n")
-        let spaces = String(repeating: "    ", count: indentLevel)
-        let newLine = decls.isEmpty ? "" : "\n"
-        // TODO: should implement extends
-        return "\(spaces)class \(name) {\n\(decls)\(newLine)\(spaces)}"
+        let propertiesWithInitialValues = members.filter {
+            switch $0 {
+            case let variable as VariableDeclaration:
+                return variable.expression != nil
+            case let constant as ConstantDeclaration:
+                return constant.expression != nil
+            default:
+                return false
+            }
+        }
+        let membersExcludingProperties = members.filter { !($0 is VariableDeclaration || $0 is ConstantDeclaration) }
+        let adjustedMembers = membersExcludingProperties.map { member -> Declaration in
+            guard var initializer = member as? InitializerDeclaration­ else {
+                return member
+            }
+            
+            for property in propertiesWithInitialValues {
+                let name: String
+                let initialValue: Expression
+                switch property {
+                case let variable as VariableDeclaration:
+                    name = variable.name
+                    initialValue = variable.expression!
+                case let constant as ConstantDeclaration:
+                    name = constant.name
+                    initialValue = constant.expression!
+                default:
+                    fatalError("Never reaches here.")
+                }
+                
+                initializer.body!.append(BinaryOperation(
+                    leftOperand: ExplicitMemberExpression(expression: SelfExpression(), member: name),
+                    operatorSymbol: "=",
+                    rightOperand: initialValue
+                ))
+            }
+            
+            return initializer
+        }
+        
+        let jsMembers: [String] = adjustedMembers.map { member in
+            let js = member.javaScript(with: indentLevel + 1)
+            guard member is FunctionDeclaration else {
+                if member is Expression {
+                    return "\(indent(of: indentLevel + 1))\(js);\n"
+                }
+                return js
+            }
+            
+            let characters = js.characters.dropFirst(indent(of: indentLevel + 1).characters.count + 9)
+            return "\(indent(of: indentLevel + 1))\(String(characters))"
+        }
+        
+        return "\(indent(of: indentLevel))class \(name) {\n\(jsMembers.joined())\(indent(of: indentLevel))}\n"
+    }
+}
+
+extension InitializerDeclaration­ {
+    public func javaScript(with indentLevel: Int) -> String {
+        let jsArguments: [String] = arguments.map { _, name, _, initialValue in
+            if let initialValue = initialValue {
+                return "\(name) = \(initialValue)"
+            } else {
+                return name
+            }
+        }
+        // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
+        return "\(indent(of: indentLevel))constructor(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: body!, indentLevel: indentLevel))\n"
     }
 }
