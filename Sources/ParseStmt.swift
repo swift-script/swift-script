@@ -117,7 +117,7 @@ func _stmtThrow() -> SwiftParser<ThrowStatement> {
 func _stmtDefer() -> SwiftParser<DeferStatement> {
     return { stmts in
         DeferStatement(statements: stmts) }
-        <^> (kw_throw *> OWS *> stmtBrace)
+        <^> (kw_defer *> OWS *> stmtBrace)
 }
 
 
