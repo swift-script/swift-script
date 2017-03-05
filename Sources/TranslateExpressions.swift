@@ -39,16 +39,19 @@ extension SuperclassExpression {
 
 extension ClosureExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        let args = (arguments.map { $0.0 }).joined(separator: ", ")
-        let lines = transpileStatements(statements: statements, indentLevel: indentLevel)
+        let jsArguments: String = arguments.map { $0.0 }.joined(separator: ", ")
         switch statements.count {
         case 0:
-            return "(\(args)) => {}"
+            return "(\(jsArguments)) => {}"
         case 1:
-            return "(\(args)) => \(lines)"
+            let statement = statements[0]
+            if statement is Expression {
+                return "(\(jsArguments)) => \(statement.javaScript(with: indentLevel))"
+            } else {
+                return "(\(jsArguments)) => \(transpileBlock(statements: statements, indentLevel: indentLevel))"
+            }
         default:
-            let spaces = String(repeating: "    ", count: indentLevel)
-            return "(\(args)) => {\n\(lines)\n\(spaces)}"
+            return "(\(jsArguments)) => \(transpileBlock(statements: statements, indentLevel: indentLevel))"
         }
     }
 }
