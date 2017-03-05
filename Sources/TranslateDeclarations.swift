@@ -6,9 +6,9 @@ extension ConstantDeclaration {
         }
         
         if let expression = expression {
-            return "\(indent(of: indentLevel))const \(name) = \(expression.javaScript(with: indentLevel));"
+            return "\(indent(of: indentLevel))const \(name) = \(expression.javaScript(with: indentLevel));\n"
         } else {
-            return "\(indent(of: indentLevel))const \(name);"
+            return "\(indent(of: indentLevel))const \(name);\n"
         }
     }
 }
@@ -21,9 +21,9 @@ extension VariableDeclaration {
         }
         
         if let expression = expression {
-            return "\(indent(of: indentLevel))let \(name) = \(expression.javaScript(with: indentLevel));"
+            return "\(indent(of: indentLevel))let \(name) = \(expression.javaScript(with: indentLevel));\n"
         } else {
-            return "\(indent(of: indentLevel))let \(name);"
+            return "\(indent(of: indentLevel))let \(name);\n"
         }
     }
 }

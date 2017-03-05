@@ -17,7 +17,7 @@ class StatementsScriptTests: XCTestCase {
                     trailingClosure: nil
                 )
             ]
-        ).javaScript(with: 0), "for (i of range(0, 10) {\n    console.log(i);\n}")
+        ).javaScript(with: 0), "for (i of range(0, 10) {\n    console.log(i);\n}\n")
     }
 
     func testIfStatement() {
@@ -31,7 +31,7 @@ class StatementsScriptTests: XCTestCase {
                 )
             ],
             elseClause: nil
-        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n}")
+        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n}\n")
         
         // if-else
         XCTAssertEqual(IfStatement(
@@ -50,7 +50,7 @@ class StatementsScriptTests: XCTestCase {
                     trailingClosure: nil
                 )
             ])
-        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else {\n    console.log(\"Bye\");\n}")
+        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else {\n    console.log(\"Bye\");\n}\n")
         
         // if-else-if
         XCTAssertEqual(IfStatement(
@@ -73,6 +73,6 @@ class StatementsScriptTests: XCTestCase {
                 ],
                 elseClause: nil
             ))
-        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else if (foo == 0) {\n    console.log(\"Bye\");\n}")
+        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else if (foo == 0) {\n    console.log(\"Bye\");\n}\n")
     }
 }
