@@ -27,14 +27,14 @@ func _stmtBrace() -> SwiftParser<[Statement]> {
 let stmt = _stmt()
 func _stmt() -> SwiftParser<Statement> {
     return (stmtReturn <&> asStmt)
-//        <|> (stmtThrow <&> asStmt)
-//        <|> (stmtDefer <&> asStmt)
+        <|> (stmtThrow <&> asStmt)
+        <|> (stmtDefer <&> asStmt)
         <|> (stmtIf <&> asStmt)
         <|> (stmtForIn <&> asStmt)
 //        <|> (stmtDo <&> asStmt)
         <|> (stmtBreak <&> asStmt)
         <|> (stmtContinue <&> asStmt)
-//        <|> (stmtFallthrough <&> asStmt)
+        <|> (stmtFallthrough <&> asStmt)
 }
 
 
@@ -43,7 +43,7 @@ func _stmtForIn() -> SwiftParser<ForInStatement> {
     return { name in { col in { body in
         ForInStatement(item: name, collection: col, statements: body) }}}
         <^> (kw_for *> WS *> identifier)
-        <*> (WS *> kw_in *> expr)
+        <*> (WS *> kw_in *> OWS *> expr)
         <*> (OWS *> stmtBrace)
 }
 
@@ -59,15 +59,15 @@ let stmtIf = _stmtIf()
 func _stmtIf() -> SwiftParser<IfStatement> {
     return { cond in { body in { els in
         IfStatement(condition: cond, statements: body, elseClause: els) }}}
-        <^> (kw_if *> WS *> expr)
+        <^> (kw_if *> OWS *> expr)
         <*> (OWS *> stmtBrace)
         <*> stmtElseClause
 }
 
 let stmtElseClause = _stmtElseClause()
 func _stmtElseClause() -> SwiftParser<ElseClause?> {
-    return (OWS *> kw_else *> stmtIf <&> { .elseIf($0) })
-        <|> (OWS *> kw_else *> stmtBrace <&> { .else_($0)} )
+    return (OWS *> kw_else *> WS *> stmtIf <&> { .elseIf($0) })
+        <|> (OWS *> kw_else *> OWS *> stmtBrace <&> { .else_($0)} )
         <|> pure(nil)
 }
 
@@ -89,6 +89,7 @@ func _stmtContinue() -> SwiftParser<ContinueStatement> {
     return ContinueStatement.init <^> kw_continue *> zeroOrOne(WS *> identifier)
 }
 
+let stmtFallthrough = _stmtFallthrough()
 func _stmtFallthrough() -> SwiftParser<FallthroughStatement> {
     return { _ in FallthroughStatement() } <^> kw_fallthrough
 }
@@ -97,15 +98,18 @@ let stmtReturn = _stmtReturn()
 func _stmtReturn() -> SwiftParser<ReturnStatement> {
     return { value in
         ReturnStatement(expression: value) }
-        <^> (kw_return *> OWS *> expr)
+        <^> kw_return
+        *> zeroOrOne(OWS *> expr)
 }
 
+let stmtThrow = _stmtThrow()
 func _stmtThrow() -> SwiftParser<ThrowStatement> {
     return { value in
         ThrowStatement(expression: value) }
         <^> (kw_throw *> OWS *> expr)
 }
 
+let stmtDefer = _stmtDefer()
 func _stmtDefer() -> SwiftParser<DeferStatement> {
     return { stmts in
         DeferStatement(statements: stmts) }
