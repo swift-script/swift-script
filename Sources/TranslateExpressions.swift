@@ -15,13 +15,17 @@ extension IdentifierExpression {
 
 extension FunctionCallExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        let f = expression.javaScript(with: indentLevel + 1)
-        var args = arguments.map { $1.javaScript(with: indentLevel + 1) }
+        var jsArguments: [String] = arguments.map { $1.javaScript(with: indentLevel) }
         if let closure = trailingClosure {
-            args.append(closure.javaScript(with: indentLevel + 1))
+            jsArguments.append(closure.javaScript(with: indentLevel))
         }
-        let argsString = args.joined(separator: ", ")
-        return "\(f)(\(argsString))"
+        let hasNew: Bool
+        if let firstLetter = ((expression as? IdentifierExpression)?.identifier.characters.first.map { String($0) }) {
+            hasNew = firstLetter.uppercased() == firstLetter
+        } else {
+            hasNew = false
+        }
+        return "\(hasNew ? "new " : "")\(expression.javaScript(with: indentLevel))(\(jsArguments.joined(separator: ", ")))"
     }
 }
 

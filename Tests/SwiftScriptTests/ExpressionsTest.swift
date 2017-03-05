@@ -115,6 +115,13 @@ class ExpressionsTests: XCTestCase {
             trailingClosure: nil
         ).javaScript(with: 0), "foo()")
         
+        // new
+        XCTAssertEqual(FunctionCallExpression(
+            expression: IdentifierExpression(identifier: "Foo"),
+            arguments: [],
+            trailingClosure: nil
+        ).javaScript(with: 0), "new Foo()")
+        
         // arguments
         XCTAssertEqual(FunctionCallExpression(
             expression: IdentifierExpression(identifier: "foo"),
