@@ -48,12 +48,13 @@ func _declTypeAlias() -> SwiftParser<TypeAliasDeclaration> {
 let declParam = _declParam()
 func _declParam() -> SwiftParser<(String?, String, Type_, Expression?)> {
     let label = (identifier <|> kw__)
-    return { apiName in { paramName in { type in { isVariadic in
-        (apiName, paramName, type, nil) }}}}
+    return { apiName in { paramName in { type in { isVariadic in { initializer in
+        (apiName, paramName, type, initializer) }}}}}
         <^> zeroOrOne(label <* WS)
         <*> (label <* OWS <* colon)
         <*> (OWS *> type)
         <*> zeroOrOne(ellipsis)
+        <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
 
 let declFunction = _declFunction()
