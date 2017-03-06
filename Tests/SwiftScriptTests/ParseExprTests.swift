@@ -27,9 +27,46 @@ class ParseExprTests: XCTestCase {
             expr, "foo(x y: 1)"))
     }
     
+    func testExprParen() {
+        XCTAssertTrue(parseSuccess(
+            exprParenthesized, "(x)"))
+        XCTAssertTrue(parseSuccess(
+            exprParenthesized, "(foo.bar())"))
+    }
+    
+    func testExprTuple() {
+        XCTAssertTrue(parseSuccess(
+            exprTuple, "(x, 1)"))
+        XCTAssertTrue(parseSuccess(
+            exprTuple, "(foo: 1, bar: 2)"))
+    }
+    
+    func testExprImplicitMember() {
+        XCTAssertTrue(parseSuccess(
+            exprImplicitMember, ".foo"))
+        XCTAssertTrue(parseSuccess(
+            exprAtom, ".foo(x: 1)"))
+    }
+    
+    func testExprWildcard() {
+        XCTAssertTrue(parseSuccess(
+            exprWildcard, "_"))
+        XCTAssertTrue(parseSuccess(
+            exprAtom, "_.self"))
+    }
+    
     func testExprSelf() {
         XCTAssertTrue(parseSuccess(
             exprSelf, "self"))
+        XCTAssertTrue(parseSuccess(
+            exprAtom, "self.foo()"))
+    }
+    
+    func testExprSuper() {
+        XCTAssertTrue(parseSuccess(
+            exprSuper, "super"))
+        XCTAssertTrue(parseSuccess(
+            exprAtom, "super.foo()"))
     }
 
     func testExprAssign() {

@@ -71,6 +71,8 @@ func _exprPrimitive() -> SwiftParser<Expression> {
         <|> (exprSuper <&> asExpr)
         <|> (exprParenthesized <&> asExpr)
         <|> (exprTuple <&> asExpr)
+        <|> (exprImplicitMember <&> asExpr)
+        <|> (exprWildcard <&> asExpr)
         <|> (exprClosure <&> asExpr)
 }
 
@@ -94,7 +96,7 @@ func _exprSelf() -> SwiftParser<SelfExpression>  {
 
 let exprSuper = _exprSuper()
 func _exprSuper() -> SwiftParser<SuperclassExpression>  {
-    return { _ in SuperclassExpression() } <^> kw_Self
+    return { _ in SuperclassExpression() } <^> kw_super
 }
 
 let exprClosure = _exprClosure()
