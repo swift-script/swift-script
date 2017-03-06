@@ -27,6 +27,27 @@ class ParseExprTests: XCTestCase {
             expr, "foo(x y: 1)"))
     }
     
+    func testExprSubscript() {
+        XCTAssertTrue(parseSuccess(
+            expr, "foo[x]"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo.bar[1, 2]"))
+    }
+
+    func testExprOptionalChaining() {
+        XCTAssertTrue(parseSuccess(
+            expr, "foo?.bar"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo? .bar"))
+    }
+    
+    func testExprPostixUnary() {
+        XCTAssertTrue(parseSuccess(
+            expr, "foo!"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo!.bar"))
+    }
+    
     func testExprParen() {
         XCTAssertTrue(parseSuccess(
             exprParenthesized, "(x)"))
