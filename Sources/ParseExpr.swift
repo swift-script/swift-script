@@ -101,7 +101,8 @@ func _exprSuper() -> SwiftParser<SuperclassExpression>  {
 
 let exprClosure = _exprClosure()
 func _exprClosure() -> SwiftParser<ClosureExpression>  {
-    let params: SwiftParser<[String]> = sepBy1(identifier, OWS *> comma <* OWS)
+    let name = (identifier <|> kw__)
+    let params: SwiftParser<[String]> = sepBy1(name, OWS *> comma <* OWS)
     let sig = { args in { th in { ty in (args, th != nil, ty) }}}
         <^> zeroOrOne(OWS *> params)
         <*> zeroOrOne(OWS *> kw_throws)
@@ -113,7 +114,7 @@ func _exprClosure() -> SwiftParser<ClosureExpression>  {
         let retType  = sig == nil ? nil : sig!.2
         return ClosureExpression(arguments: args, hasThrows: hasThrows, result: retType, statements: body) }}
         <^> l_brace
-        *> (zeroOrOne(sig) <* OWS <* kw_in)
+        *> zeroOrOne(sig <* OWS <* kw_in)
         <*> (OWS *> stmtBraceItems <* OWS <* r_brace)
 }
 

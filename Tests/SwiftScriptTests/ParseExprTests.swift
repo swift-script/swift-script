@@ -69,6 +69,15 @@ class ParseExprTests: XCTestCase {
             exprAtom, "super.foo()"))
     }
 
+    func testExprClosure() {
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{}"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ _ in x }"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ x in \n return x }"))
+    }
+
     func testExprAssign() {
         XCTAssertTrue(parseSuccess(
             expr, "self.x = 1"))
