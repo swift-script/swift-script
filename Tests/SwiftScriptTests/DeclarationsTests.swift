@@ -22,15 +22,27 @@ class DeclarationsTests: XCTestCase {
     
     func testFunctionDeclaration() {
         XCTAssertEqual(FunctionDeclaration(
+            isStatic: false,
             name: "foo",
             arguments: [],
             result: nil,
             hasThrows: false,
             body: []
         ).javaScript(with: 0), "function foo() {\n}\n")
-        
+
+        // static
+        XCTAssertEqual(FunctionDeclaration(
+            isStatic: true,
+            name: "foo",
+            arguments: [],
+            result: nil,
+            hasThrows: false,
+            body: []
+            ).javaScript(with: 0), "static function foo() {\n}\n")
+
         // arguments
         XCTAssertEqual(FunctionDeclaration(
+            isStatic: false,
             name: "foo",
             arguments: [
                 (nil, "bar", TypeIdentifier­(names: ["Int"]), nil),
@@ -43,6 +55,7 @@ class DeclarationsTests: XCTestCase {
         
         // explicit parameter names, return type, throws
         XCTAssertEqual(FunctionDeclaration(
+            isStatic: false,
             name: "foo",
             arguments: [
                 ("bar", "x", TypeIdentifier­(names: ["Int"]), nil),
@@ -55,6 +68,7 @@ class DeclarationsTests: XCTestCase {
         
         // body
         XCTAssertEqual(FunctionDeclaration(
+            isStatic: false,
             name: "foo",
             arguments: [
                 (nil, "x", TypeIdentifier­(names: ["Int"]), nil),
@@ -73,6 +87,7 @@ class DeclarationsTests: XCTestCase {
         
         // indentLevel = 1
         XCTAssertEqual(FunctionDeclaration(
+            isStatic: false,
             name: "foo",
             arguments: [
                 (nil, "x", TypeIdentifier­(names: ["Int"]), nil),
@@ -138,6 +153,7 @@ class DeclarationsTests: XCTestCase {
             superTypes: [],
             members: [
                 FunctionDeclaration(
+                    isStatic: false,
                     name: "bar",
                     arguments: [],
                     result: nil,

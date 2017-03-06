@@ -39,7 +39,7 @@ extension FunctionDeclaration {
         }
         
         // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
-        return "\(indent(of: indentLevel))function \(name)(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: body!, indentLevel: indentLevel))\n"
+        return "\(indent(of: indentLevel))\(isStatic ? "static " : "")function \(name)(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: body!, indentLevel: indentLevel))\n"
     }
 }
 
