@@ -68,15 +68,23 @@ func _exprPrimitive() -> SwiftParser<Expression> {
         <|> (exprDictionaryLiteral <&> asExpr)
         <|> (exprIdentifier <&> asExpr)
         <|> (exprSelf <&> asExpr)
+        <|> (exprSuper <&> asExpr)
         <|> (exprParenthesized <&> asExpr)
         <|> (exprTuple <&> asExpr)
         <|> (exprClosure <&> asExpr)
 }
 
+let genericArgs = _genericArgs()
+func _genericArgs() -> SwiftParser<[Type_]> {
+    return list(char("<"), type, comma, char(">"))
+}
 
 let exprIdentifier = _exprIdentifier()
 func _exprIdentifier() -> SwiftParser<IdentifierExpression> {
-    return IdentifierExpression.init <^> identifier
+    return { ident in { generics in
+        IdentifierExpression(identifier: ident) }}
+        <^> identifier
+        <*> zeroOrOne(OWS *> genericArgs)
 }
 
 let exprSelf = _exprSelf()
