@@ -1,6 +1,4 @@
 import XCTest
-import Runes
-import TryParsec
 @testable import SwiftScript
 
 class ParsePrimitiveTests: XCTestCase {
@@ -44,25 +42,33 @@ class ParsePrimitiveTests: XCTestCase {
         XCTAssertThrowsError(try parseIt(identifier, "is"))
         XCTAssertEqual(try parseIt(keywordOrIdentifier, "is"), "is")
     }
-    func testWhitespaces() {
+    func testOWS() {
         XCTAssertTrue(parseSuccess(OWS, ""))
         XCTAssertTrue(parseSuccess(OWS, " "))
         XCTAssertTrue(parseSuccess(OWS, "\n"))
         XCTAssertTrue(parseSuccess(OWS, " \n "))
-        
+    }
+    
+    func testWS() {
         XCTAssertFalse(parseSuccess(WS, ""))
         XCTAssertTrue(parseSuccess(WS, " "))
         XCTAssertTrue(parseSuccess(WS, "\n"))
         XCTAssertTrue(parseSuccess(WS, " \n "))
-
+    }
+    
+    func testOHWS() {
         XCTAssertTrue(parseSuccess(OHWS, ""))
         XCTAssertTrue(parseSuccess(OHWS, " "))
         XCTAssertFalse(parseSuccess(OHWS, "\n"))
         XCTAssertFalse(parseSuccess(OHWS, " \n "))
-
+    }
+    
+    func testVS() {
         XCTAssertFalse(parseSuccess(VS, ""))
         XCTAssertFalse(parseSuccess(VS, " "))
         XCTAssertTrue(parseSuccess(VS, "\n"))
-        XCTAssertTrue(parseSuccess(VS, " \n "))
+        XCTAssertTrue(parseSuccess(VS, "\r"))
+        XCTAssertTrue(parseSuccess(VS, "\r\n"))
+        XCTAssertTrue(parseSuccess(VS, " \n\t\n"))
     }
 }
