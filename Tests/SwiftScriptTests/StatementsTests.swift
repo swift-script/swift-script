@@ -1,7 +1,7 @@
 import XCTest
 @testable import SwiftScript
 
-class StatementsScriptTests: XCTestCase {
+class StatementsTests: XCTestCase {
     func testForInStatement() {
         XCTAssertEqual(ForInStatement(
             item: "i",
