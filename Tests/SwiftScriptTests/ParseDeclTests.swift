@@ -11,6 +11,9 @@ class ParseDeclTests: XCTestCase {
         XCTAssertTrue(parseSuccess(
             declFunction,
             "func foo(x:A=1,x y:B)throws->C{return foo}"))
+        XCTAssertTrue(parseSuccess(
+            declFunction,
+            "static func foo() { }"))
     }
     
     func testDeclInitializer() {
@@ -45,6 +48,8 @@ class ParseDeclTests: XCTestCase {
             declConstant, "let a=1"))
         XCTAssertTrue(parseSuccess(
             declConstant, "let a : Int = 1"))
+        XCTAssertTrue(parseSuccess(
+            declConstant, "static let foo: Int = 1"))
     }
     
     func testDeclVariable() {
@@ -54,5 +59,7 @@ class ParseDeclTests: XCTestCase {
             declVariable, "var a=1"))
         XCTAssertTrue(parseSuccess(
             declVariable, "var a : Int = 1"))
+        XCTAssertTrue(parseSuccess(
+            declVariable, "static var foo = { (x: Int) in print(x) }"))
     }
 }

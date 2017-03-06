@@ -24,8 +24,8 @@ let declConstant = _declConstant()
 func _declConstant() -> SwiftParser<ConstantDeclaration> {
     return { isStatic in {  name in { ty in { initializer in
         ConstantDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
-        <^> zeroOrOne(kw_static)
-        <*> (OWS *> kw_let *> OWS *> identifier)
+        <^> zeroOrOne(kw_static <* OWS)
+        <*> (kw_let *> OWS *> identifier)
         <*> zeroOrOne(OWS *> colon *> OWS *> type)
         <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
@@ -35,8 +35,8 @@ let declVariable = _declVariable()
 func _declVariable() -> SwiftParser<VariableDeclaration> {
     return { isStatic in {  name in { ty in { initializer in
         VariableDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
-        <^> zeroOrOne(kw_static)
-        <*> (OWS *> kw_var *> OWS *> identifier)
+        <^> zeroOrOne(kw_static <* OWS)
+        <*> (kw_var *> OWS *> identifier)
         <*> zeroOrOne(OWS *> colon *> OWS *> type)
         <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
@@ -60,9 +60,10 @@ func _declParam() -> SwiftParser<(String?, String, Type_, Expression?)> {
 let declFunction = _declFunction()
 func _declFunction() -> SwiftParser<FunctionDeclaration> {
     let params = list(l_paren, declParam, comma, r_paren)
-    return  { name in { params in { hasThrows in { retType in { body in
-        FunctionDeclaration(name: name, arguments: params, result: retType, hasThrows: hasThrows != nil, body: body) }}}}}
-        <^> (kw_func *> WS *> identifier)
+    return  { isStatic in { name in { params in { hasThrows in { retType in { body in
+        FunctionDeclaration(isStatic: isStatic != nil, name: name, arguments: params, result: retType, hasThrows: hasThrows != nil, body: body) }}}}}}
+        <^> zeroOrOne(kw_static <* OWS)
+        <*> (kw_func *> WS *> identifier)
         <*> (OWS *> params)
         <*> zeroOrOne(OWS *> kw_throws)
         <*> zeroOrOne(OWS *> arrow *> OWS *> type)
