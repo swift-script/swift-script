@@ -1,18 +1,31 @@
 extension IdentifierExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        return identifier
+        switch identifier {
+            case "print":
+                return "console.log"
+            case "append":
+                return "push"
+            case "removeLast":
+                return "pop"
+            default:
+                return identifier
+        }
     }
 }
 
 extension FunctionCallExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        let f = expression.javaScript(with: indentLevel + 1)
-        var args = arguments.map { $1.javaScript(with: indentLevel + 1) }
+        var jsArguments: [String] = arguments.map { $1.javaScript(with: indentLevel) }
         if let closure = trailingClosure {
-            args.append(closure.javaScript(with: indentLevel + 1))
+            jsArguments.append(closure.javaScript(with: indentLevel))
         }
-        let argsString = args.joined(separator: ", ")
-        return "\(f)(\(argsString))"
+        let hasNew: Bool
+        if let firstLetter = ((expression as? IdentifierExpression)?.identifier.characters.first.map { String($0) }) {
+            hasNew = firstLetter.uppercased() == firstLetter
+        } else {
+            hasNew = false
+        }
+        return "\(hasNew ? "new " : "")\(expression.javaScript(with: indentLevel))(\(jsArguments.joined(separator: ", ")))"
     }
 }
 
@@ -30,16 +43,19 @@ extension SuperclassExpression {
 
 extension ClosureExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        let args = (arguments.map { $0.0 }).joined(separator: ", ")
-        let lines = transpileStatements(statements: statements, indentLevel: indentLevel)
+        let jsArguments: String = arguments.map { $0.0 }.joined(separator: ", ")
         switch statements.count {
         case 0:
-            return "(\(args)) => {}"
+            return "(\(jsArguments)) => {}"
         case 1:
-            return "(\(args)) => \(lines)"
+            let statement = statements[0]
+            if statement is Expression {
+                return "(\(jsArguments)) => \(statement.javaScript(with: indentLevel))"
+            } else {
+                return "(\(jsArguments)) => \(transpileBlock(statements: statements, indentLevel: indentLevel))"
+            }
         default:
-            let spaces = String(repeating: "    ", count: indentLevel)
-            return "(\(args)) => {\n\(lines)\n\(spaces)}"
+            return "(\(jsArguments)) => \(transpileBlock(statements: statements, indentLevel: indentLevel))"
         }
     }
 }
@@ -65,8 +81,10 @@ extension WildcardExpression {
 
 extension ExplicitMemberExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        let variable = expression.javaScript(with: indentLevel + 1)
-        return "\(variable).\(member)"
+        if expression is SuperclassExpression, member == "init" {
+            return "\(expression.javaScript(with: indentLevel))"
+        }
+        return "\(expression.javaScript(with: indentLevel)).\(member)"
     }
 }
 

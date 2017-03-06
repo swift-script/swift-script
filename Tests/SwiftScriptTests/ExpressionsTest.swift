@@ -50,7 +50,7 @@ class ExpressionsTests: XCTestCase {
                 ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42)),
                 ReturnStatement(expression: IdentifierExpression(identifier: "foo"))
             ]
-        ).javaScript(with: 0), "() => {\n        const foo = 42;\n        return foo;    \n}")
+        ).javaScript(with: 1), "() => {\n        const foo = 42;\n        return foo;\n    }")
         
         // throws
         XCTAssertEqual(ClosureExpression(
@@ -114,6 +114,13 @@ class ExpressionsTests: XCTestCase {
             arguments: [],
             trailingClosure: nil
         ).javaScript(with: 0), "foo()")
+        
+        // new
+        XCTAssertEqual(FunctionCallExpression(
+            expression: IdentifierExpression(identifier: "Foo"),
+            arguments: [],
+            trailingClosure: nil
+        ).javaScript(with: 0), "new Foo()")
         
         // arguments
         XCTAssertEqual(FunctionCallExpression(
