@@ -23,8 +23,17 @@ class ParseExprTests: XCTestCase {
             expr, "foo(x)"))
         XCTAssertTrue(parseSuccess(
             expr, "foo.bar<Int>(x: 1)"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo(x y: 1) { x in }"))
         XCTAssertFalse(parseSuccess(
             expr, "foo(x y: 1)"))
+    }
+
+    func testExprTrailingClosure() {
+        XCTAssertTrue(parseSuccess(
+            expr, "foo {}"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo.bar { x, y in (x, y) }"))
     }
     
     func testExprSubscript() {
@@ -66,28 +75,28 @@ class ParseExprTests: XCTestCase {
         XCTAssertTrue(parseSuccess(
             exprImplicitMember, ".foo"))
         XCTAssertTrue(parseSuccess(
-            exprAtom, ".foo(x: 1)"))
+            expr, ".foo(x: 1)"))
     }
     
     func testExprWildcard() {
         XCTAssertTrue(parseSuccess(
             exprWildcard, "_"))
         XCTAssertTrue(parseSuccess(
-            exprAtom, "_.self"))
+            expr, "_.self"))
     }
     
     func testExprSelf() {
         XCTAssertTrue(parseSuccess(
             exprSelf, "self"))
         XCTAssertTrue(parseSuccess(
-            exprAtom, "self.foo()"))
+            expr, "self.foo()"))
     }
     
     func testExprSuper() {
         XCTAssertTrue(parseSuccess(
             exprSuper, "super"))
         XCTAssertTrue(parseSuccess(
-            exprAtom, "super.foo()"))
+            expr, "super.foo()"))
     }
 
     func testExprClosure() {

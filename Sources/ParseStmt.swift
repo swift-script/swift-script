@@ -43,7 +43,7 @@ func _stmtForIn() -> SwiftParser<ForInStatement> {
     return { name in { col in { body in
         ForInStatement(item: name, collection: col, statements: body) }}}
         <^> (kw_for *> WS *> identifier)
-        <*> (WS *> kw_in *> OWS *> expr)
+        <*> (WS *> kw_in *> OWS *> exprBasic)
         <*> (OWS *> stmtBrace)
 }
 
@@ -59,7 +59,7 @@ let stmtIf = _stmtIf()
 func _stmtIf() -> SwiftParser<IfStatement> {
     return { cond in { body in { els in
         IfStatement(condition: cond, statements: body, elseClause: els) }}}
-        <^> (kw_if *> OWS *> expr)
+        <^> (kw_if *> OWS *> exprBasic)
         <*> (OWS *> stmtBrace)
         <*> stmtElseClause
 }
