@@ -24,7 +24,7 @@ class ParseExprTests: XCTestCase {
         XCTAssertTrue(parseSuccess(
             expr, "foo.bar<Int>(x: 1)"))
         XCTAssertTrue(parseSuccess(
-            expr, "foo(x y: 1) { x in }"))
+            expr, "foo(x: 1) { x in }"))
         XCTAssertFalse(parseSuccess(
             expr, "foo(x y: 1)"))
     }
