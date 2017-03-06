@@ -83,7 +83,7 @@ func _declClass() -> SwiftParser<ClassDeclaration­> {
         ClassDeclaration­(name: name, superTypes: inherits ?? [], members: members) }}}
         <^> (kw_class *> WS *> identifier)
         <*> zeroOrOne(OWS *> colon *> sepBy1(type, OWS *> comma <* OWS))
-        <*> (OWS *> l_brace *> OWS *> sepEndBy(decl, stmtSep) <* r_brace)
+        <*> (OWS *> l_brace *> OWS *> sepEndBy(decl, stmtSep) <* OWS <* r_brace)
 }
 
 func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
@@ -93,10 +93,10 @@ func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
 let declInitializer = _declInitializer()
 func _declInitializer() -> SwiftParser<InitializerDeclaration­> {
     let params = list(l_paren, declParam, comma, r_paren)
-    return  { params in { isFailable in { hasThrows in { body in
+    return  { isFailable in { params in { hasThrows in { body in
         InitializerDeclaration­(arguments: params, isFailable: isFailable != nil, hasThrows: hasThrows != nil, body: body) }}}}
-        <^> (kw_init *> OWS *> params)
-        <*> zeroOrOne(char("?"))
+        <^> (kw_init *> zeroOrOne(char("?")))
+        <*> (OWS *> params)
         <*> zeroOrOne(OWS *> kw_throws)
         <*> (OWS *> stmtBrace)
 }

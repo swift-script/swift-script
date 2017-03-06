@@ -8,4 +8,14 @@ class ParseExprTests: XCTestCase {
         XCTAssertTrue(parseSuccess(
             expr, "[foo, x[12]]"))
     }
+    
+    func testExprSelf() {
+        XCTAssertTrue(parseSuccess(
+            exprSelf, "self"))
+    }
+
+    func testExprAssign() {
+        XCTAssertTrue(parseSuccess(
+            expr, "self.x = 1"))
+    }
 }

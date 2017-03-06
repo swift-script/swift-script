@@ -18,7 +18,7 @@ func _exprSequence() -> SwiftParser<Expression> {
         exprSequenceElement >>- binarySuffix
 }
 
-let binOp = oper_infix <|> (OWS *> kw_as <* OWS) <|> (OWS *> kw_is <* OWS)
+let binOp = oper_infix <|> oper_infix("as") <|> oper_infix("is") <|> oper_infix("=")
 
 func binarySuffix(lhs: Expression) -> SwiftParser<Expression> {
     let bin: SwiftParser<Expression> = { op in { rhs in
@@ -67,6 +67,7 @@ func _exprPrimitive() -> SwiftParser<Expression> {
         <|> (exprArrayLiteral <&> asExpr)
         <|> (exprDictionaryLiteral <&> asExpr)
         <|> (exprIdentifier <&> asExpr)
+        <|> (exprSelf <&> asExpr)
         <|> (exprParenthesized <&> asExpr)
         <|> (exprTuple <&> asExpr)
         <|> (exprClosure <&> asExpr)

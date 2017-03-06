@@ -362,8 +362,8 @@ func isValidOperatorContinuationCodePoint(_ scalar: UnicodeScalar) -> Bool {
     
 }
 
-func rightBound() -> SwiftParser<UnicodeScalar> {
-    return noneOf(" \r\n\t)]},;:")
+func rightBound() -> SwiftParser<Void> {
+    return (noneOf(" \r\n\t)]},;:") *> pure(())) <|> endOfInput()
 }
 
 let startOfOperator = _startOfOperator()
@@ -384,6 +384,14 @@ private func _operatorBody() -> SwiftParser<String> {
 let oper_prefix = operatorBody <* lookAhead(rightBound())
 let oper_postfix = operatorBody <* lookAhead(rightBound())
 let oper_infix = (operatorBody <* lookAhead(rightBound())) <|> (WS *> operatorBody <* WS)
+
+func oper_infix(_ str: String.UnicodeScalarView) -> SwiftParser<String> {
+    return string(str) <* lookAhead(rightBound()) <|> (WS *> string(str) <* WS)
+}
+
+func oper_postfix(_ str: String.UnicodeScalarView) -> SwiftParser<String> {
+    return string(str) <* lookAhead(rightBound())
+}
 
 // ------------------------------------------------------------------------
 // White spaces
