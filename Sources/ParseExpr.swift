@@ -101,18 +101,26 @@ func _exprSuper() -> SwiftParser<SuperclassExpression>  {
 
 let exprClosure = _exprClosure()
 func _exprClosure() -> SwiftParser<ClosureExpression>  {
-    let name = (identifier <|> kw__)
-    let params: SwiftParser<[String]> = sepBy1(name, OWS *> comma <* OWS)
-    let sig = { args in { th in { ty in (args, th != nil, ty) }}}
-        <^> zeroOrOne(OWS *> params)
+    typealias Param = (String, Type_?)
+    let name: SwiftParser<String> = (identifier <|> kw__)
+    let nameParam: SwiftParser<Param> = name <&> { name in (name, nil) }
+    let paramsName: SwiftParser<[Param]> = sepBy1(nameParam, OWS *> comma <* OWS)
+    let paramsNameTuple: SwiftParser<[Param]> = list(l_paren, nameParam, comma, r_paren)
+
+    let typedName: SwiftParser<Param> = { name in { ty in (name, ty) }} <^> name <*> (OWS *> colon *> OWS *> type)
+    let paramsTyped: SwiftParser<[Param]> = list(l_paren, typedName, comma, r_paren)
+
+    let sig = { args in { th in { ty in (args: args, hasThrows: th != nil, result: ty) }}}
+        <^> (OWS *> (paramsName <|> paramsNameTuple <|> paramsTyped))
         <*> zeroOrOne(OWS *> kw_throws)
-        <*> zeroOrOne(OWS *> arrow *> type)
+        <*> zeroOrOne(OWS *> arrow *> OWS *> type)
     
     return { sig in { body in
-        let args: [(String, Type_?)] = (sig?.0?.map({ ($0, nil) })) ?? []
-        let hasThrows = sig == nil ? false : sig!.1
-        let retType  = sig == nil ? nil : sig!.2
-        return ClosureExpression(arguments: args, hasThrows: hasThrows, result: retType, statements: body) }}
+        ClosureExpression(
+            arguments: sig?.args ?? [],
+            hasThrows: sig?.hasThrows ?? false,
+            result: sig?.result,
+            statements: body) }}
         <^> l_brace
         *> zeroOrOne(sig <* OWS <* kw_in)
         <*> (OWS *> stmtBraceItems <* OWS <* r_brace)

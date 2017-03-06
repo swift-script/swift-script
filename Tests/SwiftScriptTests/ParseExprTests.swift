@@ -75,7 +75,17 @@ class ParseExprTests: XCTestCase {
         XCTAssertTrue(parseSuccess(
             exprClosure, "{ _ in x }"))
         XCTAssertTrue(parseSuccess(
-            exprClosure, "{ x in \n return x }"))
+            exprClosure, "{ x in }"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ x, y in }"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ (x, y) in }"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ (x: Int, y: Int) in }"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ (x: Int, y: Int) -> Int in 1 }"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ (x: Int, y: Int) throws -> Int in 1 }"))
     }
 
     func testExprAssign() {
