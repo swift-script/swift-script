@@ -12,6 +12,8 @@ func _decl() -> SwiftParser<Declaration> {
     return (declFunction <&> asDecl)
         <|> (declConstant <&> asDecl)
         <|> (declVariable <&> asDecl)
+        <|> (declClass <&> asDecl)
+        <|> (declInitializer <&> asDecl)
 }
 
 func _declImport() -> SwiftParser<ImportDeclaration> {
@@ -24,7 +26,7 @@ func _declConstant() -> SwiftParser<ConstantDeclaration> {
         ConstantDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
         <^> zeroOrOne(kw_static)
         <*> (OWS *> kw_let *> OWS *> identifier)
-        <*> zeroOrOne(OWS *> type)
+        <*> zeroOrOne(OWS *> colon *> OWS *> type)
         <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
 
@@ -34,8 +36,8 @@ func _declVariable() -> SwiftParser<VariableDeclaration> {
     return { isStatic in {  name in { ty in { initializer in
         VariableDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
         <^> zeroOrOne(kw_static)
-        <*> (OWS *> kw_let *> OWS *> identifier)
-        <*> zeroOrOne(OWS *> type)
+        <*> (OWS *> kw_var *> OWS *> identifier)
+        <*> zeroOrOne(OWS *> colon *> OWS *> type)
         <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
 
@@ -46,12 +48,13 @@ func _declTypeAlias() -> SwiftParser<TypeAliasDeclaration> {
 let declParam = _declParam()
 func _declParam() -> SwiftParser<(String?, String, Type_, Expression?)> {
     let label = (identifier <|> kw__)
-    return { apiName in { paramName in { type in { isVariadic in
-        (apiName, paramName, type, nil) }}}}
+    return { apiName in { paramName in { type in { isVariadic in { initializer in
+        (apiName, paramName, type, initializer) }}}}}
         <^> zeroOrOne(label <* WS)
         <*> (label <* OWS <* colon)
         <*> (OWS *> type)
         <*> zeroOrOne(ellipsis)
+        <*> zeroOrOne(OWS *> equal *> OWS *> expr)
 }
 
 let declFunction = _declFunction()
@@ -74,24 +77,26 @@ func _declStruct() -> SwiftParser<StructDeclaration­> {
     return fail("not implemented")
 }
 
+let declClass = _declClass()
 func _declClass() -> SwiftParser<ClassDeclaration­> {
     return { name in { inherits in { members in
         ClassDeclaration­(name: name, superTypes: inherits ?? [], members: members) }}}
         <^> (kw_class *> WS *> identifier)
         <*> zeroOrOne(OWS *> colon *> sepBy1(type, OWS *> comma <* OWS))
-        <*> (OWS *> l_brace *> OWS *> sepEndBy(decl, stmtSep) <* r_brace)
+        <*> (OWS *> l_brace *> OWS *> sepEndBy(decl, stmtSep) <* OWS <* r_brace)
 }
 
 func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
     return fail("not implemented")
 }
 
+let declInitializer = _declInitializer()
 func _declInitializer() -> SwiftParser<InitializerDeclaration­> {
     let params = list(l_paren, declParam, comma, r_paren)
-    return  { params in { isFailable in { hasThrows in { body in
+    return  { isFailable in { params in { hasThrows in { body in
         InitializerDeclaration­(arguments: params, isFailable: isFailable != nil, hasThrows: hasThrows != nil, body: body) }}}}
-        <^> (kw_init *> OWS *> params)
-        <*> zeroOrOne(char("?"))
+        <^> (kw_init *> zeroOrOne(char("?")))
+        <*> (OWS *> params)
         <*> zeroOrOne(OWS *> kw_throws)
         <*> (OWS *> stmtBrace)
 }

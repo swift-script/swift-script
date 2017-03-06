@@ -6,53 +6,49 @@ fileprivate func asExpr(expr: Expression) -> Expression {
     return expr
 }
 
-let expr = _expr()
-func _expr() -> SwiftParser<Expression> {
-    return exprSequence
+let expr = _expr(isBasic: false)
+let exprBasic = _expr(isBasic: true)
+
+func _expr(isBasic: Bool) -> SwiftParser<Expression> {
+    return exprSequence(isBasic: isBasic)
 }
 
-
-let exprSequence = _exprSequence()
-func _exprSequence() -> SwiftParser<Expression> {
-    return
-        exprSequenceElement >>- binarySuffix
+func exprSequence(isBasic: Bool) -> SwiftParser<Expression> {
+    return exprSequenceElement(isBasic: isBasic)
+            >>- { lhs in binarySuffix(lhs: lhs, isBasic: isBasic) }
 }
 
-let binOp = oper_infix <|> kw_as <|> kw_is
+let binOp = oper_infix <|> oper_infix("as") <|> oper_infix("is") <|> oper_infix("=")
 
-func binarySuffix(lhs: Expression) -> SwiftParser<Expression> {
+func binarySuffix(lhs: Expression, isBasic: Bool) -> SwiftParser<Expression> {
     let bin: SwiftParser<Expression> = { op in { rhs in
         BinaryOperation(leftOperand: lhs, operatorSymbol: op, rightOperand: rhs) }}
-        <^> binOp <*> expr
-    return (bin >>- binarySuffix)
+        <^> binOp <*> _expr(isBasic: isBasic)
+    return (bin >>- { lhs in binarySuffix(lhs: lhs, isBasic: isBasic) })
         <|> pure(lhs)
 }
 
-let exprSequenceElement = _exprSequencceElement()
-func _exprSequencceElement() -> SwiftParser<Expression> {
+func exprSequenceElement(isBasic: Bool) -> SwiftParser<Expression> {
     let parseTry
-        = ({ _ in "try!" } <^> kw_try *> char("?") *> WS)
+        = ({ _ in "try!" } <^> kw_try *> char("!") *> WS)
             <|> ({ _ in "try?" } <^> kw_try *> char("?") *> WS)
             <|> ({ _ in "try" } <^> kw_try *> WS)
             <|> pure(nil)
     return { op in { subExpr in
         op != nil ? PrefixUnaryOperation(operatorSymbol: op!, operand: subExpr) : subExpr }}
         <^> parseTry
-        <*> exprUnary
+        <*> exprUnary(isBasic: isBasic)
 }
 
-
-let exprUnary = _exprUnary()
-func _exprUnary() -> SwiftParser<Expression> {
+func exprUnary(isBasic: Bool) -> SwiftParser<Expression> {
     return { op in { subExpr in
         op != nil ? PrefixUnaryOperation(operatorSymbol: op!, operand: subExpr) : subExpr }}
         <^> zeroOrOne(oper_prefix)
-        <*> exprAtom
+        <*> exprAtom(isBasic: isBasic)
 }
 
-let exprAtom = _exprAtom()
-func _exprAtom() -> SwiftParser<Expression> {
-    return exprPrimitive >>- exprSuffix
+func exprAtom(isBasic: Bool) -> SwiftParser<Expression> {
+    return exprPrimitive >>- exprSuffix(isBasic: isBasic)
 }
 
 //-----------------------------------------------------------------------
@@ -63,18 +59,30 @@ func _exprPrimitive() -> SwiftParser<Expression> {
     return (exprStringLiteral <&> asExpr)
         <|> (exprFloatLiteral <&> asExpr)
         <|> (exprIntegerLiteral <&> asExpr)
+        <|> (exprNilLiteral <&> asExpr)
         <|> (exprArrayLiteral <&> asExpr)
         <|> (exprDictionaryLiteral <&> asExpr)
         <|> (exprIdentifier <&> asExpr)
+        <|> (exprSelf <&> asExpr)
+        <|> (exprSuper <&> asExpr)
         <|> (exprParenthesized <&> asExpr)
         <|> (exprTuple <&> asExpr)
+        <|> (exprImplicitMember <&> asExpr)
+        <|> (exprWildcard <&> asExpr)
         <|> (exprClosure <&> asExpr)
 }
 
+let genericArgs = _genericArgs()
+func _genericArgs() -> SwiftParser<[Type_]> {
+    return list(char("<"), type, comma, char(">"))
+}
 
 let exprIdentifier = _exprIdentifier()
 func _exprIdentifier() -> SwiftParser<IdentifierExpression> {
-    return IdentifierExpression.init <^> identifier
+    return { ident in { generics in
+        IdentifierExpression(identifier: ident) }}
+        <^> identifier
+        <*> zeroOrOne(OWS *> genericArgs)
 }
 
 let exprSelf = _exprSelf()
@@ -84,25 +92,34 @@ func _exprSelf() -> SwiftParser<SelfExpression>  {
 
 let exprSuper = _exprSuper()
 func _exprSuper() -> SwiftParser<SuperclassExpression>  {
-    return { _ in SuperclassExpression() } <^> kw_Self
+    return { _ in SuperclassExpression() } <^> kw_super
 }
 
 let exprClosure = _exprClosure()
 func _exprClosure() -> SwiftParser<ClosureExpression>  {
-    let params: SwiftParser<[String]> = sepBy1(identifier, OWS *> comma <* OWS)
-    let sig = { args in { th in { ty in (args, th != nil, ty) }}}
-        <^> zeroOrOne(OWS *> params)
+    typealias Param = (String, Type_?)
+    let name: SwiftParser<String> = (identifier <|> kw__)
+    let nameParam: SwiftParser<Param> = name <&> { name in (name, nil) }
+    let paramsName: SwiftParser<[Param]> = sepBy1(nameParam, OWS *> comma <* OWS)
+    let paramsNameTuple: SwiftParser<[Param]> = list(l_paren, nameParam, comma, r_paren)
+
+    let typedName: SwiftParser<Param> = { name in { ty in (name, ty) }} <^> name <*> (OWS *> colon *> OWS *> type)
+    let paramsTyped: SwiftParser<[Param]> = list(l_paren, typedName, comma, r_paren)
+
+    let sig = { args in { th in { ty in (args: args, hasThrows: th != nil, result: ty) }}}
+        <^> (OWS *> (paramsName <|> paramsNameTuple <|> paramsTyped))
         <*> zeroOrOne(OWS *> kw_throws)
-        <*> zeroOrOne(OWS *> arrow *> type)
+        <*> zeroOrOne(OWS *> arrow *> OWS *> type)
     
     return { sig in { body in
-        let args: [(String, Type_?)] = (sig?.0?.map({ ($0, nil) })) ?? []
-        let hasThrows = sig == nil ? false : sig!.1
-        let retType  = sig == nil ? nil : sig!.2
-        return ClosureExpression(arguments: args, hasThrows: hasThrows, result: retType, statements: body) }}
+        ClosureExpression(
+            arguments: sig?.args ?? [],
+            hasThrows: sig?.hasThrows ?? false,
+            result: sig?.result,
+            statements: body) }}
         <^> l_brace
-        *> (zeroOrOne(sig) <* OWS <* kw_in)
-        <*> (OWS *> stmtBraceItems <* r_brace)
+        *> zeroOrOne(sig <* OWS <* kw_in)
+        <*> (OWS *> stmtBraceItems <* OWS <* r_brace)
 }
 
 let exprParenthesized = _exprParenthesized()
@@ -137,16 +154,23 @@ func _exprWildcard() -> SwiftParser<WildcardExpression> {
 //-----------------------------------------------------------------------
 // suffix expressions
 
-func exprSuffix(subj: Expression) -> SwiftParser<Expression> {
-    return (_exprPostfixSelf(subj) >>- exprSuffix)
-        <|> (_exprInitializer(subj) >>- exprSuffix)
-        <|> (_exprExplicitMember(subj) >>- exprSuffix)
-        <|> (_exprFunctionCall(subj) >>- exprSuffix)
-        <|> (_exprSubscript(subj) >>- exprSuffix)
-        <|> (_exprOptionalChaining(subj) >>- exprSuffix)
-        <|> (_exprPostfixUnary(subj) >>- exprSuffix)
-        <|> pure(subj)
-        //        <|> (_exprTrailingClosure(subj) >>- exprSuffix)
+func exprSuffix(isBasic: Bool) -> (Expression) -> SwiftParser<Expression> {
+    return { subj in exprSuffix(subj: subj, isBasic: isBasic) }
+}
+
+func exprSuffix(subj: Expression, isBasic: Bool) -> SwiftParser<Expression> {
+    var parser = (_exprPostfixSelf(subj) >>- exprSuffix(isBasic: isBasic))
+        <|> (_exprInitializer(subj) >>- exprSuffix(isBasic: isBasic))
+        <|> (_exprExplicitMember(subj) >>- exprSuffix(isBasic: isBasic))
+        <|> (_exprFunctionCall(subj) >>- exprSuffix(isBasic: isBasic))
+        <|> (_exprSubscript(subj) >>- exprSuffix(isBasic: isBasic))
+        <|> (_exprOptionalChaining(subj) >>- exprSuffix(isBasic: isBasic))
+        <|> (_exprPostfixUnary(subj) >>- exprSuffix(isBasic: isBasic))
+    if !isBasic {
+        parser = parser
+            <|> (_exprTrailingClosure(subj) >>- exprSuffix(isBasic: isBasic))
+    }
+    return parser <|> pure(subj)
 }
 
 func _exprPostfixSelf(_ subj: Expression) -> SwiftParser<PostfixSelfExpression>  {
@@ -161,6 +185,12 @@ func _exprFunctionCall(_ subj: Expression) -> SwiftParser<FunctionCallExpression
         FunctionCallExpression(expression: subj, arguments: args, trailingClosure: trailingClosure) }}
         <^> (OHWS *> list(l_paren, arg, comma, r_paren))
         <*> zeroOrOne(OWS *> exprClosure)
+}
+
+func _exprTrailingClosure(_ subj: Expression) -> SwiftParser<FunctionCallExpression> {
+    return { trailingClosure in
+        FunctionCallExpression(expression: subj, arguments: [], trailingClosure: trailingClosure) }
+        <^> (OWS *> exprClosure)
 }
 
 func _exprInitializer(_ subj: Expression) -> SwiftParser<InitializerExpression> {

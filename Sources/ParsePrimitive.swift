@@ -3,7 +3,6 @@ import TryParsec
 
 /// Haskell `(:)` (cons operator) for replacing slow `[x] + xs`.
 /// Note: copy from TryParsec code
-
 internal func cons<C: RangeReplaceableCollection>(_ x: C.Iterator.Element) -> (C) -> C
 {
     return { xs in
@@ -64,7 +63,7 @@ private func _stringLiteral() -> SwiftParser<String> {
     ]
     let _escapedCharMappingKeys = Set(_escapedCharMappings.keys)
     let _escapedCharKey = satisfy { _escapedCharMappingKeys.contains($0) }
-    let escapedChar = char("\\") *> _escapedCharKey
+    let escapedChar = char("\\") *> _escapedCharKey <&> { x in _escapedCharMappings[x]! }
     let validChar = normChar <|> escapedChar
     
     return (char("\"") *> many(validChar) <* char("\"")) <&> String.init
@@ -293,7 +292,7 @@ let kw_defer = kw("defer")
 let kw_if = kw("if")
 let kw_guard = kw("guard")
 let kw_do = kw("do")
-let kw_repeat = kw("preset")
+let kw_repeat = kw("repeat")
 let kw_else = kw("else")
 let kw_for = kw("for")
 let kw_in = kw("in")
@@ -363,8 +362,8 @@ func isValidOperatorContinuationCodePoint(_ scalar: UnicodeScalar) -> Bool {
     
 }
 
-func rightBound() -> SwiftParser<UnicodeScalar> {
-    return noneOf(" \r\n\t)]},;:")
+func rightBound() -> SwiftParser<Void> {
+    return (noneOf(" \r\n\t)]},;:") *> pure(())) <|> endOfInput()
 }
 
 let startOfOperator = _startOfOperator()
@@ -386,10 +385,18 @@ let oper_prefix = operatorBody <* lookAhead(rightBound())
 let oper_postfix = operatorBody <* lookAhead(rightBound())
 let oper_infix = (operatorBody <* lookAhead(rightBound())) <|> (WS *> operatorBody <* WS)
 
+func oper_infix(_ str: String.UnicodeScalarView) -> SwiftParser<String> {
+    return string(str) <* lookAhead(rightBound()) <|> (WS *> string(str) <* WS)
+}
+
+func oper_postfix(_ str: String.UnicodeScalarView) -> SwiftParser<String> {
+    return string(str) <* lookAhead(rightBound())
+}
+
 // ------------------------------------------------------------------------
 // White spaces
 
-private let horizontalWhitespaces: Set<UnicodeScalar> = [ " ", "\t", "\n", "\r" ]
+private let horizontalWhitespaces: Set<UnicodeScalar> = [ " ", "\t" ]
 private let verticalWhitespaces: Set<UnicodeScalar> = [ "\n", "\r" ]
 
 private func isHorizontalSpace(_ c: UnicodeScalar) -> Bool {
@@ -411,7 +418,7 @@ private func _optionalWhitespaces() -> SwiftParser<()> {
 }
 
 private func _verticalSpace() -> SwiftParser<()> {
-    return skipMany1(OWS *> satisfy(isVerticalSpace))
+    return skipMany1(OHWS *> satisfy(isVerticalSpace))
 }
 
 private func _whitespace() -> SwiftParser<()> {
