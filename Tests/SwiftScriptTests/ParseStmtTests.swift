@@ -18,6 +18,15 @@ class ParseStmtTests: XCTestCase {
                 + "}"))
     }
     
+    func testStmtGuard() {
+        XCTAssertTrue(parseSuccess(
+            stmtGuard,
+            "guard foo else {\n"
+                + "  expr() \n"
+                + "  bar\n"
+                + "}"))
+    }
+    
     func testStmtForIn() {
         XCTAssertTrue(parseSuccess(
             stmtForIn,

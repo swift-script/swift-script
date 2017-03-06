@@ -30,6 +30,7 @@ func _stmt() -> SwiftParser<Statement> {
         <|> (stmtThrow <&> asStmt)
         <|> (stmtDefer <&> asStmt)
         <|> (stmtIf <&> asStmt)
+        <|> (stmtGuard <&> asStmt)
         <|> (stmtForIn <&> asStmt)
 //        <|> (stmtDo <&> asStmt)
         <|> (stmtBreak <&> asStmt)
@@ -69,6 +70,14 @@ func _stmtElseClause() -> SwiftParser<ElseClause?> {
     return (OWS *> kw_else *> WS *> stmtIf <&> { .elseIf($0) })
         <|> (OWS *> kw_else *> OWS *> stmtBrace <&> { .else_($0)} )
         <|> pure(nil)
+}
+
+let stmtGuard = _stmtGuard()
+func _stmtGuard() -> SwiftParser<GuardStatement> {
+    return { cond in { body in
+        GuardStatement(condition: cond, statements: body) }}
+        <^> (kw_guard *> OWS *> exprBasic)
+        <*> (OWS *> kw_else *> OWS *> stmtBrace)
 }
 
 func _stmtSwitch() -> SwiftParser<SwitchStatement> {
