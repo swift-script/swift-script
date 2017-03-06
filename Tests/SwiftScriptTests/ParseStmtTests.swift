@@ -27,6 +27,24 @@ class ParseStmtTests: XCTestCase {
                 + "}"))
     }
     
+    func testStmtWhile() {
+        XCTAssertTrue(parseSuccess(
+            stmtWhile,
+            "while foo {\n"
+                + "  expr() \n"
+                + "  bar\n"
+                + "}"))
+    }
+    
+    func testStmtRepeatWhile() {
+        XCTAssertTrue(parseSuccess(
+            stmtRepeatWhile,
+            "repeat {\n"
+                + "  expr() \n"
+                + "  bar\n"
+                + "} while foo"))
+    }
+
     func testStmtForIn() {
         XCTAssertTrue(parseSuccess(
             stmtForIn,

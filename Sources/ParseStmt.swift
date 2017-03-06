@@ -32,6 +32,8 @@ func _stmt() -> SwiftParser<Statement> {
         <|> (stmtIf <&> asStmt)
         <|> (stmtGuard <&> asStmt)
         <|> (stmtForIn <&> asStmt)
+        <|> (stmtWhile <&> asStmt)
+        <|> (stmtRepeatWhile <&> asStmt)
 //        <|> (stmtDo <&> asStmt)
         <|> (stmtBreak <&> asStmt)
         <|> (stmtContinue <&> asStmt)
@@ -48,12 +50,20 @@ func _stmtForIn() -> SwiftParser<ForInStatement> {
         <*> (OWS *> stmtBrace)
 }
 
+let stmtWhile = _stmtWhile()
 func _stmtWhile() -> SwiftParser<WhileStatement> {
-    return fail("not implemented")
+    return { cond in { body in
+        WhileStatement(condition: cond, statements: body) }}
+        <^> (kw_while *> OWS *> exprBasic)
+        <*> (OWS *> stmtBrace)
 }
 
+let stmtRepeatWhile = _stmtRepeatWhile()
 func _stmtRepeatWhile() -> SwiftParser<RepeatWhileStatement> {
-    return fail("not implemented")
+    return { body in { cond in
+        RepeatWhileStatement(statements: body, condition: cond) }}
+        <^> (kw_repeat *> OWS *> stmtBrace)
+        <*> (OWS *> kw_while *> OWS *> exprBasic)
 }
 
 let stmtIf = _stmtIf()
