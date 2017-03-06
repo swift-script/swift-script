@@ -29,7 +29,17 @@ class DeclarationsTests: XCTestCase {
             hasThrows: false,
             body: []
         ).javaScript(with: 0), "function foo() {\n}\n")
-        
+
+        // static
+        XCTAssertEqual(FunctionDeclaration(
+            isStatic: true,
+            name: "foo",
+            arguments: [],
+            result: nil,
+            hasThrows: false,
+            body: []
+            ).javaScript(with: 0), "static function foo() {\n}\n")
+
         // arguments
         XCTAssertEqual(FunctionDeclaration(
             isStatic: false,
