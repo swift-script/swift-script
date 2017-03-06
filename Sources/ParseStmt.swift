@@ -34,10 +34,12 @@ func _stmt() -> SwiftParser<Statement> {
         <|> (stmtForIn <&> asStmt)
         <|> (stmtWhile <&> asStmt)
         <|> (stmtRepeatWhile <&> asStmt)
-//        <|> (stmtDo <&> asStmt)
+        <|> (stmtSwitch <&> asStmt)
+        <|> (stmtDo <&> asStmt)
         <|> (stmtBreak <&> asStmt)
         <|> (stmtContinue <&> asStmt)
         <|> (stmtFallthrough <&> asStmt)
+        <|> (stmtLabeled <&> asStmt)
 }
 
 
@@ -90,12 +92,22 @@ func _stmtGuard() -> SwiftParser<GuardStatement> {
         <*> (OWS *> kw_else *> OWS *> stmtBrace)
 }
 
+let stmtSwitch = _stmtSwitch()
 func _stmtSwitch() -> SwiftParser<SwitchStatement> {
-    return fail("not implemented")
+    return kw_switch *> fail("not implemented")
 }
 
+let stmtLabeled = _stmtLabeled()
 func _stmtLabeled() -> SwiftParser<LabeledStatement> {
-    return fail("not implemented")
+    return { label in { stmt in
+        LabeledStatement(labelName: label, statement: stmt) }}
+        <^> (identifier <* OWS <* colon <* OWS)
+        <*> ((stmtIf <&> asStmt)
+            <|> (stmtForIn <&> asStmt)
+            <|> (stmtWhile <&> asStmt)
+            <|> (stmtRepeatWhile <&> asStmt)
+            <|> (stmtSwitch <&> asStmt)
+            <|> (stmtDo <&> asStmt))
 }
 
 let stmtBreak = _stmtBreak()
@@ -135,9 +147,9 @@ func _stmtDefer() -> SwiftParser<DeferStatement> {
         <^> (kw_defer *> OWS *> stmtBrace)
 }
 
-
+let stmtDo = _stmtDo()
 func _stmtDo() -> SwiftParser<DoStatement> {
-    return fail("not implemented")
+    return kw_do *> fail("not implemented")
 }
 
 func _stmtCatchClause() -> SwiftParser<CatchClause> {

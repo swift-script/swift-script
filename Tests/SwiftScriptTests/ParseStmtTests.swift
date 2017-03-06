@@ -54,6 +54,17 @@ class ParseStmtTests: XCTestCase {
             "for x in[1,2,3]{}"))
     }
 
+    func testStmtLabeled() {
+        XCTAssertTrue(parseSuccess(
+            stmtLabeled, "LABEL: repeat {} while foo"))
+        XCTAssertTrue(parseSuccess(
+            stmtLabeled, "LABEL: while foo {}"))
+        XCTAssertTrue(parseSuccess(
+            stmtLabeled, "LABEL: for x in s {}"))
+        XCTAssertTrue(parseSuccess(
+            stmtLabeled, "LABEL: if foo {}"))
+    }
+
     func testStmtBreak() {
         XCTAssertTrue(parseSuccess(
             stmtBreak, "break"))
