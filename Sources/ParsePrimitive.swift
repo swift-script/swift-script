@@ -193,7 +193,11 @@ private func _keywordOrIdentifier() -> SwiftParser<String> {
     return identifierBody <|> escapedIdentifier
 }
 
-
+let dollarIdentifier = _dollarIdentifier()
+private func _dollarIdentifier() -> SwiftParser<String> {
+    return String.init
+        <^> (cons <^> char("$") <*> many1(satisfy(isDigit))) <* not(satisfy(isValidIdentifierContinuationCodePoint))
+}
 
 // ----------------------------------------------------------------------------------
 // Keywords

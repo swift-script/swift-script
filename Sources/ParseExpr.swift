@@ -81,7 +81,7 @@ let exprIdentifier = _exprIdentifier()
 func _exprIdentifier() -> SwiftParser<IdentifierExpression> {
     return { ident in { generics in
         IdentifierExpression(identifier: ident) }}
-        <^> identifier
+        <^> (identifier <|> dollarIdentifier)
         <*> zeroOrOne(OWS *> genericArgs)
 }
 

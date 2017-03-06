@@ -40,7 +40,18 @@ class ParsePrimitiveTests: XCTestCase {
         XCTAssertEqual(try parseIt(identifier, "foo"), "foo")
         XCTAssertEqual(try parseIt(identifier, "`is`"), "is")
         XCTAssertThrowsError(try parseIt(identifier, "is"))
+        XCTAssertThrowsError(try parseIt(identifier, "$f12"))
+        XCTAssertThrowsError(try parseIt(identifier, "$12"))
+    }
+    func testKeywordOrIdentifier() {
         XCTAssertEqual(try parseIt(keywordOrIdentifier, "is"), "is")
+        XCTAssertEqual(try parseIt(keywordOrIdentifier, "`is`"), "is")
+        XCTAssertThrowsError(try parseIt(keywordOrIdentifier, "$0"))
+        XCTAssertThrowsError(try parseIt(keywordOrIdentifier, "`$0`"))
+    }
+    func testDollerIdentifier() {
+        XCTAssertEqual(try parseIt(dollarIdentifier, "$12"), "$12")
+        XCTAssertThrowsError(try parseIt(dollarIdentifier, "`$0`"))
     }
     func testOWS() {
         XCTAssertTrue(parseSuccess(OWS, ""))

@@ -13,9 +13,13 @@ class ParseExprTests: XCTestCase {
         XCTAssertTrue(parseSuccess(
             exprIdentifier, "foo"))
         XCTAssertTrue(parseSuccess(
+            exprIdentifier, "$12"))
+        XCTAssertTrue(parseSuccess(
             exprIdentifier, "foo<A, B>"))
         XCTAssertFalse(parseSuccess(
             exprIdentifier, "self"))
+        XCTAssertFalse(parseSuccess(
+            exprIdentifier, "`$1`"))
     }
     
     func testExprCall() {
@@ -116,6 +120,10 @@ class ParseExprTests: XCTestCase {
             exprClosure, "{ (x: Int, y: Int) -> Int in 1 }"))
         XCTAssertTrue(parseSuccess(
             exprClosure, "{ (x: Int, y: Int) throws -> Int in 1 }"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ $0.foo[12] }"))
+        XCTAssertTrue(parseSuccess(
+            exprClosure, "{ let x = 1\n return $0 + 12\n}"))
     }
 
     func testExprAssign() {
