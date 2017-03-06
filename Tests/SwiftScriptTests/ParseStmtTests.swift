@@ -63,6 +63,8 @@ class ParseStmtTests: XCTestCase {
             stmtLabeled, "LABEL: for x in s {}"))
         XCTAssertTrue(parseSuccess(
             stmtLabeled, "LABEL: if foo {}"))
+        XCTAssertTrue(parseSuccess(
+            stmtLabeled, "LABEL: do {}"))
     }
 
     func testStmtBreak() {
@@ -118,5 +120,10 @@ class ParseStmtTests: XCTestCase {
             stmtThrow, "throw(foo)"))
         XCTAssertFalse(parseSuccess(
             stmtThrow, "throw"))
+    }
+    
+    func testStmtDo() {
+        XCTAssertTrue(parseSuccess(
+            stmtDo, "do {}"))
     }
 }

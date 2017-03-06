@@ -149,9 +149,16 @@ func _stmtDefer() -> SwiftParser<DeferStatement> {
 
 let stmtDo = _stmtDo()
 func _stmtDo() -> SwiftParser<DoStatement> {
-    return kw_do *> fail("not implemented")
+    return { body in { catchClauses in
+        DoStatement(statements: body, catchClauses: catchClauses)}}
+        <^> (kw_do *> OWS *> stmtBrace)
+        <*> many(OWS *> stmtCatchClause)
 }
 
+let stmtCatchClause = _stmtCatchClause()
 func _stmtCatchClause() -> SwiftParser<CatchClause> {
-    return fail("not implemented")
+    return { pattern in { body in
+        /* TODO */ CatchClause() }}
+        <^> (kw_catch *> OWS *> exprBasic)
+        <*> (OWS *> stmtBrace)
 }
