@@ -72,7 +72,7 @@ let stmtIf = _stmtIf()
 func _stmtIf() -> SwiftParser<IfStatement> {
     return { cond in { body in { els in
         IfStatement(condition: cond, statements: body, elseClause: els) }}}
-        <^> (kw_if *> OWS *> exprBasic)
+        <^> (kw_if *> OWS *> stmtCondition)
         <*> (OWS *> stmtBrace)
         <*> stmtElseClause
 }
@@ -84,11 +84,20 @@ func _stmtElseClause() -> SwiftParser<ElseClause?> {
         <|> pure(nil)
 }
 
+let stmtCondition = _stmtCondition()
+func _stmtCondition() -> SwiftParser<Condition> {
+    return ({ name in { expr in .optionalBinding(false, name, expr) } }
+            <^> kw_let *> OWS *> identifier <*> oper_infix("=") *> exprBasic)
+        <|> ({ name in { expr in .optionalBinding(true, name, expr) } }
+            <^> kw_var *> OWS *> identifier <*> oper_infix("=") *> exprBasic)
+        <|> (exprBasic <&> { .boolean($0) })
+}
+
 let stmtGuard = _stmtGuard()
 func _stmtGuard() -> SwiftParser<GuardStatement> {
     return { cond in { body in
         GuardStatement(condition: cond, statements: body) }}
-        <^> (kw_guard *> OWS *> exprBasic)
+        <^> (kw_guard *> OWS *> stmtCondition)
         <*> (OWS *> kw_else *> OWS *> stmtBrace)
 }
 

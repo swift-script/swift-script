@@ -19,9 +19,14 @@ public struct RepeatWhileStatement: Statement {
 }
 
 public struct IfStatement: Statement {
-    public var condition: Expression
+    public var condition: Condition
     public var statements: [Statement]
     public var elseClause: ElseClause?
+}
+
+public enum Condition: Node {
+    case boolean(Expression)
+    case optionalBinding(/*isVar:*/ Bool, String, Expression)
 }
 
 public enum ElseClause: Node {
@@ -30,7 +35,7 @@ public enum ElseClause: Node {
 }
 
 public struct GuardStatement: Statement {
-    public var condition: Expression
+    public var condition: Condition
     public var statements: [Statement]
 }
 

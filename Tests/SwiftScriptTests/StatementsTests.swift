@@ -89,7 +89,7 @@ class StatementsTests: XCTestCase {
     
     func testIfStatement() {
         XCTAssertEqual(IfStatement(
-            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
+            condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
@@ -102,7 +102,7 @@ class StatementsTests: XCTestCase {
         
         // if-else
         XCTAssertEqual(IfStatement(
-            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
+            condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
@@ -121,7 +121,7 @@ class StatementsTests: XCTestCase {
         
         // if-else-if
         XCTAssertEqual(IfStatement(
-            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
+            condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
@@ -130,7 +130,7 @@ class StatementsTests: XCTestCase {
                 )
             ],
             elseClause: .elseIf(IfStatement(
-                condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "==", rightOperand: IntegerLiteral(value: 0)),
+                condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "==", rightOperand: IntegerLiteral(value: 0))),
                 statements: [
                     FunctionCallExpression(
                         expression: IdentifierExpression(identifier: "print"),
@@ -144,7 +144,7 @@ class StatementsTests: XCTestCase {
         
         // indent
         XCTAssertEqual(IfStatement(
-            condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
+            condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
@@ -153,7 +153,7 @@ class StatementsTests: XCTestCase {
                 )
             ],
             elseClause: .elseIf(IfStatement(
-                condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "==", rightOperand: IntegerLiteral(value: 0)),
+                condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "==", rightOperand: IntegerLiteral(value: 0))),
                 statements: [
                     FunctionCallExpression(
                         expression: IdentifierExpression(identifier: "print"),
@@ -164,14 +164,23 @@ class StatementsTests: XCTestCase {
                 elseClause: nil
             ))
         ).javaScript(with: 1), "    if (foo < 42) {\n        console.log(\"Hello\");\n    } else if (foo == 0) {\n        console.log(\"Bye\");\n    }\n")
+        
+        // optional binding
+        XCTAssertEqual(IfStatement(
+            condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "bar")),
+            statements: [
+                FunctionCallExpression(expression: IdentifierExpression(identifier: "print"), arguments: [(nil, IdentifierExpression(identifier: "foo"))], trailingClosure: nil),
+            ],
+            elseClause: nil
+        ).javaScript(with: 0), "{\n    let foo;\n    if ((foo = bar) != null) {\n        console.log(foo);\n    }\n}\n")
     }
     
     func testGuardStatement() {
         XCTAssertEqual(GuardStatement(
-            condition: BinaryOperation(
+            condition: .boolean(BinaryOperation(
                 leftOperand: IdentifierExpression(identifier: "foo"),
                 operatorSymbol: "==",
-                rightOperand: IntegerLiteral(value: 42)),
+                rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 ReturnStatement(expression: IntegerLiteral(value: 0)),
             ]
@@ -179,14 +188,22 @@ class StatementsTests: XCTestCase {
         
         // indent
         XCTAssertEqual(GuardStatement(
-            condition: BinaryOperation(
+            condition: .boolean(BinaryOperation(
                 leftOperand: IdentifierExpression(identifier: "foo"),
                 operatorSymbol: "==",
-                rightOperand: IntegerLiteral(value: 42)),
+                rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 ReturnStatement(expression: IntegerLiteral(value: 0)),
                 ]
         ).javaScript(with: 1), "    if (!(foo == 42)) {\n        return 0;\n    }\n")
+        
+        // optional binding
+        XCTAssertEqual(GuardStatement(
+            condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "bar")),
+            statements: [
+                ReturnStatement(expression: nil),
+            ]
+        ).javaScript(with: 0), "let foo;\nif ((foo = bar) == null) {\n    return;\n}\n")
     }
     
     func testLabeledStatement() {
