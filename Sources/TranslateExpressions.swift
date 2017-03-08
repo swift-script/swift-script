@@ -25,7 +25,14 @@ extension FunctionCallExpression {
         } else {
             hasNew = false
         }
-        return "\(hasNew ? "new " : "")\(expression.javaScript(with: indentLevel))(\(jsArguments.joined(separator: ", ")))"
+        let jsExpression: String = "\(hasNew ? "new " : "")\(expression.javaScript(with: indentLevel))"
+        let jsParenthesizedExpression: String
+        if expression is ClosureExpression {
+            jsParenthesizedExpression = "(\(jsExpression))"
+        } else {
+            jsParenthesizedExpression = jsExpression
+        }
+        return "\(jsParenthesizedExpression)(\(jsArguments.joined(separator: ", ")))"
     }
 }
 
@@ -90,9 +97,14 @@ extension ExplicitMemberExpression {
 
 extension SubscriptExpression {
     public func javaScript(with indentLevel: Int) -> String {
-        let variable = expression.javaScript(with: indentLevel + 1)
-        let args = arguments.map { $0.javaScript(with: indentLevel + 1) }.joined(separator: ", ")
-        return "\(variable)[\(args)]"
+        let jsExpression = expression.javaScript(with: indentLevel)
+        let jsParenthesizedExpression: String
+        if expression is ClosureExpression {
+            jsParenthesizedExpression = "(\(jsExpression))"
+        } else {
+            jsParenthesizedExpression = jsExpression
+        }
+        return "\(jsParenthesizedExpression)[\(arguments.map { $0.javaScript(with: indentLevel) }.joined(separator: ", "))]"
     }
 }
 

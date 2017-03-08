@@ -151,6 +151,15 @@ class ExpressionsTests: XCTestCase {
                 ],
             trailingClosure: ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: [])
         ).javaScript(with: 0), "foo(42, \"xyz\", () => {})")
+        
+        // calls just after a closure expression
+        XCTAssertEqual(FunctionCallExpression(
+            expression: ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: [
+                IntegerLiteral(value: 42),
+            ]),
+            arguments: [],
+            trailingClosure: nil
+        ).javaScript(with: 0), "(() => 42)()")
     }
     
     func testInitializerExpression() {
@@ -171,6 +180,14 @@ class ExpressionsTests: XCTestCase {
             expression: IdentifierExpression(identifier: "foo"),
             arguments: [IntegerLiteral(value: 42)]
         ).javaScript(with: 0), "foo[42]")
+        
+        // calls just after a closure expression
+        XCTAssertEqual(SubscriptExpression(
+            expression: ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: [
+                IntegerLiteral(value: 42),
+                ]),
+            arguments: [IntegerLiteral(value: 0)]
+        ).javaScript(with: 0), "(() => 42)[0]")
     }
     
     func testOptionalChainingExpression() {
