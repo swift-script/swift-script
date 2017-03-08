@@ -45,8 +45,18 @@ class DeclarationsTests: XCTestCase {
             isStatic: false,
             name: "foo",
             arguments: [
-                (nil, "bar", TypeIdentifier­(names: ["Int"]), nil),
-                (nil, "baz", TypeIdentifier­(names: ["String"]), nil),
+                Parameter(
+                    externalParameterName: nil,
+                    localParameterName: "bar",
+                    type: TypeIdentifier­(names: ["Int"]),
+                    defaultArgument: nil
+                ),
+                Parameter(
+                    externalParameterName: nil,
+                    localParameterName: "baz",
+                    type: TypeIdentifier­(names: ["String"]),
+                    defaultArgument: nil
+                ),
             ],
             result: nil,
             hasThrows: false,
@@ -58,9 +68,19 @@ class DeclarationsTests: XCTestCase {
             isStatic: false,
             name: "foo",
             arguments: [
-                ("bar", "x", TypeIdentifier­(names: ["Int"]), nil),
-                ("baz", "y", TypeIdentifier­(names: ["String"]), nil),
-                ],
+                Parameter(
+                    externalParameterName: "bar",
+                    localParameterName: "x",
+                    type: TypeIdentifier­(names: ["Int"]),
+                    defaultArgument: nil
+                ),
+                Parameter(
+                    externalParameterName: "baz",
+                    localParameterName: "y",
+                    type: TypeIdentifier­(names: ["String"]),
+                    defaultArgument: nil
+                ),
+            ],
             result: TypeIdentifier­(names: ["Void"]),
             hasThrows: true,
             body: []
@@ -71,9 +91,19 @@ class DeclarationsTests: XCTestCase {
             isStatic: false,
             name: "foo",
             arguments: [
-                (nil, "x", TypeIdentifier­(names: ["Int"]), nil),
-                (nil, "y", TypeIdentifier­(names: ["Int"]), nil),
-                ],
+                Parameter(
+                    externalParameterName: nil,
+                    localParameterName: "x",
+                    type: TypeIdentifier­(names: ["Int"]),
+                    defaultArgument: nil
+                ),
+                Parameter(
+                    externalParameterName: nil,
+                    localParameterName: "y",
+                    type: TypeIdentifier­(names: ["Int"]),
+                    defaultArgument: nil
+                ),
+            ],
             result: nil,
             hasThrows: false,
             body: [
@@ -90,9 +120,19 @@ class DeclarationsTests: XCTestCase {
             isStatic: false,
             name: "foo",
             arguments: [
-                (nil, "x", TypeIdentifier­(names: ["Int"]), nil),
-                (nil, "y", TypeIdentifier­(names: ["Int"]), nil),
-                ],
+                Parameter(
+                    externalParameterName: nil,
+                    localParameterName: "x",
+                    type: TypeIdentifier­(names: ["Int"]),
+                    defaultArgument: nil
+                ),
+                Parameter(
+                    externalParameterName: nil,
+                    localParameterName: "y",
+                    type: TypeIdentifier­(names: ["Int"]),
+                    defaultArgument: nil
+                ),
+            ],
             result: nil,
             hasThrows: false,
             body: [
@@ -130,7 +170,14 @@ class DeclarationsTests: XCTestCase {
                     expression: StringLiteral(value: "xyz")
                 ),
                 InitializerDeclaration­(
-                    arguments: [(nil, "bar", TypeIdentifier­(names: ["Int"]), nil)],
+                    arguments: [
+                        Parameter(
+                            externalParameterName: nil,
+                            localParameterName: "bar",
+                            type: TypeIdentifier­(names: ["Int"]),
+                            defaultArgument: nil
+                        ),
+                    ],
                     isFailable: false,
                     hasThrows: false,
                     body: [
@@ -181,7 +228,14 @@ class DeclarationsTests: XCTestCase {
                     expression: StringLiteral(value: "xyz")
                 ),
                 InitializerDeclaration­(
-                    arguments: [(nil, "bar", TypeIdentifier­(names: ["Int"]), nil)],
+                    arguments: [
+                        Parameter(
+                            externalParameterName: nil,
+                            localParameterName: "bar",
+                            type: TypeIdentifier­(names: ["Int"]),
+                            defaultArgument: nil
+                        ),
+                    ],
                     isFailable: false,
                     hasThrows: false,
                     body: [
@@ -216,8 +270,18 @@ class DeclarationsTests: XCTestCase {
         // arguments
         XCTAssertEqual(InitializerDeclaration­(
             arguments: [
-                (nil, "bar", TypeIdentifier­(names: ["Int"]), nil),
-                (nil, "baz", TypeIdentifier­(names: ["String"]), nil),
+                Parameter(
+                    externalParameterName: nil,
+                    localParameterName: "bar",
+                    type: TypeIdentifier­(names: ["Int"]),
+                    defaultArgument: nil
+                ),
+                Parameter(
+                    externalParameterName: nil,
+                    localParameterName: "baz",
+                    type: TypeIdentifier­(names: ["String"]),
+                    defaultArgument: nil
+                ),
             ],
             isFailable: false,
             hasThrows: false,

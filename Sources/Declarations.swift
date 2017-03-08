@@ -28,11 +28,17 @@ public struct TypeAliasDeclaration: Declaration {
     public var type: Type_
 }
 
+public struct Parameter {
+    public var externalParameterName: String?
+    public var localParameterName: String
+    public var type: Type_
+    public var defaultArgument: Expression?
+}
 
 public struct FunctionDeclaration: Declaration {
     public var isStatic: Bool
     public var name: String
-    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression?)]
+    public var arguments: [Parameter]
     public var result: Type_?
     public var hasThrows: Bool
     public var body: [Statement]?
@@ -63,7 +69,7 @@ public struct ProtocolDeclaration­: Declaration {
 
 
 public struct InitializerDeclaration­: Declaration {
-    public var arguments: [(/*external-parameter-name*/ String?, String, Type_, Expression?)]
+    public var arguments: [Parameter]
     public var isFailable: Bool
     public var hasThrows: Bool
     public var body: [Statement]?
