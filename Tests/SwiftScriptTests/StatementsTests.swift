@@ -173,6 +173,15 @@ class StatementsTests: XCTestCase {
             ],
             elseClause: nil
         ).javaScript(with: 0), "{\n    let foo;\n    if ((foo = bar) != null) {\n        console.log(foo);\n    }\n}\n")
+        
+        // optional binding (let foo = foo)
+        XCTAssertEqual(IfStatement(
+            condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "foo")),
+            statements: [
+                FunctionCallExpression(expression: IdentifierExpression(identifier: "print"), arguments: [(nil, IdentifierExpression(identifier: "foo"))], trailingClosure: nil),
+                ],
+            elseClause: nil
+        ).javaScript(with: 0), "if (foo != null) {\n    console.log(foo);\n}\n")
     }
     
     func testGuardStatement() {
@@ -204,6 +213,14 @@ class StatementsTests: XCTestCase {
                 ReturnStatement(expression: nil),
             ]
         ).javaScript(with: 0), "let foo;\nif ((foo = bar) == null) {\n    return;\n}\n")
+        
+        // optional binding (let foo = foo)
+        XCTAssertEqual(GuardStatement(
+            condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "foo")),
+            statements: [
+                ReturnStatement(expression: nil),
+                ]
+        ).javaScript(with: 0), "if (foo == null) {\n    return;\n}\n")
     }
     
     func testLabeledStatement() {

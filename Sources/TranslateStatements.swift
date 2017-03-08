@@ -36,6 +36,18 @@ extension IfStatement {
                 return "\(jsIf) else \(transpileBlock(statements: statements, indentLevel: indentLevel))\n"
             }
         case let .optionalBinding(_, name, expression):
+            if let expression = expression as? IdentifierExpression, expression.identifier == name {
+                return IfStatement(
+                    condition: .boolean(BinaryOperation(
+                        leftOperand: IdentifierExpression(identifier: name),
+                        operatorSymbol: "!=",
+                        rightOperand: NilLiteral()
+                    )),
+                    statements: statements,
+                    elseClause: elseClause
+                ).javaScript(with: indentLevel)
+            }
+            
             return DoStatement(statements: [
                 VariableDeclaration(isStatic: false, name: name, type: nil, expression: nil),
                 IfStatement(
@@ -66,6 +78,18 @@ extension GuardStatement {
                 elseClause: nil
             ).javaScript(with: indentLevel)
         case let .optionalBinding(_, name, expression):
+            if let expression = expression as? IdentifierExpression, expression.identifier == name {
+                return IfStatement(
+                    condition: .boolean(BinaryOperation(
+                        leftOperand: IdentifierExpression(identifier: name),
+                        operatorSymbol: "==",
+                        rightOperand: NilLiteral()
+                    )),
+                    statements: statements,
+                    elseClause: nil
+                ).javaScript(with: indentLevel)
+            }
+            
             return transpileStatements(statements: [
                 VariableDeclaration(isStatic: false, name: name, type: nil, expression: nil),
                 IfStatement(
