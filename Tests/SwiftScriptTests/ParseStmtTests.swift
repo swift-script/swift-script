@@ -16,12 +16,36 @@ class ParseStmtTests: XCTestCase {
                 + "}else if foo{\n"
                 + "} else {"
                 + "}"))
+        XCTAssertTrue(parseSuccess(
+            stmtIf,
+            "if let foo = bar {\n"
+                + "  expr() \n"
+                + "  bar\n"
+                + "}"))
+        XCTAssertTrue(parseSuccess(
+            stmtIf,
+            "if var foo = bar {\n"
+                + "  expr() \n"
+                + "  bar\n"
+                + "}"))
     }
     
     func testStmtGuard() {
         XCTAssertTrue(parseSuccess(
             stmtGuard,
             "guard foo else {\n"
+                + "  expr() \n"
+                + "  bar\n"
+                + "}"))
+        XCTAssertTrue(parseSuccess(
+            stmtGuard,
+            "guard let foo = bar else {\n"
+                + "  expr() \n"
+                + "  bar\n"
+                + "}"))
+        XCTAssertTrue(parseSuccess(
+            stmtGuard,
+            "guard var foo = bar else {\n"
                 + "  expr() \n"
                 + "  bar\n"
                 + "}"))
