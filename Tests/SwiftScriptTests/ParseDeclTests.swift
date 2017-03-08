@@ -14,6 +14,9 @@ class ParseDeclTests: XCTestCase {
         XCTAssertTrue(parseSuccess(
             declFunction,
             "static func foo() { }"))
+        XCTAssertTrue(parseSuccess(
+            declFunction,
+            "func foo<T>(x:T) throws -> C where T == X {}"))
     }
     
     func testDeclInitializer() {
@@ -25,6 +28,9 @@ class ParseDeclTests: XCTestCase {
         XCTAssertTrue(parseSuccess(
             declInitializer,
             "init?() {}"))
+        XCTAssertTrue(parseSuccess(
+            declInitializer,
+            "init?<T>(x: T) where T: Sequence {}"))
     }
     
     func testDeclClass() {
@@ -39,6 +45,10 @@ class ParseDeclTests: XCTestCase {
                 + "  init () {}\n"
                 + "  func foo() {}\n"
                 + "}"))
+        XCTAssertTrue(parseSuccess(
+            declClass, "class Foo: Base {}"))
+        XCTAssertTrue(parseSuccess(
+            declClass, "class Foo<X>: Base where X: Foo {}"))
     }
     
     func testDeclConstant() {

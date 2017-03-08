@@ -200,8 +200,10 @@ func _exprInitializer(_ subj: Expression) -> SwiftParser<InitializerExpression> 
 
 
 func _exprExplicitMember(_ subj: Expression) -> SwiftParser<ExplicitMemberExpression> {
-    return { name in ExplicitMemberExpression(expression: subj, member: name) }
-        <^> OWS *> period *> keywordOrIdentifier
+    return { name in { generics in
+        ExplicitMemberExpression(expression: subj, member: name) }}
+        <^> (OWS *> period *> keywordOrIdentifier)
+        <*> zeroOrOne(OWS *> genericArgs)
 }
 
 
@@ -212,8 +214,10 @@ func _exprSubscript(_ subj: Expression) -> SwiftParser<SubscriptExpression> {
 }
 
 func _exprOptionalChaining(_ subj: Expression) -> SwiftParser<OptionalChainingExpression> {
-    return { name in OptionalChainingExpression(expression: subj, member: name) }
+    return { name in { generics in
+        OptionalChainingExpression(expression: subj, member: name) }}
         <^> char("?") *> OWS *> period *> keywordOrIdentifier
+        <*> zeroOrOne(OWS *> genericArgs)
 }
 
 func _exprDynamicType(_ subj: Expression) -> SwiftParser<DynamicTypeExpression> {
