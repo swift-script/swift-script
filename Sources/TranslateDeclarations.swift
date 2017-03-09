@@ -30,11 +30,11 @@ extension VariableDeclaration {
 
 extension FunctionDeclaration {
     public func javaScript(with indentLevel: Int) -> String {
-        let jsArguments: [String] = arguments.map { _, name, _, initialValue in
-            if let initialValue = initialValue {
-                return "\(name) = \(initialValue)"
+        let jsArguments: [String] = arguments.map { param in
+            if let initialValue = param.defaultArgument {
+                return "\(param.localParameterName) = \(initialValue)"
             } else {
-                return name
+                return param.localParameterName
             }
         }
         
@@ -104,11 +104,11 @@ extension ClassDeclaration­ {
 
 extension InitializerDeclaration­ {
     public func javaScript(with indentLevel: Int) -> String {
-        let jsArguments: [String] = arguments.map { _, name, _, initialValue in
-            if let initialValue = initialValue {
-                return "\(name) = \(initialValue)"
+        let jsArguments: [String] = arguments.map { param in
+            if let initialValue = param.defaultArgument {
+                return "\(param.localParameterName) = \(initialValue)"
             } else {
-                return name
+                return param.localParameterName
             }
         }
         // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called

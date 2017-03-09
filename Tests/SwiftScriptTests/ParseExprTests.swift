@@ -22,6 +22,13 @@ class ParseExprTests: XCTestCase {
             exprIdentifier, "`$1`"))
     }
     
+    func testExprExplicitMember() {
+        XCTAssertTrue(parseSuccess(
+            expr, "foo.bar"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo.bar<A>"))
+    }
+    
     func testExprCall() {
         XCTAssertTrue(parseSuccess(
             expr, "foo(x)"))
