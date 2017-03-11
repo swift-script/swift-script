@@ -8,4 +8,5 @@ struct SupportingLibrary {
     let optionalChain = "function q(expression, command) {\n  const is_null = (expression == null || typeof expression == 'undefined');\n  return is_null ? null : command();\n}\nmodule.exports = {'q': q};\n"
     let optionalTry = "function tryq(command) {\n  try {\n    return command();\n  }\n  catch(e) {\n    return null;\n  }\n}\n"
     let range = "function range(from, to) {\n  return (function* () {\n    var current = from;\n    while (current < to) {\n      yield current++;\n    }\n  })();\n}\n"
+    let closedRange = "function closedRange(from, to) {\n  return (function* () {\n    var current = from;\n    while (current <= to) {\n      yield current++;\n    }\n  })();\n}\n"
 }
