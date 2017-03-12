@@ -64,9 +64,3 @@ public struct SubscriptExpression: Expression {
     public var expression: Expression
     public var arguments: [Expression]
 }
-
-public struct OptionalChainingExpression: Expression {
-    public var expression: Expression
-    public var member: String
-}
-

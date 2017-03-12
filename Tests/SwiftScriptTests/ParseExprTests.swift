@@ -54,13 +54,6 @@ class ParseExprTests: XCTestCase {
             expr, "foo.bar[1, 2]"))
     }
 
-    func testExprOptionalChaining() {
-        XCTAssertTrue(parseSuccess(
-            expr, "foo?.bar"))
-        XCTAssertTrue(parseSuccess(
-            expr, "foo? .bar"))
-    }
-    
     func testExprPostixUnary() {
         XCTAssertTrue(parseSuccess(
             expr, "foo!"))

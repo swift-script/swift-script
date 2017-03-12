@@ -46,7 +46,7 @@ extension PostfixUnaryOperation {
         let value = operand.javaScript(with: indentLevel + 1)
         switch operatorSymbol {
         case "?":
-            return "q(\(value))"
+            fatalError("Never reaches here if semantic analysis is implemented.")
         case "!":
             return "x(\(value))"
         default:

@@ -15,6 +15,11 @@ extension IdentifierExpression {
 
 extension FunctionCallExpression {
     public func javaScript(with indentLevel: Int) -> String {
+        if let expression = expression as? PostfixUnaryOperation, expression.operatorSymbol == "?" {
+            var zelf = self
+            zelf.expression = IdentifierExpression(identifier: "x")
+            return optionalChaining(expression.operand, zelf, indentLevel: indentLevel)
+        }
         var jsArguments: [String] = arguments.map { $1.javaScript(with: indentLevel) }
         if let closure = trailingClosure {
             jsArguments.append(closure.javaScript(with: indentLevel))
@@ -85,6 +90,11 @@ extension WildcardExpression {
 
 extension ExplicitMemberExpression {
     public func javaScript(with indentLevel: Int) -> String {
+        if let expression = expression as? PostfixUnaryOperation, expression.operatorSymbol == "?" {
+            var zelf = self
+            zelf.expression = IdentifierExpression(identifier: "x")
+            return optionalChaining(expression.operand, zelf, indentLevel: indentLevel)
+        }
         if expression is SuperclassExpression, member == "init" {
             return "\(expression.javaScript(with: indentLevel))"
         }
@@ -94,6 +104,11 @@ extension ExplicitMemberExpression {
 
 extension SubscriptExpression {
     public func javaScript(with indentLevel: Int) -> String {
+        if let expression = expression as? PostfixUnaryOperation, expression.operatorSymbol == "?" {
+            var zelf = self
+            zelf.expression = IdentifierExpression(identifier: "x")
+            return optionalChaining(expression.operand, zelf, indentLevel: indentLevel)
+        }
         var jsExpression = expression.javaScript(with: indentLevel)
         if expression is ClosureExpression {
             jsExpression = "(\(jsExpression))"
@@ -102,9 +117,6 @@ extension SubscriptExpression {
     }
 }
 
-extension OptionalChainingExpression {
-    public func javaScript(with indentLevel: Int) -> String {
-        let exp = expression.javaScript(with: indentLevel + 1)
-        return "q(\(exp), (x) => x.\(member)"
-    }
+private func optionalChaining(_ primary: Expression, _ secondary: Expression, indentLevel: Int) -> String {
+    return "q(\(primary.javaScript(with: indentLevel)), (x) => \(secondary.javaScript(with: indentLevel)))"
 }
