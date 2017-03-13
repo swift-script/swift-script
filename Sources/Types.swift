@@ -11,8 +11,8 @@ public struct DictionaryType: Type_ {
     public var valueType: Type_
 }
 
-public struct FunctionType­: Type_ {
-    public var arguments: [(String?, Type_)]
+public struct FunctionType: Type_ {
+    public var arguments: [Type_]
     public var returnType: Type_
 }
 

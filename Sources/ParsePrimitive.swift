@@ -449,8 +449,8 @@ func not<In, Out>(_ p: Parser<In, Out>) -> Parser<In, Void> {
     }
 }
 
-func list<P, T, S>(_ tokL: SwiftParser<P>, _ elem: SwiftParser<T>, _ tokS: SwiftParser<S>, _ tokR: SwiftParser<P>) -> SwiftParser<[T]> {
-    return tokL *> OWS *> sepBy(elem, OWS *> tokS <* OWS) <* OWS <* tokR
+func list<P, T, S>(_ tokL: SwiftParser<P>, _ elem: @autoclosure @escaping () -> SwiftParser<T>, _ tokS: SwiftParser<S>, _ tokR: SwiftParser<P>) -> SwiftParser<[T]> {
+    return tokL *> OWS *> sepBy(elem(), OWS *> tokS <* OWS) <* OWS <* tokR
 }
 
 func list1<P, T, S>(tokL: SwiftParser<P>, elem: SwiftParser<T>,  tokS: SwiftParser<S>, tokR: SwiftParser<P>) -> SwiftParser<[T]> {
