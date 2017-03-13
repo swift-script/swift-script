@@ -59,6 +59,14 @@ class ParseExprTests: XCTestCase {
             expr, "foo!"))
         XCTAssertTrue(parseSuccess(
             expr, "foo!.bar"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo?.bar"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo?()"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo?(bar)"))
+        XCTAssertTrue(parseSuccess(
+            expr, "foo?[bar]"))
     }
     
     func testExprParen() {
