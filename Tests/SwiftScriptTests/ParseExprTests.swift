@@ -56,17 +56,17 @@ class ParseExprTests: XCTestCase {
 
     func testExprPostixUnary() {
         XCTAssertTrue(parseSuccess(
-            expr, "foo!"))
+            exprAtom(isBasic: false), "foo!"))
         XCTAssertTrue(parseSuccess(
-            expr, "foo!.bar"))
+            exprAtom(isBasic: false), "foo!.bar"))
         XCTAssertTrue(parseSuccess(
-            expr, "foo?.bar"))
+            exprAtom(isBasic: false), "foo?.bar"))
         XCTAssertTrue(parseSuccess(
-            expr, "foo?()"))
+            exprAtom(isBasic: false), "foo?()"))
         XCTAssertTrue(parseSuccess(
-            expr, "foo?(bar)"))
+            exprAtom(isBasic: false), "foo?(bar)"))
         XCTAssertTrue(parseSuccess(
-            expr, "foo?[bar]"))
+            exprAtom(isBasic: false), "foo?[bar]"))
     }
     
     func testExprParen() {

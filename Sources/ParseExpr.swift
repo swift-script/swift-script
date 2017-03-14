@@ -219,5 +219,5 @@ func _exprDynamicType(_ subj: Expression) -> SwiftParser<DynamicTypeExpression> 
 func _exprPostfixUnary(_ subj: Expression) -> SwiftParser<PostfixUnaryOperation> {
     return
         { _ in PostfixUnaryOperation(operand: subj, operatorSymbol: "!") }
-        <^> char("!")
+        <^> (char("!") <|> char("?"))
 }
