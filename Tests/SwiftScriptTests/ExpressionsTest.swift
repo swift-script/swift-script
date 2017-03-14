@@ -191,9 +191,29 @@ class ExpressionsTests: XCTestCase {
     }
     
     func testOptionalChainingExpression() {
-        XCTAssertEqual(OptionalChainingExpression(
-            expression: IdentifierExpression(identifier: "foo"),
+        XCTAssertEqual(ExplicitMemberExpression(
+            expression: PostfixUnaryOperation(
+                operand: IdentifierExpression(identifier: "foo"),
+                operatorSymbol: "?"
+            ),
             member: "bar"
-        ).javaScript(with: 0), "q(foo, (x) => x.bar")
+        ).javaScript(with: 0), "q(foo, (x) => x.bar)")
+        
+        XCTAssertEqual(SubscriptExpression(
+            expression: PostfixUnaryOperation(
+                operand: IdentifierExpression(identifier: "foo"),
+                operatorSymbol: "?"
+            ),
+            arguments: [IntegerLiteral(value: 0)]
+        ).javaScript(with: 0), "q(foo, (x) => x[0])")
+        
+        XCTAssertEqual(FunctionCallExpression(
+            expression: PostfixUnaryOperation(
+                operand: IdentifierExpression(identifier: "foo"),
+                operatorSymbol: "?"
+            ),
+            arguments: [],
+            trailingClosure: nil
+        ).javaScript(with: 0), "q(foo, (x) => x())")
     }
 }

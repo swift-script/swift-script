@@ -164,7 +164,6 @@ func exprSuffix(subj: Expression, isBasic: Bool) -> SwiftParser<Expression> {
         <|> (_exprExplicitMember(subj) >>- exprSuffix(isBasic: isBasic))
         <|> (_exprFunctionCall(subj) >>- exprSuffix(isBasic: isBasic))
         <|> (_exprSubscript(subj) >>- exprSuffix(isBasic: isBasic))
-        <|> (_exprOptionalChaining(subj) >>- exprSuffix(isBasic: isBasic))
         <|> (_exprPostfixUnary(subj) >>- exprSuffix(isBasic: isBasic))
     if !isBasic {
         parser = parser
@@ -213,13 +212,6 @@ func _exprSubscript(_ subj: Expression) -> SwiftParser<SubscriptExpression> {
         <^> (OHWS *> list(l_square, expr, comma, r_square))
 }
 
-func _exprOptionalChaining(_ subj: Expression) -> SwiftParser<OptionalChainingExpression> {
-    return { name in { generics in
-        OptionalChainingExpression(expression: subj, member: name) }}
-        <^> char("?") *> OWS *> period *> keywordOrIdentifier
-        <*> zeroOrOne(OWS *> genericArgs)
-}
-
 func _exprDynamicType(_ subj: Expression) -> SwiftParser<DynamicTypeExpression> {
     return fail("not implemented")
 }
@@ -227,5 +219,5 @@ func _exprDynamicType(_ subj: Expression) -> SwiftParser<DynamicTypeExpression> 
 func _exprPostfixUnary(_ subj: Expression) -> SwiftParser<PostfixUnaryOperation> {
     return
         { _ in PostfixUnaryOperation(operand: subj, operatorSymbol: "!") }
-        <^> char("!")
+        <^> (char("!") <|> char("?"))
 }
