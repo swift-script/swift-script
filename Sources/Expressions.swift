@@ -1,5 +1,5 @@
 public protocol Expression: Node {
-    
+    func accept<V: ExpressionVisitor>(_: V) -> V.ExpressionResult
 }
 
 public struct IdentifierExpression: Expression {

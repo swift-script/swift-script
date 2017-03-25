@@ -1,5 +1,5 @@
 public protocol Declaration: Node {
-    
+    func accept<V: DeclarationVisitor>(_: V) -> V.DeclarationResult
 }
 
 public struct ImportDeclaration: Declaration {

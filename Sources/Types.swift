@@ -1,5 +1,5 @@
 public protocol Type_ {
-    
+    func accept<V: TypeVisitor>(_: V) -> V.TypeResult
 }
 
 public struct ArrayType: Type_ {
