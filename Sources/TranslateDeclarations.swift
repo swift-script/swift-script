@@ -75,11 +75,11 @@ extension ClassDeclaration­ {
                     fatalError("Never reaches here.")
                 }
                 
-                initializer.body!.append(BinaryOperation(
+                initializer.body!.append(ExprStatement(BinaryOperation(
                     leftOperand: ExplicitMemberExpression(expression: SelfExpression(), member: name),
                     operatorSymbol: "=",
                     rightOperand: initialValue
-                ))
+                )))
             }
             
             return initializer

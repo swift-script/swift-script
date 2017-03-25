@@ -49,7 +49,9 @@ extension IfStatement {
             }
             
             return DoStatement(statements: [
-                VariableDeclaration(isStatic: false, name: name, type: nil, expression: nil),
+                DeclStatement(
+                    VariableDeclaration(isStatic: false, name: name, type: nil, expression: nil)
+                ),
                 IfStatement(
                     condition: .boolean(BinaryOperation(
                         leftOperand: ParenthesizedExpression(expression: BinaryOperation(
@@ -91,7 +93,7 @@ extension GuardStatement {
             }
             
             return transpileStatements(statements: [
-                VariableDeclaration(isStatic: false, name: name, type: nil, expression: nil),
+                DeclStatement(VariableDeclaration(isStatic: false, name: name, type: nil, expression: nil)),
                 IfStatement(
                     condition: .boolean(BinaryOperation(
                         leftOperand: ParenthesizedExpression(expression: BinaryOperation(
@@ -166,5 +168,17 @@ extension DoStatement {
     public func javaScript(with indentLevel: Int) -> String {
         // TODO: catch
         return "\(indent(of: indentLevel))\(transpileBlock(statements: statements, indentLevel: indentLevel))\n"
+    }
+}
+
+extension ExprStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        return "\(indent(of: indentLevel))\(expression.javaScript(with: indentLevel));\n"
+    }
+}
+
+extension DeclStatement {
+    public func javaScript(with indentLevel: Int) -> String {
+        return declaration.javaScript(with: indentLevel)
     }
 }

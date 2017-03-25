@@ -11,11 +11,11 @@ class StatementsTests: XCTestCase {
                 rightOperand: IntegerLiteral(value: 10)
             ),
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, IdentifierExpression(identifier: "i"))],
                     trailingClosure: nil
-                )
+                ))
             ]
         ).javaScript(with: 0), "for (i of range(0, 10) {\n    console.log(i);\n}\n")
         
@@ -28,11 +28,11 @@ class StatementsTests: XCTestCase {
                 rightOperand: IntegerLiteral(value: 10)
             ),
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, IdentifierExpression(identifier: "i"))],
                     trailingClosure: nil
-                )
+                ))
             ]
         ).javaScript(with: 1), "    for (i of range(0, 10) {\n        console.log(i);\n    }\n")
     }
@@ -41,11 +41,11 @@ class StatementsTests: XCTestCase {
         XCTAssertEqual(WhileStatement(
             condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ]
         ).javaScript(with: 0), "while (foo < 42) {\n    console.log(\"Hello\");\n}\n")
         
@@ -53,11 +53,11 @@ class StatementsTests: XCTestCase {
         XCTAssertEqual(WhileStatement(
             condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ]
         ).javaScript(with: 1), "    while (foo < 42) {\n        console.log(\"Hello\");\n    }\n")
     }
@@ -65,11 +65,11 @@ class StatementsTests: XCTestCase {
     func testRepeatWhileStatement() {
         XCTAssertEqual(RepeatWhileStatement(
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ],
             condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))
         ).javaScript(with: 0), "repeat {\n    console.log(\"Hello\");\n} while (foo < 42)\n")
@@ -77,11 +77,11 @@ class StatementsTests: XCTestCase {
         // indent
         XCTAssertEqual(RepeatWhileStatement(
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ],
             condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))
         ).javaScript(with: 1), "    repeat {\n        console.log(\"Hello\");\n    } while (foo < 42)\n")
@@ -91,11 +91,11 @@ class StatementsTests: XCTestCase {
         XCTAssertEqual(IfStatement(
             condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ],
             elseClause: nil
         ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n}\n")
@@ -104,18 +104,18 @@ class StatementsTests: XCTestCase {
         XCTAssertEqual(IfStatement(
             condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ],
             elseClause: .else_([
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Bye"))],
                     trailingClosure: nil
-                )
+                ))
             ])
         ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else {\n    console.log(\"Bye\");\n}\n")
         
@@ -123,20 +123,20 @@ class StatementsTests: XCTestCase {
         XCTAssertEqual(IfStatement(
             condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ],
             elseClause: .elseIf(IfStatement(
                 condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "==", rightOperand: IntegerLiteral(value: 0))),
                 statements: [
-                    FunctionCallExpression(
+                    ExprStatement(FunctionCallExpression(
                         expression: IdentifierExpression(identifier: "print"),
                         arguments: [(nil, StringLiteral(value: "Bye"))],
                         trailingClosure: nil
-                    ),
+                    )),
                 ],
                 elseClause: nil
             ))
@@ -146,20 +146,20 @@ class StatementsTests: XCTestCase {
         XCTAssertEqual(IfStatement(
             condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ],
             elseClause: .elseIf(IfStatement(
                 condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "==", rightOperand: IntegerLiteral(value: 0))),
                 statements: [
-                    FunctionCallExpression(
+                    ExprStatement(FunctionCallExpression(
                         expression: IdentifierExpression(identifier: "print"),
                         arguments: [(nil, StringLiteral(value: "Bye"))],
                         trailingClosure: nil
-                    ),
+                    )),
                     ],
                 elseClause: nil
             ))
@@ -169,7 +169,7 @@ class StatementsTests: XCTestCase {
         XCTAssertEqual(IfStatement(
             condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "bar")),
             statements: [
-                FunctionCallExpression(expression: IdentifierExpression(identifier: "print"), arguments: [(nil, IdentifierExpression(identifier: "foo"))], trailingClosure: nil),
+                ExprStatement(FunctionCallExpression(expression: IdentifierExpression(identifier: "print"), arguments: [(nil, IdentifierExpression(identifier: "foo"))], trailingClosure: nil)),
             ],
             elseClause: nil
         ).javaScript(with: 0), "{\n    let foo;\n    if ((foo = bar) != null) {\n        console.log(foo);\n    }\n}\n")
@@ -178,7 +178,7 @@ class StatementsTests: XCTestCase {
         XCTAssertEqual(IfStatement(
             condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "foo")),
             statements: [
-                FunctionCallExpression(expression: IdentifierExpression(identifier: "print"), arguments: [(nil, IdentifierExpression(identifier: "foo"))], trailingClosure: nil),
+                ExprStatement(FunctionCallExpression(expression: IdentifierExpression(identifier: "print"), arguments: [(nil, IdentifierExpression(identifier: "foo"))], trailingClosure: nil)),
                 ],
             elseClause: nil
         ).javaScript(with: 0), "if (foo != null) {\n    console.log(foo);\n}\n")
@@ -293,11 +293,11 @@ class StatementsTests: XCTestCase {
     func testDoStatement() {
         XCTAssertEqual(DoStatement(
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ],
             catchClauses: []
         ).javaScript(with: 0), "{\n    console.log(\"Hello\");\n}\n")
@@ -306,11 +306,11 @@ class StatementsTests: XCTestCase {
         // indent
         XCTAssertEqual(DoStatement(
             statements: [
-                FunctionCallExpression(
+                ExprStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
                     arguments: [(nil, StringLiteral(value: "Hello"))],
                     trailingClosure: nil
-                )
+                ))
             ],
             catchClauses: []
         ).javaScript(with: 1), "    {\n        console.log(\"Hello\");\n    }\n")
