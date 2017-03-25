@@ -12,7 +12,7 @@ struct SupportingLibrary {
         case optionalChaining
         case range
         case closedRange
-        case `is`
+        case typeChecking
         case nilCoalescing
 
         var function: Function {
@@ -57,7 +57,7 @@ struct SupportingLibrary {
                     name: "closedRange",
                     declaration: "function closedRange(from, to) {\n  return (function* () {\n    var current = from;\n    while (current <= to) {\n      yield current++;\n    }\n  })();\n}"
                 )
-            case .`is`:
+            case .typeChecking:
                 return Function(
                     name: "is",
                     declaration: "function is(expression, type) {\n  if (type == String) {\n    return typeof (expression) == 'string' || expression instanceof String;\n  } else if (type == Number) {\n    return typeof (expression) == 'number' || expression instanceof Number;\n  }\n  return expression instanceof type;\n}"
