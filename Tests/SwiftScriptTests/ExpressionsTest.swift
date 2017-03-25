@@ -27,7 +27,7 @@ class ExpressionsTests: XCTestCase {
             arguments: [],
             hasThrows: false,
             result: nil,
-            statements: [IntegerLiteral(value: 42)]
+            statements: [ExpressionStatement(IntegerLiteral(value: 42))]
         ).javaScript(with: 0), "() => 42")
         
         // multiple statments
@@ -36,7 +36,7 @@ class ExpressionsTests: XCTestCase {
             hasThrows: false,
             result: nil,
             statements: [
-                ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42)),
+                DeclarationStatement(ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42))),
                 ReturnStatement(expression: IdentifierExpression(identifier: "foo"))
             ]
         ).javaScript(with: 0), "() => {\n    const foo = 42;\n    return foo;\n}")
@@ -47,7 +47,7 @@ class ExpressionsTests: XCTestCase {
             hasThrows: false,
             result: nil,
             statements: [
-                ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42)),
+                DeclarationStatement(ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42))),
                 ReturnStatement(expression: IdentifierExpression(identifier: "foo"))
             ]
         ).javaScript(with: 1), "() => {\n        const foo = 42;\n        return foo;\n    }")
@@ -57,7 +57,7 @@ class ExpressionsTests: XCTestCase {
             arguments: [],
             hasThrows: true,
             result: nil,
-            statements: [IntegerLiteral(value: 42)]
+            statements: [ExpressionStatement(IntegerLiteral(value: 42))]
         ).javaScript(with: 0), "() => 42")
         
         // arguments
@@ -65,11 +65,11 @@ class ExpressionsTests: XCTestCase {
             arguments: [("x", nil), ("y", nil)],
             hasThrows: false,
             result: nil,
-            statements: [BinaryOperation(
+            statements: [ExpressionStatement(BinaryOperation(
                 leftOperand: IdentifierExpression(identifier: "x"),
                 operatorSymbol: "+",
                 rightOperand: IdentifierExpression(identifier: "y")
-            )]
+            ))]
         ).javaScript(with: 0), "(x, y) => x + y")
         
         // arguments with types
@@ -77,11 +77,11 @@ class ExpressionsTests: XCTestCase {
             arguments: [("x", TypeIdentifier­(names: ["Int"])), ("y", TypeIdentifier­(names: ["Int"]))],
             hasThrows: false,
             result: TypeIdentifier­(names: ["Int"]),
-            statements: [BinaryOperation(
+            statements: [ExpressionStatement(BinaryOperation(
                 leftOperand: IdentifierExpression(identifier: "x"),
                 operatorSymbol: "+",
                 rightOperand: IdentifierExpression(identifier: "y")
-                )]
+                ))]
             ).javaScript(with: 0), "(x, y) => x + y")
     }
     
@@ -155,7 +155,7 @@ class ExpressionsTests: XCTestCase {
         // calls just after a closure expression
         XCTAssertEqual(FunctionCallExpression(
             expression: ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: [
-                IntegerLiteral(value: 42),
+                ExpressionStatement(IntegerLiteral(value: 42)),
             ]),
             arguments: [],
             trailingClosure: nil
@@ -184,7 +184,7 @@ class ExpressionsTests: XCTestCase {
         // calls just after a closure expression
         XCTAssertEqual(SubscriptExpression(
             expression: ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: [
-                IntegerLiteral(value: 42),
+                ExpressionStatement(IntegerLiteral(value: 42)),
                 ]),
             arguments: [IntegerLiteral(value: 0)]
         ).javaScript(with: 0), "(() => 42)[0]")

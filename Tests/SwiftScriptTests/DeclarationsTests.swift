@@ -181,14 +181,14 @@ class DeclarationsTests: XCTestCase {
                     isFailable: false,
                     hasThrows: false,
                     body: [
-                        BinaryOperation(
+                        ExpressionStatement(BinaryOperation(
                             leftOperand: ExplicitMemberExpression(
                                 expression: SelfExpression(),
                                 member: "bar"
                             ),
                             operatorSymbol: "=",
                             rightOperand: IntegerLiteral(value: 42)
-                        )
+                        ))
                     ]
                 ),
             ]
@@ -239,14 +239,14 @@ class DeclarationsTests: XCTestCase {
                     isFailable: false,
                     hasThrows: false,
                     body: [
-                        BinaryOperation(
+                        ExpressionStatement(BinaryOperation(
                             leftOperand: ExplicitMemberExpression(
                                 expression: SelfExpression(),
                                 member: "bar"
                             ),
                             operatorSymbol: "=",
                             rightOperand: IntegerLiteral(value: 42)
-                        )
+                        ))
                     ]
                 ),
                 ]
@@ -259,11 +259,11 @@ class DeclarationsTests: XCTestCase {
             isFailable: false,
             hasThrows: false,
             body: [
-                BinaryOperation(
+                ExpressionStatement(BinaryOperation(
                     leftOperand: ExplicitMemberExpression(expression: SelfExpression(), member: "foo"),
                     operatorSymbol: "=",
                     rightOperand: IntegerLiteral(value: 42)
-                )
+                ))
             ]
         ).javaScript(with: 0), "constructor() {\n    this.foo = 42;\n}\n")
         
@@ -286,7 +286,7 @@ class DeclarationsTests: XCTestCase {
             isFailable: false,
             hasThrows: false,
             body: [
-                BinaryOperation(
+                ExpressionStatement(BinaryOperation(
                     leftOperand: ExplicitMemberExpression(expression: SelfExpression(), member: "foo"),
                     operatorSymbol: "=",
                     rightOperand: BinaryOperation(
@@ -294,7 +294,7 @@ class DeclarationsTests: XCTestCase {
                         operatorSymbol: "+",
                         rightOperand: IdentifierExpression(identifier: "baz")
                     )
-                )
+                ))
             ]
         ).javaScript(with: 0), "constructor(bar, baz) {\n    this.foo = bar + baz;\n}\n")
         
@@ -304,11 +304,11 @@ class DeclarationsTests: XCTestCase {
             isFailable: false,
             hasThrows: false,
             body: [
-                BinaryOperation(
+                ExpressionStatement(BinaryOperation(
                     leftOperand: ExplicitMemberExpression(expression: SelfExpression(), member: "foo"),
                     operatorSymbol: "=",
                     rightOperand: IntegerLiteral(value: 42)
-                )
+                ))
             ]
         ).javaScript(with: 1), "    constructor() {\n        this.foo = 42;\n    }\n")
     }
