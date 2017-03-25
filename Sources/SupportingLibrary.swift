@@ -77,7 +77,7 @@ struct SupportingLibrary {
     }
 
     static func javaScript(for supports: Set<Support>, namespace: String = "$ss") -> String {
-        let localVariableName = "globalObj"
+        let localVariableName = "ss"
         let functionDeclarations = supports.map { support -> String in
             let function = support.function
             let declaration = addIndent(to: function.declaration, indentLevel: 1)
