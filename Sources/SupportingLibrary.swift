@@ -1,4 +1,6 @@
 struct SupportingLibrary {
+    static let defaultNamespace = "$ss"
+    
     struct Function {
         let name: String
         let declaration: String
@@ -76,7 +78,7 @@ struct SupportingLibrary {
         return (text.components(separatedBy: "\n").map { spaces + $0 }).joined(separator: "\n")
     }
 
-    static func javaScript(for supports: Set<Support>, namespace: String = "$ss") -> String {
+    static func javaScript(for supports: Set<Support>, namespace: String = defaultNamespace) -> String {
         let localVariableName = "ss"
         let functionDeclarations = supports.map { support -> String in
             let function = support.function
