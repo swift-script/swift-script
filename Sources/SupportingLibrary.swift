@@ -5,7 +5,19 @@ struct SupportingLibrary {
         let name: String
         let implementation: String
         
+        private static let idToFunction: [Id: Function] = {
+            var idToFunction: [Id: Function] = [:]
+            for id in Id.values {
+                idToFunction[id] = Function(id)
+            }
+            return idToFunction
+        }()
+        
         init(id: Id) {
+            self.init(id)
+        }
+        
+        private init(_ id: Id) {
             switch id {
             case .forcedCast:
                 name =  "asx"
@@ -55,6 +67,19 @@ struct SupportingLibrary {
             case closedRange
             case typeChecking
             case nilCoalescing
+            
+            static let values: [Id] = [
+                .forcedCast,
+                .optionalCast,
+                .forcedTry,
+                .optionalTry,
+                .forcedUnwrapping,
+                .optionalChaining,
+                .range,
+                .closedRange,
+                .typeChecking,
+                .nilCoalescing,
+            ]
         }
     }
 
