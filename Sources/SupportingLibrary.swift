@@ -4,6 +4,10 @@ struct SupportingLibrary {
     struct Function {
         let name: String
         let declaration: String
+        
+        func callExpression(expression: Expression, arguments: [Expression], namepace: String = SupportingLibrary.defaultNamespace) -> FunctionCallExpression {
+            return FunctionCallExpression(expression: ExplicitMemberExpression(expression: expression, member: name), arguments: arguments.map { (nil, $0) }, trailingClosure: nil)
+        }
     }
     enum Support {
         case forcedCast
