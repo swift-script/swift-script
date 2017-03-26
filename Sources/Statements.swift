@@ -84,7 +84,7 @@ public struct LabeledStatement: Statement {
 public struct BreakStatement: Statement {
     public var labelName: String?
     
-    public init(labelName: String?) {
+    public init(labelName: String? = nil) {
         self.labelName = labelName
     }
 }
@@ -93,7 +93,7 @@ public struct BreakStatement: Statement {
 public struct ContinueStatement: Statement {
     public var labelName: String?
     
-    public init(labelName: String?) {
+    public init(labelName: String? = nil) {
         self.labelName = labelName
     }
 }

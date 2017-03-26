@@ -241,19 +241,19 @@ class StatementsTests: XCTestCase {
     }
     
     func testBreakStatement() {
-        XCTAssertEqual(BreakStatement(labelName: nil).javaScript(with: 0), "break;\n")
+        XCTAssertEqual(BreakStatement().javaScript(with: 0), "break;\n")
         XCTAssertEqual(BreakStatement(labelName: "foo").javaScript(with: 0), "break foo;\n")
 
         // indent
-        XCTAssertEqual(BreakStatement(labelName: nil).javaScript(with: 1), "    break;\n")
+        XCTAssertEqual(BreakStatement().javaScript(with: 1), "    break;\n")
     }
     
     func testContinueStatement() {
-        XCTAssertEqual(ContinueStatement(labelName: nil).javaScript(with: 0), "continue;\n")
+        XCTAssertEqual(ContinueStatement().javaScript(with: 0), "continue;\n")
         XCTAssertEqual(ContinueStatement(labelName: "foo").javaScript(with: 0), "continue foo;\n")
         
         // indent
-        XCTAssertEqual(ContinueStatement(labelName: nil).javaScript(with: 1), "    continue;\n")
+        XCTAssertEqual(ContinueStatement().javaScript(with: 1), "    continue;\n")
     }
     
     func testFallthroughStatement() {
