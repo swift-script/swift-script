@@ -89,16 +89,16 @@ struct SupportingLibrary {
     }
 
     static func javaScript(for ids: Set<Function.Id>, namespace: String = defaultNamespace) -> String {
-        let localVariableName = "ss"
+        let namespaceVariable = "ns"
         let functionDeclarations = ids.map { id -> String in
             let function = Function(id: id)
             let declaration = addIndent(to: function.implementation, indentLevel: 1)
-            return "\(declaration)\n\(indent(of: 1))\(localVariableName).\(function.name) = \(function.name);"
+            return "\(declaration)\n\(indent(of: 1))\(namespaceVariable).\(function.name) = \(function.name);"
         }.joined(separator: "\n")
 
         return [
             "\(namespace) = {};",
-            "((\(localVariableName)) => {",
+            "((\(namespaceVariable)) => {",
             functionDeclarations,
             "})(\(namespace));"
         ].joined(separator: "\n")
