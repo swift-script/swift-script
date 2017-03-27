@@ -14,7 +14,7 @@ struct SupportingLibrary {
         }()
         
         init(id: Id) {
-            self.init(id)
+            self = Function.idToFunction[id]!
         }
         
         private init(_ id: Id) {
