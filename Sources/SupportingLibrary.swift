@@ -21,34 +21,34 @@ struct SupportingLibrary {
             switch id {
             case .forcedCast:
                 name =  "asx"
-                declaration = "function asx(expression, type_test) {\n  if type_test() {\n    throw Error(\"Failed to cast\");\n  }\n  return expression;\n}"
+                declaration = "    function asx(expression, type_test) {\n        if type_test() {\n            throw Error(\"Failed to cast\");\n        }\n        return expression;\n    }"
             case .optionalCast:
                 name =  "asq"
-                declaration = "function asq(expression, type_test) {\n  return type_test() ? expression : null;\n}"
+                declaration = "    function asq(expression, type_test) {\n        return type_test() ? expression : null;\n    }"
             case .forcedTry:
                 name =  "tryx"
-                declaration = "function tryx(command) {\n  try {\n    return command();\n  }\n  catch(e) {\n    // TODO: some force stopping method\n    throw e;\n  }\n}"
+                declaration = "    function tryx(command) {\n        try {\n            return command();\n        }\n        catch(e) {\n            // TODO: some force stopping method\n            throw e;\n        }\n    }"
             case .optionalTry:
                 name =  "tryq"
-                declaration = "function tryq(command) {\n  try {\n    return command();\n  }\n  catch(e) {\n    return null;\n  }\n}"
+                declaration = "    function tryq(command) {\n        try {\n            return command();\n        }\n        catch(e) {\n            return null;\n        }\n    }"
             case .forcedUnwrapping:
                 name =  "x"
-                declaration = "function x(expression) {\n  const is_null = (expression == null || typeof expression == 'undefined');\n  if (is_null) {\n    throw Error(\"Failed unwrapping\");\n  }\n  return expression;\n}"
+                declaration = "    function x(expression) {\n        const is_null = (expression == null || typeof expression == 'undefined');\n        if (is_null) {\n            throw Error(\"Failed unwrapping\");\n        }\n        return expression;\n    }"
             case .optionalChaining:
                 name =  "q"
-                declaration = "function q(expression, command) {\n  const is_null = (expression == null || typeof expression == 'undefined');\n  return is_null ? null : command();\n}"
+                declaration = "    function q(expression, command) {\n        const is_null = (expression == null || typeof expression == 'undefined');\n        return is_null ? null : command();\n    }"
             case .range:
                 name =  "range"
-                declaration = "function range(from, to) {\n  return (function* () {\n    var current = from;\n    while (current < to) {\n      yield current++;\n    }\n  })();\n}"
+                declaration = "    function range(from, to) {\n        return (function* () {\n            var current = from;\n            while (current < to) {\n                yield current++;\n            }\n        })();\n    }"
             case .closedRange:
                 name =  "closedRange"
-                declaration = "function closedRange(from, to) {\n  return (function* () {\n    var current = from;\n    while (current <= to) {\n      yield current++;\n    }\n  })();\n}"
+                declaration = "    function closedRange(from, to) {\n        return (function* () {\n            var current = from;\n            while (current <= to) {\n                yield current++;\n            }\n        })();\n    }"
             case .typeChecking:
                 name =  "is"
-                declaration = "function is(expression, type) {\n  if (type == String) {\n    return typeof (expression) == 'string' || expression instanceof String;\n  } else if (type == Number) {\n    return typeof (expression) == 'number' || expression instanceof Number;\n  }\n  return expression instanceof type;\n}"
+                declaration = "    function is(expression, type) {\n        if (type == String) {\n            return typeof (expression) == 'string' || expression instanceof String;\n        } else if (type == Number) {\n            return typeof (expression) == 'number' || expression instanceof Number;\n        }\n        return expression instanceof type;\n    }"
             case .nilCoalescing:
                 name =  "qq"
-                declaration = "function qq(expression, value) {\n  const is_null = (expression == null || typeof expression == 'undefined');\n  return is_null ? value : expression;\n}"
+                declaration = "    function qq(expression, value) {\n        const is_null = (expression == null || typeof expression == 'undefined');\n        return is_null ? value : expression;\n    }"
             }
         }
         
@@ -83,17 +83,11 @@ struct SupportingLibrary {
         }
     }
 
-    private static func addIndent(to text: String, indentLevel: Int) -> String {
-        let spaces = indent(of: indentLevel)
-        return (text.components(separatedBy: "\n").map { spaces + $0 }).joined(separator: "\n")
-    }
-
     static func javaScript(for ids: Set<Function.Id>, namespace: String = defaultNamespace) -> String {
         let namespaceVariable = "ns"
         let functionDeclarations = ids.map { id -> String in
             let function = Function(id: id)
-            let declaration = addIndent(to: function.declaration, indentLevel: 1)
-            return "\(declaration)\n\(indent(of: 1))\(namespaceVariable).\(function.name) = \(function.name);"
+            return "\(function.declaration)\n    \(namespaceVariable).\(function.name) = \(function.name);"
         }.joined(separator: "\n")
 
         return [
