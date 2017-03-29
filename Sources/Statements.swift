@@ -1,5 +1,5 @@
 public protocol Statement: Node {
-    func accept<V: StatementVisitor>(_: V) -> V.StatementResult
+    func accept<V: StatementVisitor>(_: V) throws -> V.StatementResult
 }
 
 public struct ForInStatement: Statement {

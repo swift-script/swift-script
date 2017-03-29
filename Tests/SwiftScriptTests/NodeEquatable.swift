@@ -29,7 +29,7 @@ func isElementsEqual<T>(_ lhs: [T], _ rhs: [T], where elementEqual: (T, T) -> Bo
 // Node equals
 
 func == (lhs: Declaration, rhs: Declaration) -> Bool {
-    return lhs.accept(DeclarationEqual())(rhs)
+    return try! lhs.accept(DeclarationEqual())(rhs)
 }
 func == (lhs: Declaration?, rhs: Declaration?) -> Bool {
     return isNonNullEqual(lhs, rhs) { $0 == $1 }
@@ -42,7 +42,7 @@ func == (lhs: [Declaration]?, rhs: [Declaration]?) -> Bool {
 }
 
 func == (lhs: Statement, rhs: Statement) -> Bool {
-    return lhs.accept(StatementEqual())(rhs)
+    return try! lhs.accept(StatementEqual())(rhs)
 }
 func == (lhs: Statement?, rhs: Statement?) -> Bool {
     return isNonNullEqual(lhs, rhs) { $0 == $1 }
@@ -55,7 +55,7 @@ func == (lhs: [Statement]?, rhs: [Statement]?) -> Bool {
 }
 
 func == (lhs: Expression, rhs: Expression) -> Bool {
-    return lhs.accept(ExpressionEqual())(rhs)
+    return try! lhs.accept(ExpressionEqual())(rhs)
 }
 func == (lhs: Expression?, rhs: Expression?) -> Bool {
     return isNonNullEqual(lhs, rhs) { $0 == $1 }
@@ -68,7 +68,7 @@ func == (lhs: [Expression]?, rhs: [Expression]?) -> Bool {
 }
 
 func == (lhs: Type_, rhs: Type_) -> Bool {
-    return lhs.accept(TypeEqual())(rhs)
+    return try! lhs.accept(TypeEqual())(rhs)
 }
 func == (lhs: Type_?, rhs: Type_?) -> Bool {
     return isNonNullEqual(lhs, rhs) { $0 == $1 }
