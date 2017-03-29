@@ -114,16 +114,16 @@ public protocol DeclarationVisitor {
     func visit(_: VariableDeclaration) throws -> DeclarationResult
     func visit(_: TypeAliasDeclaration) throws -> DeclarationResult
     func visit(_: FunctionDeclaration) throws -> DeclarationResult
-    func visit(_: EnumDeclaration­) throws -> DeclarationResult
-    func visit(_: StructDeclaration­) throws -> DeclarationResult
-    func visit(_: ClassDeclaration­) throws -> DeclarationResult
-    func visit(_: ProtocolDeclaration­) throws -> DeclarationResult
-    func visit(_: InitializerDeclaration­) throws -> DeclarationResult
-    func visit(_: DeinitializerDeclaration­) throws -> DeclarationResult
-    func visit(_: ExtensionDeclaration­) throws -> DeclarationResult
-    func visit(_: SubscriptDeclaration­) throws -> DeclarationResult
-    func visit(_: OperatorDeclaration­) throws -> DeclarationResult
-    func visit(_: PrecedenceGroupDeclaration­) throws -> DeclarationResult
+    func visit(_: EnumDeclaration) throws -> DeclarationResult
+    func visit(_: StructDeclaration) throws -> DeclarationResult
+    func visit(_: ClassDeclaration) throws -> DeclarationResult
+    func visit(_: ProtocolDeclaration) throws -> DeclarationResult
+    func visit(_: InitializerDeclaration) throws -> DeclarationResult
+    func visit(_: DeinitializerDeclaration) throws -> DeclarationResult
+    func visit(_: ExtensionDeclaration) throws -> DeclarationResult
+    func visit(_: SubscriptDeclaration) throws -> DeclarationResult
+    func visit(_: OperatorDeclaration) throws -> DeclarationResult
+    func visit(_: PrecedenceGroupDeclaration) throws -> DeclarationResult
 }
 
 extension ImportDeclaration {
@@ -141,34 +141,34 @@ extension TypeAliasDeclaration {
 extension FunctionDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension EnumDeclaration­ {
+extension EnumDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension StructDeclaration­ {
+extension StructDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension ClassDeclaration­ {
+extension ClassDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension ProtocolDeclaration­ {
+extension ProtocolDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension InitializerDeclaration­ {
+extension InitializerDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension DeinitializerDeclaration­ {
+extension DeinitializerDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension ExtensionDeclaration­ {
+extension ExtensionDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension SubscriptDeclaration­ {
+extension SubscriptDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension OperatorDeclaration­ {
+extension OperatorDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
-extension PrecedenceGroupDeclaration­ {
+extension PrecedenceGroupDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
 
@@ -248,7 +248,7 @@ public protocol TypeVisitor {
     func visit(_: ArrayType) throws -> TypeResult
     func visit(_: DictionaryType) throws -> TypeResult
     func visit(_: FunctionType) throws -> TypeResult
-    func visit(_: TypeIdentifier­) throws -> TypeResult
+    func visit(_: TypeIdentifier) throws -> TypeResult
     func visit(_: TupleType) throws -> TypeResult
     func visit(_: OptionalType) throws -> TypeResult
     func visit(_: ImplicitlyUnwrappedOptionalType) throws -> TypeResult
@@ -264,7 +264,7 @@ extension DictionaryType {
 extension FunctionType {
     public func accept<V : TypeVisitor>(_ v: V) throws -> V.TypeResult { return try v.visit(self) }
 }
-extension TypeIdentifier­ {
+extension TypeIdentifier {
     public func accept<V : TypeVisitor>(_ v: V) throws -> V.TypeResult { return try v.visit(self) }
 }
 extension TupleType {

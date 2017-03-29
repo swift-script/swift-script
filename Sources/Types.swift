@@ -16,7 +16,7 @@ public struct FunctionType: Type_ {
     public var returnType: Type_
 }
 
-public struct TypeIdentifier­: Type_ {
+public struct TypeIdentifier: Type_ {
     public var names: [String]
 }
 

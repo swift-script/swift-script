@@ -45,56 +45,56 @@ public struct FunctionDeclaration: Declaration {
 }
 
 
-public struct EnumDeclaration­: Declaration {
+public struct EnumDeclaration: Declaration {
     // Unsupported
 }
 
 
-public struct StructDeclaration­: Declaration {
+public struct StructDeclaration: Declaration {
     // Unsupported
 }
 
 
-public struct ClassDeclaration­: Declaration {
+public struct ClassDeclaration: Declaration {
     public var name: String
     public var superTypes: [Type_]
     public var members: [Declaration]
 }
 
 
-public struct ProtocolDeclaration­: Declaration {
+public struct ProtocolDeclaration: Declaration {
     public var name: String
     // Only `name` is used
 }
 
 
-public struct InitializerDeclaration­: Declaration {
+public struct InitializerDeclaration: Declaration {
     public var arguments: [Parameter]
     public var isFailable: Bool
     public var hasThrows: Bool
     public var body: [Statement]?
 }
 
-public struct DeinitializerDeclaration­: Declaration {
+public struct DeinitializerDeclaration: Declaration {
     // Unsupported
 }
 
 
-public struct ExtensionDeclaration­: Declaration {
+public struct ExtensionDeclaration: Declaration {
     // TODO
 }
 
 
-public struct SubscriptDeclaration­: Declaration {
+public struct SubscriptDeclaration: Declaration {
     // Unsupported
 }
 
 
-public struct OperatorDeclaration­: Declaration {
+public struct OperatorDeclaration: Declaration {
     // Unsupported
 }
 
 
-public struct PrecedenceGroupDeclaration­: Declaration {
+public struct PrecedenceGroupDeclaration: Declaration {
     // Unsupported
 }

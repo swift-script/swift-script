@@ -11,12 +11,12 @@ class ParseTypeTests: XCTestCase {
         ParseEqual(
             type,
             "[Foo]",
-            ArrayType(type: TypeIdentifier­(names: ["Foo"]))
+            ArrayType(type: TypeIdentifier(names: ["Foo"]))
         )
         ParseEqual(
             type,
             "[ Foo ]",
-            ArrayType(type: TypeIdentifier­(names: ["Foo"]))
+            ArrayType(type: TypeIdentifier(names: ["Foo"]))
         )
     }
     func testTypeDictionary() {

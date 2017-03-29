@@ -125,18 +125,18 @@ fileprivate func _declMembers() -> SwiftParser<[Declaration]> {
     return l_brace *> OWS *> sepEndBy(decl, stmtSep) <* OWS <* r_brace
 }
 
-func _declEnum() -> SwiftParser<EnumDeclaration­> {
+func _declEnum() -> SwiftParser<EnumDeclaration> {
     return fail("not implemented")
 }
 
-func _declStruct() -> SwiftParser<StructDeclaration­> {
+func _declStruct() -> SwiftParser<StructDeclaration> {
     return fail("not implemented")
 }
 
 let declClass = _declClass()
-func _declClass() -> SwiftParser<ClassDeclaration­> {
+func _declClass() -> SwiftParser<ClassDeclaration> {
     return { name in { generics in { inherits in { whereClause in { members in
-        ClassDeclaration­(name: name, superTypes: inherits ?? [], members: members) }}}}}
+        ClassDeclaration(name: name, superTypes: inherits ?? [], members: members) }}}}}
         <^> (kw_class *> WS *> identifier)
         <*> zeroOrOne(OWS *> declGenericParams)
         <*> zeroOrOne(OWS *> colon *> OWS *> sepBy1(type, OWS *> comma <* OWS))
@@ -144,12 +144,12 @@ func _declClass() -> SwiftParser<ClassDeclaration­> {
         <*> (OWS *> declMembers)
 }
 
-func _declProtocol() -> SwiftParser<ProtocolDeclaration­> {
+func _declProtocol() -> SwiftParser<ProtocolDeclaration> {
     return fail("not implemented")
 }
 
 let declInitializer = _declInitializer()
-func _declInitializer() -> SwiftParser<InitializerDeclaration­> {
+func _declInitializer() -> SwiftParser<InitializerDeclaration> {
     struct Signature {
         let generics: [GenericParam]?
         let params: [Parameter]
@@ -165,16 +165,16 @@ func _declInitializer() -> SwiftParser<InitializerDeclaration­> {
         <*> zeroOrOne(OWS *> declGenericWhere)
     
     return  { isFailable in { signature in { body in
-        InitializerDeclaration­(arguments: signature.params, isFailable: isFailable != nil, hasThrows: signature.hasThrows, body: body) }}}
+        InitializerDeclaration(arguments: signature.params, isFailable: isFailable != nil, hasThrows: signature.hasThrows, body: body) }}}
         <^> (kw_init *> zeroOrOne(char("?")))
         <*> signature
         <*> (OWS *> stmtBrace)
 }
 
-func _declDeinitializer() -> SwiftParser<DeinitializerDeclaration­> {
+func _declDeinitializer() -> SwiftParser<DeinitializerDeclaration> {
     return fail("not implemented")
 }
 
-func _declExtension() -> SwiftParser<ExtensionDeclaration­> {
+func _declExtension() -> SwiftParser<ExtensionDeclaration> {
     return fail("not implemented")
 }
