@@ -8,26 +8,50 @@ class ParseTypeTests: XCTestCase {
         
     }
     func testTypeArray() {
-        ParseEqual(
+        ParseAssertEqual(
             type,
             "[Foo]",
             ArrayType(type: TypeIdentifier(names: ["Foo"]))
         )
-        ParseEqual(
+        ParseAssertEqual(
             type,
             "[ Foo ]",
             ArrayType(type: TypeIdentifier(names: ["Foo"]))
         )
     }
     func testTypeDictionary() {
-        XCTAssertTrue(parseSuccess(
-            type, "[Foo: Bar]"))
-        XCTAssertTrue(parseSuccess(
-            type, "[Foo :Bar]"))
-        XCTAssertTrue(parseSuccess(
-            type, "[Foo:Bar]"))
-        XCTAssertTrue(parseSuccess(
-            type, "[Foo : Bar]"))
+        ParseAssertEqual(
+            type,
+            "[Foo: Bar]",
+            DictionaryType(
+                keyType: TypeIdentifier(names: ["Foo"]),
+                valueType: TypeIdentifier(names: ["Bar"])
+            )
+        )
+        ParseAssertEqual(
+            type,
+            "[Foo :Bar]",
+            DictionaryType(
+                keyType: TypeIdentifier(names: ["Foo"]),
+                valueType: TypeIdentifier(names: ["Bar"])
+            )
+        )
+        ParseAssertEqual(
+            type,
+            "[Foo:Bar]",
+            DictionaryType(
+                keyType: TypeIdentifier(names: ["Foo"]),
+                valueType: TypeIdentifier(names: ["Bar"])
+            )
+        )
+        ParseAssertEqual(
+            type,
+            "[Foo : Bar]",
+            DictionaryType(
+                keyType: TypeIdentifier(names: ["Foo"]),
+                valueType: TypeIdentifier(names: ["Bar"])
+            )
+        )
     }
     func testTypeTuple() {
         XCTAssertTrue(parseSuccess(
