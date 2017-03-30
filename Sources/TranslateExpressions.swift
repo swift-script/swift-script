@@ -58,8 +58,8 @@ extension ClosureExpression {
             return "(\(jsArguments)) => {}"
         case 1:
             let statement = statements[0]
-            if statement is Expression {
-                return "(\(jsArguments)) => \(statement.javaScript(with: indentLevel))"
+            if let exprStmt = statement as? ExprStatement {
+                return "(\(jsArguments)) => \(exprStmt.expression.javaScript(with: indentLevel))"
             } else {
                 return "(\(jsArguments)) => \(transpileBlock(statements: statements, indentLevel: indentLevel))"
             }

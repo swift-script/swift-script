@@ -1,4 +1,4 @@
-public protocol Declaration: Statement {
+public protocol Declaration: Node {
     
 }
 

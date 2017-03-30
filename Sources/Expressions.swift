@@ -1,4 +1,4 @@
-public protocol Expression: Statement {
+public protocol Expression: Node {
     
 }
 
