@@ -3,7 +3,7 @@ import XCTest
 
 class StatementsTests: XCTestCase {
     func testForInStatement() {
-        XCTAssertEqual(ForInStatement(
+        XCTAssertEqual(try! ForInStatement(
             item: "i",
             collection: BinaryOperation(
                 leftOperand: IntegerLiteral(value: 0),
@@ -17,10 +17,10 @@ class StatementsTests: XCTestCase {
                     trailingClosure: nil
                 ))
             ]
-        ).javaScript(with: 0), "for (i of range(0, 10) {\n    console.log(i);\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "for (i of range(0, 10) {\n    console.log(i);\n}\n")
         
         // indent
-        XCTAssertEqual(ForInStatement(
+        XCTAssertEqual(try! ForInStatement(
             item: "i",
             collection: BinaryOperation(
                 leftOperand: IntegerLiteral(value: 0),
@@ -34,11 +34,11 @@ class StatementsTests: XCTestCase {
                     trailingClosure: nil
                 ))
             ]
-        ).javaScript(with: 1), "    for (i of range(0, 10) {\n        console.log(i);\n    }\n")
+        ).accept(JavaScriptTranslator(indentLevel: 1)), "    for (i of range(0, 10) {\n        console.log(i);\n    }\n")
     }
     
     func testWhileStatement() {
-        XCTAssertEqual(WhileStatement(
+        XCTAssertEqual(try! WhileStatement(
             condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
             statements: [
                 ExpressionStatement(FunctionCallExpression(
@@ -47,10 +47,10 @@ class StatementsTests: XCTestCase {
                     trailingClosure: nil
                 ))
             ]
-        ).javaScript(with: 0), "while (foo < 42) {\n    console.log(\"Hello\");\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "while (foo < 42) {\n    console.log(\"Hello\");\n}\n")
         
         // indent
-        XCTAssertEqual(WhileStatement(
+        XCTAssertEqual(try! WhileStatement(
             condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42)),
             statements: [
                 ExpressionStatement(FunctionCallExpression(
@@ -59,11 +59,11 @@ class StatementsTests: XCTestCase {
                     trailingClosure: nil
                 ))
             ]
-        ).javaScript(with: 1), "    while (foo < 42) {\n        console.log(\"Hello\");\n    }\n")
+        ).accept(JavaScriptTranslator(indentLevel: 1)), "    while (foo < 42) {\n        console.log(\"Hello\");\n    }\n")
     }
     
     func testRepeatWhileStatement() {
-        XCTAssertEqual(RepeatWhileStatement(
+        XCTAssertEqual(try! RepeatWhileStatement(
             statements: [
                 ExpressionStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
@@ -72,10 +72,10 @@ class StatementsTests: XCTestCase {
                 ))
             ],
             condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))
-        ).javaScript(with: 0), "repeat {\n    console.log(\"Hello\");\n} while (foo < 42)\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "repeat {\n    console.log(\"Hello\");\n} while (foo < 42)\n")
         
         // indent
-        XCTAssertEqual(RepeatWhileStatement(
+        XCTAssertEqual(try! RepeatWhileStatement(
             statements: [
                 ExpressionStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
@@ -84,11 +84,11 @@ class StatementsTests: XCTestCase {
                 ))
             ],
             condition: BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))
-        ).javaScript(with: 1), "    repeat {\n        console.log(\"Hello\");\n    } while (foo < 42)\n")
+        ).accept(JavaScriptTranslator(indentLevel: 1)), "    repeat {\n        console.log(\"Hello\");\n    } while (foo < 42)\n")
     }
     
     func testIfStatement() {
-        XCTAssertEqual(IfStatement(
+        XCTAssertEqual(try! IfStatement(
             condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 ExpressionStatement(FunctionCallExpression(
@@ -98,10 +98,10 @@ class StatementsTests: XCTestCase {
                 ))
             ],
             elseClause: nil
-        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "if (foo < 42) {\n    console.log(\"Hello\");\n}\n")
         
         // if-else
-        XCTAssertEqual(IfStatement(
+        XCTAssertEqual(try! IfStatement(
             condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 ExpressionStatement(FunctionCallExpression(
@@ -117,10 +117,10 @@ class StatementsTests: XCTestCase {
                     trailingClosure: nil
                 ))
             ])
-        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else {\n    console.log(\"Bye\");\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "if (foo < 42) {\n    console.log(\"Hello\");\n} else {\n    console.log(\"Bye\");\n}\n")
         
         // if-else-if
-        XCTAssertEqual(IfStatement(
+        XCTAssertEqual(try! IfStatement(
             condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 ExpressionStatement(FunctionCallExpression(
@@ -140,10 +140,10 @@ class StatementsTests: XCTestCase {
                 ],
                 elseClause: nil
             ))
-        ).javaScript(with: 0), "if (foo < 42) {\n    console.log(\"Hello\");\n} else if (foo == 0) {\n    console.log(\"Bye\");\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "if (foo < 42) {\n    console.log(\"Hello\");\n} else if (foo == 0) {\n    console.log(\"Bye\");\n}\n")
         
         // indent
-        XCTAssertEqual(IfStatement(
+        XCTAssertEqual(try! IfStatement(
             condition: .boolean(BinaryOperation(leftOperand: IdentifierExpression(identifier: "foo"), operatorSymbol: "<", rightOperand: IntegerLiteral(value: 42))),
             statements: [
                 ExpressionStatement(FunctionCallExpression(
@@ -163,29 +163,29 @@ class StatementsTests: XCTestCase {
                     ],
                 elseClause: nil
             ))
-        ).javaScript(with: 1), "    if (foo < 42) {\n        console.log(\"Hello\");\n    } else if (foo == 0) {\n        console.log(\"Bye\");\n    }\n")
+        ).accept(JavaScriptTranslator(indentLevel: 1)), "    if (foo < 42) {\n        console.log(\"Hello\");\n    } else if (foo == 0) {\n        console.log(\"Bye\");\n    }\n")
         
         // optional binding
-        XCTAssertEqual(IfStatement(
+        XCTAssertEqual(try! IfStatement(
             condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "bar")),
             statements: [
                 ExpressionStatement(FunctionCallExpression(expression: IdentifierExpression(identifier: "print"), arguments: [(nil, IdentifierExpression(identifier: "foo"))], trailingClosure: nil)),
             ],
             elseClause: nil
-        ).javaScript(with: 0), "{\n    let foo;\n    if ((foo = bar) != null) {\n        console.log(foo);\n    }\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "{\n    let foo;\n    if ((foo = bar) != null) {\n        console.log(foo);\n    }\n}\n")
         
         // optional binding (let foo = foo)
-        XCTAssertEqual(IfStatement(
+        XCTAssertEqual(try! IfStatement(
             condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "foo")),
             statements: [
                 ExpressionStatement(FunctionCallExpression(expression: IdentifierExpression(identifier: "print"), arguments: [(nil, IdentifierExpression(identifier: "foo"))], trailingClosure: nil)),
                 ],
             elseClause: nil
-        ).javaScript(with: 0), "if (foo != null) {\n    console.log(foo);\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "if (foo != null) {\n    console.log(foo);\n}\n")
     }
     
     func testGuardStatement() {
-        XCTAssertEqual(GuardStatement(
+        XCTAssertEqual(try! GuardStatement(
             condition: .boolean(BinaryOperation(
                 leftOperand: IdentifierExpression(identifier: "foo"),
                 operatorSymbol: "==",
@@ -193,10 +193,10 @@ class StatementsTests: XCTestCase {
             statements: [
                 ReturnStatement(expression: IntegerLiteral(value: 0)),
             ]
-        ).javaScript(with: 0), "if (!(foo == 42)) {\n    return 0;\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "if (!(foo == 42)) {\n    return 0;\n}\n")
         
         // indent
-        XCTAssertEqual(GuardStatement(
+        XCTAssertEqual(try! GuardStatement(
             condition: .boolean(BinaryOperation(
                 leftOperand: IdentifierExpression(identifier: "foo"),
                 operatorSymbol: "==",
@@ -204,86 +204,86 @@ class StatementsTests: XCTestCase {
             statements: [
                 ReturnStatement(expression: IntegerLiteral(value: 0)),
                 ]
-        ).javaScript(with: 1), "    if (!(foo == 42)) {\n        return 0;\n    }\n")
+        ).accept(JavaScriptTranslator(indentLevel: 1)), "    if (!(foo == 42)) {\n        return 0;\n    }\n")
         
         // optional binding
-        XCTAssertEqual(GuardStatement(
+        XCTAssertEqual(try! GuardStatement(
             condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "bar")),
             statements: [
                 ReturnStatement(expression: nil),
             ]
-        ).javaScript(with: 0), "let foo;\nif ((foo = bar) == null) {\n    return;\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "let foo;\nif ((foo = bar) == null) {\n    return;\n}\n")
         
         // optional binding (let foo = foo)
-        XCTAssertEqual(GuardStatement(
+        XCTAssertEqual(try! GuardStatement(
             condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "foo")),
             statements: [
                 ReturnStatement(expression: nil),
                 ]
-        ).javaScript(with: 0), "if (foo == null) {\n    return;\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "if (foo == null) {\n    return;\n}\n")
     }
     
     func testLabeledStatement() {
-        XCTAssertEqual(LabeledStatement(labelName: "foo", statement: WhileStatement(
+        XCTAssertEqual(try! LabeledStatement(labelName: "foo", statement: WhileStatement(
             condition: BooleanLiteral(value: true),
             statements: [
                 BreakStatement(labelName: "foo"),
             ]
-        )).javaScript(with: 0), "foo: while (true) {\n    break foo;\n}\n")
+        )).accept(JavaScriptTranslator(indentLevel: 0)), "foo: while (true) {\n    break foo;\n}\n")
         
         // indent
-        XCTAssertEqual(LabeledStatement(labelName: "foo", statement: WhileStatement(
+        XCTAssertEqual(try! LabeledStatement(labelName: "foo", statement: WhileStatement(
             condition: BooleanLiteral(value: true),
             statements: [
                 BreakStatement(labelName: "foo"),
                 ]
-        )).javaScript(with: 1), "    foo: while (true) {\n        break foo;\n    }\n")
+        )).accept(JavaScriptTranslator(indentLevel: 1)), "    foo: while (true) {\n        break foo;\n    }\n")
     }
     
     func testBreakStatement() {
-        XCTAssertEqual(BreakStatement().javaScript(with: 0), "break;\n")
-        XCTAssertEqual(BreakStatement(labelName: "foo").javaScript(with: 0), "break foo;\n")
+        XCTAssertEqual(try! BreakStatement().accept(JavaScriptTranslator(indentLevel: 0)), "break;\n")
+        XCTAssertEqual(try! BreakStatement(labelName: "foo").accept(JavaScriptTranslator(indentLevel: 0)), "break foo;\n")
 
         // indent
-        XCTAssertEqual(BreakStatement().javaScript(with: 1), "    break;\n")
+        XCTAssertEqual(try! BreakStatement().accept(JavaScriptTranslator(indentLevel: 1)), "    break;\n")
     }
     
     func testContinueStatement() {
-        XCTAssertEqual(ContinueStatement().javaScript(with: 0), "continue;\n")
-        XCTAssertEqual(ContinueStatement(labelName: "foo").javaScript(with: 0), "continue foo;\n")
+        XCTAssertEqual(try! ContinueStatement().accept(JavaScriptTranslator(indentLevel: 0)), "continue;\n")
+        XCTAssertEqual(try! ContinueStatement(labelName: "foo").accept(JavaScriptTranslator(indentLevel: 0)), "continue foo;\n")
         
         // indent
-        XCTAssertEqual(ContinueStatement().javaScript(with: 1), "    continue;\n")
+        XCTAssertEqual(try! ContinueStatement().accept(JavaScriptTranslator(indentLevel: 1)), "    continue;\n")
     }
     
     func testFallthroughStatement() {
-        XCTAssertEqual(FallthroughStatement().javaScript(with: 0), "")
+        XCTAssertEqual(try! FallthroughStatement().accept(JavaScriptTranslator(indentLevel: 0)), "")
         
         // indent
-        XCTAssertEqual(FallthroughStatement().javaScript(with: 1), "") // no indent because no `fallthrough` in JS
+        XCTAssertEqual(try! FallthroughStatement().accept(JavaScriptTranslator(indentLevel: 1)), "") // no indent because no `fallthrough` in JS
     }
     
     func testReturnStatement() {
-        XCTAssertEqual(ReturnStatement(expression: nil).javaScript(with: 0), "return;\n")
-        XCTAssertEqual(ReturnStatement(expression: IntegerLiteral(value: 42)).javaScript(with: 0), "return 42;\n")
+        XCTAssertEqual(try! ReturnStatement(expression: nil).accept(JavaScriptTranslator(indentLevel: 0)), "return;\n")
+        XCTAssertEqual(try! ReturnStatement(expression: IntegerLiteral(value: 42)).accept(JavaScriptTranslator(indentLevel: 0)), "return 42;\n")
         
         // indent
-        XCTAssertEqual(ReturnStatement(expression: nil).javaScript(with: 1), "    return;\n")
+        XCTAssertEqual(try! ReturnStatement(expression: nil).accept(JavaScriptTranslator(indentLevel: 1)), "    return;\n")
     }
     
     func testThrowStatement() {
-        XCTAssertEqual(ThrowStatement(expression: FunctionCallExpression(
+        XCTAssertEqual(try! ThrowStatement(expression: FunctionCallExpression(
             expression: IdentifierExpression(identifier: "FooError"),
             arguments: [],
             trailingClosure: nil)
-        ).javaScript(with: 0), "throw new FooError();\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "throw new FooError();\n")
         
         // indent
-        XCTAssertEqual(ThrowStatement(expression: FunctionCallExpression(
+        XCTAssertEqual(try! ThrowStatement(expression: FunctionCallExpression(
             expression: IdentifierExpression(identifier: "FooError"),
             arguments: [],
             trailingClosure: nil)
-        ).javaScript(with: 1), "    throw new FooError();\n")
+        ).accept(JavaScriptTranslator(indentLevel: 1)), "    throw new FooError();\n")
     }
     
     func testDeferStatement() {
@@ -291,7 +291,7 @@ class StatementsTests: XCTestCase {
     }
     
     func testDoStatement() {
-        XCTAssertEqual(DoStatement(
+        XCTAssertEqual(try! DoStatement(
             statements: [
                 ExpressionStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
@@ -300,11 +300,11 @@ class StatementsTests: XCTestCase {
                 ))
             ],
             catchClauses: []
-        ).javaScript(with: 0), "{\n    console.log(\"Hello\");\n}\n")
+        ).accept(JavaScriptTranslator(indentLevel: 0)), "{\n    console.log(\"Hello\");\n}\n")
         // TODO: catch
         
         // indent
-        XCTAssertEqual(DoStatement(
+        XCTAssertEqual(try! DoStatement(
             statements: [
                 ExpressionStatement(FunctionCallExpression(
                     expression: IdentifierExpression(identifier: "print"),
@@ -313,6 +313,6 @@ class StatementsTests: XCTestCase {
                 ))
             ],
             catchClauses: []
-        ).javaScript(with: 1), "    {\n        console.log(\"Hello\");\n    }\n")
+        ).accept(JavaScriptTranslator(indentLevel: 1)), "    {\n        console.log(\"Hello\");\n    }\n")
     }
 }
