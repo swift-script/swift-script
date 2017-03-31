@@ -8,10 +8,16 @@ class ParseTypeTests: XCTestCase {
         
     }
     func testTypeArray() {
-        XCTAssertTrue(parseSuccess(
-            type, "[Fop]"))
-        XCTAssertTrue(parseSuccess(
-            type, "[ Foo ]"))
+        ParseEqual(
+            type,
+            "[Foo]",
+            ArrayType(type: TypeIdentifier­(names: ["Foo"]))
+        )
+        ParseEqual(
+            type,
+            "[ Foo ]",
+            ArrayType(type: TypeIdentifier­(names: ["Foo"]))
+        )
     }
     func testTypeDictionary() {
         XCTAssertTrue(parseSuccess(

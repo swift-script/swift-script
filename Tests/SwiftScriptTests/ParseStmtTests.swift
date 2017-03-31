@@ -3,31 +3,87 @@ import XCTest
 
 class ParseStmtTests: XCTestCase {
     func testStmtIf() {
-        XCTAssertTrue(parseSuccess(
+        ParseEqual(
             stmtIf,
             "if foo {\n"
                 + "  expr() \n"
                 + "  bar\n"
-                + "}"))
-        XCTAssertTrue(parseSuccess(
+                + "}",
+            IfStatement(
+                condition: .boolean(IdentifierExpression(identifier: "foo")),
+                statements: [
+                    ExpressionStatement(FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "expr"),
+                        arguments: [],
+                        trailingClosure: nil
+                    )),
+                    ExpressionStatement(IdentifierExpression(identifier: "bar")),
+                ],
+                elseClause: nil
+            )
+        )
+        
+        ParseEqual(
             stmtIf,
             "if foo {\n"
                 + "} else if(foo){\n"
                 + "}else if foo{\n"
                 + "} else {"
-                + "}"))
-        XCTAssertTrue(parseSuccess(
+                + "}",
+            IfStatement(
+                condition: .boolean(IdentifierExpression(identifier: "foo")),
+                statements: [],
+                elseClause: .elseIf(IfStatement(
+                    condition: .boolean(ParenthesizedExpression(expression: IdentifierExpression(identifier: "foo"))),
+                    statements: [],
+                    elseClause: .elseIf(IfStatement(
+                        condition: .boolean(IdentifierExpression(identifier: "foo")),
+                        statements: [],
+                        elseClause: .else_([])
+                    ))
+                ))
+            )
+        )
+
+        ParseEqual(
             stmtIf,
             "if let foo = bar {\n"
                 + "  expr() \n"
                 + "  bar\n"
-                + "}"))
-        XCTAssertTrue(parseSuccess(
+                + "}",
+            IfStatement(
+                condition: .optionalBinding(/*isVar*/false, "foo", IdentifierExpression(identifier: "bar")),
+                statements: [
+                    ExpressionStatement(FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "expr"),
+                        arguments: [],
+                        trailingClosure: nil
+                    )),
+                    ExpressionStatement(IdentifierExpression(identifier: "bar")),
+                    ],
+                elseClause: nil
+            )
+        )
+
+        ParseEqual(
             stmtIf,
             "if var foo = bar {\n"
                 + "  expr() \n"
                 + "  bar\n"
-                + "}"))
+                + "}",
+            IfStatement(
+                condition: .optionalBinding(/*isVar*/true, "foo", IdentifierExpression(identifier: "bar")),
+                statements: [
+                    ExpressionStatement(FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "expr"),
+                        arguments: [],
+                        trailingClosure: nil
+                    )),
+                    ExpressionStatement(IdentifierExpression(identifier: "bar")),
+                    ],
+                elseClause: nil
+            )
+        )
     }
     
     func testStmtGuard() {

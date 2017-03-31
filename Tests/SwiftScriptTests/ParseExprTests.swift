@@ -30,12 +30,43 @@ class ParseExprTests: XCTestCase {
     }
     
     func testExprCall() {
-        XCTAssertTrue(parseSuccess(
-            expr, "foo(x)"))
-        XCTAssertTrue(parseSuccess(
-            expr, "foo.bar<Int>(x: 1)"))
-        XCTAssertTrue(parseSuccess(
-            expr, "foo(x: 1) { x in }"))
+        ParseEqual(
+            expr,
+            "foo(x)",
+            FunctionCallExpression(
+                expression: IdentifierExpression(identifier: "foo"),
+                arguments: [(nil, IdentifierExpression(identifier: "x"))],
+                trailingClosure: nil
+            )
+        )
+        ParseEqual(
+            expr,
+            "foo.bar<Int>(x: 1)",
+            FunctionCallExpression(
+                expression: ExplicitMemberExpression(
+                    expression: IdentifierExpression(identifier: "foo"),
+                    member: "bar"
+                ),
+                arguments: [("x", IntegerLiteral(value: 1))],
+                trailingClosure: nil
+            )
+        )
+
+        ParseEqual(
+            expr,
+            "foo(x: 1) { x in }",
+            FunctionCallExpression(
+                expression: IdentifierExpression(identifier: "foo"),
+                arguments: [("x", IntegerLiteral(value: 1))],
+                trailingClosure: ClosureExpression(
+                    arguments: [("x", nil)],
+                    hasThrows: false,
+                    result: nil,
+                    statements: []
+                )
+            )
+        )
+        
         XCTAssertFalse(parseSuccess(
             expr, "foo(x y: 1)"))
     }

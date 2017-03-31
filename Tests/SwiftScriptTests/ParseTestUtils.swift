@@ -19,3 +19,14 @@ func parseSuccess<Out>(_ parser: SwiftParser<Out>, _ str: String) -> Bool {
         return false
     }
 }
+
+func ParseEqual<Out, Expect: Equatable>(_ parser: SwiftParser<Out>, _ src: String, _ expect: Expect, file: StaticString = #file, line: UInt = #line) {
+    do {
+        guard let result = try parseIt(parser, src) as? Expect else {
+            return XCTFail("Parse failed", file: file, line: line)
+        }
+        XCTAssertEqual(result, expect, file: file, line: line)
+    } catch let e {
+        XCTFail("Parse failed: \(e)", file: file, line: line)
+    }
+}

@@ -1,5 +1,5 @@
 public protocol Statement: Node {
-    
+    func accept<V: StatementVisitor>(_: V) throws -> V.StatementResult
 }
 
 public struct ForInStatement: Statement {
@@ -144,4 +144,21 @@ public struct DoStatement: Statement {
 public struct CatchClause: Node {
     // TODO
     public init() {}
+}
+
+
+public struct ExpressionStatement: Statement {
+    public var expression: Expression
+    
+    public init(_ expression: Expression) {
+        self.expression = expression
+    }
+}
+
+public struct DeclarationStatement: Statement {
+    public var declaration: Declaration
+    
+    public init(_ expression: Declaration) {
+        self.declaration = expression
+    }
 }
