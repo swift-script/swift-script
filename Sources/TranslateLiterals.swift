@@ -1,14 +1,13 @@
 extension JavaScriptTranslator {
     func visit(_ n: ArrayLiteral) throws -> String {
-        let values: String = n.value.map { $0.javaScript(with: indentLevel + 1) }.joined(separator: ", ")
+        let values: String = try n.value.map { try $0.accept(JavaScriptTranslator(indentLevel: indentLevel)) }.joined(separator: ", ")
         return "[\(values)]"
     }
     
     func visit(_ n: DictionaryLiteral) throws -> String {
-        let keyValues: String = n.value.map {
-            "\("    " * (indentLevel + 1))\($0.0.javaScript(with: indentLevel + 1)): \($0.1.javaScript(with: indentLevel + 1))"
-            }.joined(separator: ",\n")
-        
+        let keyValues: String = try n.value.map {
+            "\("    " * (indentLevel + 1))\(try $0.0.accept(JavaScriptTranslator(indentLevel: indentLevel + 1))): \(try $0.1.accept(JavaScriptTranslator(indentLevel: indentLevel + 1)))"
+        }.joined(separator: ",\n")
         
         return "{\n\(keyValues)\n\("    " * indentLevel)}"
     }

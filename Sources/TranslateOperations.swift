@@ -1,7 +1,7 @@
 extension JavaScriptTranslator {
     func visit(_ n: BinaryOperation) throws -> String {
-        let lhs = n.leftOperand.javaScript(with: indentLevel + 1)
-        let rhs = n.rightOperand.javaScript(with: indentLevel + 1)
+        let lhs = try n.leftOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        let rhs = try n.rightOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
         switch n.operatorSymbol {
         case "as":
             return lhs
@@ -25,7 +25,7 @@ extension JavaScriptTranslator {
     }
     
     func visit(_ n: PrefixUnaryOperation) throws -> String {
-        let value = n.operand.javaScript(with: indentLevel + 1)
+        let value = try n.operand.accept(JavaScriptTranslator(indentLevel: indentLevel))
         switch n.operatorSymbol {
         case "try":
             return value
@@ -39,7 +39,7 @@ extension JavaScriptTranslator {
     }
     
     func visit(_ n: PostfixUnaryOperation) throws -> String {
-        let value = n.operand.javaScript(with: indentLevel + 1)
+        let value = try n.operand.accept(JavaScriptTranslator(indentLevel: indentLevel))
         switch n.operatorSymbol {
         case "?":
             fatalError("Never reaches here if semantic analysis is implemented.")
@@ -51,9 +51,9 @@ extension JavaScriptTranslator {
     }
     
     func visit(_ n: TernaryOperation) throws -> String {
-        let first = n.firstOperand.javaScript(with: indentLevel + 1)
-        let second = n.secondOperand.javaScript(with: indentLevel + 1)
-        let third = n.thirdOperand.javaScript(with: indentLevel + 1)
+        let first = try n.firstOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        let second = try n.secondOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        let third = try n.thirdOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
         return "\(first) ? \(second) : \(third)"
     }
 }

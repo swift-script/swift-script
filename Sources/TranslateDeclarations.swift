@@ -10,7 +10,7 @@ extension JavaScriptTranslator {
         }
         
         if let expression = n.expression {
-            return "\(indent(of: indentLevel))const \(n.name) = \(expression.javaScript(with: indentLevel));\n"
+            return "\(indent(of: indentLevel))const \(n.name) = \(try expression.accept(JavaScriptTranslator(indentLevel: indentLevel)));\n"
         } else {
             return "\(indent(of: indentLevel))const \(n.name);\n"
         }
@@ -23,7 +23,7 @@ extension JavaScriptTranslator {
         }
         
         if let expression = n.expression {
-            return "\(indent(of: indentLevel))let \(n.name) = \(expression.javaScript(with: indentLevel));\n"
+            return "\(indent(of: indentLevel))let \(n.name) = \(try expression.accept(JavaScriptTranslator(indentLevel: indentLevel)));\n"
         } else {
             return "\(indent(of: indentLevel))let \(n.name);\n"
         }
@@ -44,7 +44,7 @@ extension JavaScriptTranslator {
         }
         
         // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
-        return "\(indent(of: indentLevel))\(n.isStatic ? "static " : "")function \(n.name)(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: n.body!, indentLevel: indentLevel))\n"
+        return "\(indent(of: indentLevel))\(n.isStatic ? "static " : "")function \(n.name)(\(jsArguments.joined(separator: ", "))) \(try transpileBlock(statements: n.body!, indentLevel: indentLevel))\n"
     }
     
     func visit(_: EnumDeclaration) throws -> String {
@@ -95,12 +95,9 @@ extension JavaScriptTranslator {
             return initializer
         }
         
-        let jsMembers: [String] = adjustedMembers.map { member in
-            let js = member.javaScript(with: indentLevel + 1)
+        let jsMembers: [String] = try adjustedMembers.map { member in
+            let js = try member.accept(JavaScriptTranslator(indentLevel: indentLevel + 1))
             guard member is FunctionDeclaration else {
-                if member is Expression {
-                    return "\(indent(of: indentLevel + 1))\(js);\n"
-                }
                 return js
             }
             
@@ -124,7 +121,7 @@ extension JavaScriptTranslator {
             }
         }
         // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
-        return "\(indent(of: indentLevel))constructor(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: n.body!, indentLevel: indentLevel))\n"
+        return "\(indent(of: indentLevel))constructor(\(jsArguments.joined(separator: ", "))) \(try transpileBlock(statements: n.body!, indentLevel: indentLevel))\n"
     }
 
     func visit(_: DeinitializerDeclaration) throws -> String {
