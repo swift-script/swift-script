@@ -86,16 +86,16 @@ struct DeclarationEqual: DeclarationVisitor {
     func visit(_ lhs: VariableDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: TypeAliasDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: FunctionDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: EnumDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: StructDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: ClassDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: ProtocolDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: InitializerDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: DeinitializerDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: ExtensionDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: SubscriptDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: OperatorDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: PrecedenceGroupDeclaration­) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: EnumDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: StructDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: ClassDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: ProtocolDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: InitializerDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: DeinitializerDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: ExtensionDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: SubscriptDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: OperatorDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: PrecedenceGroupDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
 }
 
 struct StatementEqual : StatementVisitor {
@@ -152,7 +152,7 @@ struct TypeEqual : TypeVisitor {
     func visit(_ lhs: ArrayType) -> (Type_) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: DictionaryType) -> (Type_) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: FunctionType) -> (Type_) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: TypeIdentifier­) -> (Type_) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: TypeIdentifier) -> (Type_) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: TupleType) -> (Type_) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: OptionalType) -> (Type_) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: ImplicitlyUnwrappedOptionalType) -> (Type_) -> Bool { return sameTypeAndEqual(to: lhs) }
@@ -229,58 +229,58 @@ extension FunctionDeclaration : Equatable {
             && lhs.arguments == rhs.arguments
     }
 }
-extension EnumDeclaration­ : Equatable {
-    public static func == (lhs: EnumDeclaration­, rhs: EnumDeclaration­) -> Bool {
+extension EnumDeclaration : Equatable {
+    public static func == (lhs: EnumDeclaration, rhs: EnumDeclaration) -> Bool {
         fatalError("unsupported")
     }
 }
-extension StructDeclaration­ : Equatable {
-    public static func == (lhs: StructDeclaration­, rhs: StructDeclaration­) -> Bool {
+extension StructDeclaration : Equatable {
+    public static func == (lhs: StructDeclaration, rhs: StructDeclaration) -> Bool {
         fatalError("unsupported")
     }
 }
-extension ClassDeclaration­ : Equatable {
-    public static func == (lhs: ClassDeclaration­, rhs: ClassDeclaration­) -> Bool {
+extension ClassDeclaration : Equatable {
+    public static func == (lhs: ClassDeclaration, rhs: ClassDeclaration) -> Bool {
         return lhs.name == rhs.name
             && lhs.superTypes == rhs.superTypes
             && lhs.members == rhs.members
     }
 }
-extension ProtocolDeclaration­ : Equatable {
-    public static func == (lhs: ProtocolDeclaration­, rhs: ProtocolDeclaration­) -> Bool {
+extension ProtocolDeclaration : Equatable {
+    public static func == (lhs: ProtocolDeclaration, rhs: ProtocolDeclaration) -> Bool {
         return lhs.name == rhs.name
     }
 }
-extension InitializerDeclaration­ : Equatable {
-    public static func == (lhs: InitializerDeclaration­, rhs: InitializerDeclaration­) -> Bool {
+extension InitializerDeclaration : Equatable {
+    public static func == (lhs: InitializerDeclaration, rhs: InitializerDeclaration) -> Bool {
         return lhs.arguments == rhs.arguments
             && lhs.isFailable == rhs.isFailable
             && lhs.hasThrows == rhs.hasThrows
             && lhs.body == rhs.body
     }
 }
-extension DeinitializerDeclaration­ : Equatable {
-    public static func == (lhs: DeinitializerDeclaration­, rhs: DeinitializerDeclaration­) -> Bool {
+extension DeinitializerDeclaration : Equatable {
+    public static func == (lhs: DeinitializerDeclaration, rhs: DeinitializerDeclaration) -> Bool {
         fatalError("unsupported")
     }
 }
-extension ExtensionDeclaration­ : Equatable {
-    public static func == (lhs: ExtensionDeclaration­, rhs: ExtensionDeclaration­) -> Bool {
+extension ExtensionDeclaration : Equatable {
+    public static func == (lhs: ExtensionDeclaration, rhs: ExtensionDeclaration) -> Bool {
         fatalError("unsupported")
     }
 }
-extension SubscriptDeclaration­ : Equatable {
-    public static func == (lhs: SubscriptDeclaration­, rhs: SubscriptDeclaration­) -> Bool {
+extension SubscriptDeclaration : Equatable {
+    public static func == (lhs: SubscriptDeclaration, rhs: SubscriptDeclaration) -> Bool {
         fatalError("unsupported")
     }
 }
-extension OperatorDeclaration­ : Equatable {
-    public static func == (lhs: OperatorDeclaration­, rhs: OperatorDeclaration­) -> Bool {
+extension OperatorDeclaration : Equatable {
+    public static func == (lhs: OperatorDeclaration, rhs: OperatorDeclaration) -> Bool {
         fatalError("unsupported")
     }
 }
-extension PrecedenceGroupDeclaration­ : Equatable {
-    public static func == (lhs: PrecedenceGroupDeclaration­, rhs: PrecedenceGroupDeclaration­) -> Bool {
+extension PrecedenceGroupDeclaration : Equatable {
+    public static func == (lhs: PrecedenceGroupDeclaration, rhs: PrecedenceGroupDeclaration) -> Bool {
         fatalError("unsupported")
     }
 }
@@ -540,8 +540,8 @@ extension FunctionType : Equatable {
             && lhs.returnType == rhs.returnType
     }
 }
-extension TypeIdentifier­ : Equatable {
-    public static func == (lhs: TypeIdentifier­, rhs: TypeIdentifier­) -> Bool {
+extension TypeIdentifier : Equatable {
+    public static func == (lhs: TypeIdentifier, rhs: TypeIdentifier) -> Bool {
         return lhs.names == rhs.names
     }
 }

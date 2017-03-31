@@ -47,9 +47,9 @@ func typeSuffix(base: Type_) -> SwiftParser<Type_> {
 }
 
 let typeIdent = _typeIdent()
-func _typeIdent() -> SwiftParser<TypeIdentifier­> {
+func _typeIdent() -> SwiftParser<TypeIdentifier> {
     return { name in
-        TypeIdentifier­(names: [name]) }
+        TypeIdentifier(names: [name]) }
         <^> identifier
 }
 

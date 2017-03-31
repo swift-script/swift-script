@@ -43,7 +43,7 @@ extension FunctionDeclaration {
     }
 }
 
-extension ClassDeclaration­ {
+extension ClassDeclaration {
     public func javaScript(with indentLevel: Int) -> String {
         let propertiesWithInitialValues = members.filter {
             switch $0 {
@@ -57,7 +57,7 @@ extension ClassDeclaration­ {
         }
         let membersExcludingProperties = members.filter { !($0 is VariableDeclaration || $0 is ConstantDeclaration) }
         let adjustedMembers = membersExcludingProperties.map { member -> Declaration in
-            guard var initializer = member as? InitializerDeclaration­ else {
+            guard var initializer = member as? InitializerDeclaration else {
                 return member
             }
             
@@ -102,7 +102,7 @@ extension ClassDeclaration­ {
     }
 }
 
-extension InitializerDeclaration­ {
+extension InitializerDeclaration {
     public func javaScript(with indentLevel: Int) -> String {
         let jsArguments: [String] = arguments.map { param in
             if let initialValue = param.defaultArgument {

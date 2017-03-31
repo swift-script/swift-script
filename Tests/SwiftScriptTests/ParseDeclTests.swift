@@ -14,17 +14,17 @@ class ParseDeclTests: XCTestCase {
                     Parameter(
                         externalParameterName: nil,
                         localParameterName: "x",
-                        type: TypeIdentifier­.init(names: ["A"]),
+                        type: TypeIdentifier.init(names: ["A"]),
                         defaultArgument: IntegerLiteral(value: 1)
                     ),
                     Parameter(
                         externalParameterName: "x",
                         localParameterName: "y",
-                        type: TypeIdentifier­.init(names: ["B"]),
+                        type: TypeIdentifier.init(names: ["B"]),
                         defaultArgument: nil
                     ),
                 ],
-                result: TypeIdentifier­(names: ["C"]),
+                result: TypeIdentifier(names: ["C"]),
                 hasThrows: true,
                 body: [
                     ReturnStatement(
@@ -44,17 +44,17 @@ class ParseDeclTests: XCTestCase {
                     Parameter(
                         externalParameterName: nil,
                         localParameterName: "x",
-                        type: TypeIdentifier­.init(names: ["A"]),
+                        type: TypeIdentifier.init(names: ["A"]),
                         defaultArgument: IntegerLiteral(value: 1)
                     ),
                     Parameter(
                         externalParameterName: "x",
                         localParameterName: "y",
-                        type: TypeIdentifier­.init(names: ["B"]),
+                        type: TypeIdentifier.init(names: ["B"]),
                         defaultArgument: nil
                     ),
                 ],
-                result: TypeIdentifier­(names: ["C"]),
+                result: TypeIdentifier(names: ["C"]),
                 hasThrows: true,
                 body: [
                     ReturnStatement(
@@ -87,11 +87,11 @@ class ParseDeclTests: XCTestCase {
                     Parameter(
                         externalParameterName: nil,
                         localParameterName: "x",
-                        type: TypeIdentifier­.init(names: ["T"]),
+                        type: TypeIdentifier.init(names: ["T"]),
                         defaultArgument: nil
                     ),
                 ],
-                result: TypeIdentifier­(names: ["C"]),
+                result: TypeIdentifier(names: ["C"]),
                 hasThrows: true,
                 body: []
             )

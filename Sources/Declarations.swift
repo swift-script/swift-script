@@ -81,19 +81,19 @@ public struct FunctionDeclaration: Declaration {
 }
 
 
-public struct EnumDeclaration­: Declaration {
+public struct EnumDeclaration: Declaration {
     // Unsupported
     public init() {}
 }
 
 
-public struct StructDeclaration­: Declaration {
+public struct StructDeclaration: Declaration {
     // Unsupported
     public init() {}
 }
 
 
-public struct ClassDeclaration­: Declaration {
+public struct ClassDeclaration: Declaration {
     public var name: String
     public var superTypes: [Type_]
     public var members: [Declaration]
@@ -106,7 +106,7 @@ public struct ClassDeclaration­: Declaration {
 }
 
 
-public struct ProtocolDeclaration­: Declaration {
+public struct ProtocolDeclaration: Declaration {
     public var name: String
     // Only `name` is used
     
@@ -116,7 +116,7 @@ public struct ProtocolDeclaration­: Declaration {
 }
 
 
-public struct InitializerDeclaration­: Declaration {
+public struct InitializerDeclaration: Declaration {
     public var arguments: [Parameter]
     public var isFailable: Bool
     public var hasThrows: Bool
@@ -130,31 +130,31 @@ public struct InitializerDeclaration­: Declaration {
     }
 }
 
-public struct DeinitializerDeclaration­: Declaration {
+public struct DeinitializerDeclaration: Declaration {
     // Unsupported
     public init() {}
 }
 
 
-public struct ExtensionDeclaration­: Declaration {
+public struct ExtensionDeclaration: Declaration {
     // TODO
     public init() {}
 }
 
 
-public struct SubscriptDeclaration­: Declaration {
+public struct SubscriptDeclaration: Declaration {
     // Unsupported
     public init() {}
 }
 
 
-public struct OperatorDeclaration­: Declaration {
+public struct OperatorDeclaration: Declaration {
     // Unsupported
     public init() {}
 }
 
 
-public struct PrecedenceGroupDeclaration­: Declaration {
+public struct PrecedenceGroupDeclaration: Declaration {
     // Unsupported
     public init() {}
 }

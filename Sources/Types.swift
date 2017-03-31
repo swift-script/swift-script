@@ -30,7 +30,7 @@ public struct FunctionType: Type_ {
     }
 }
 
-public struct TypeIdentifier­: Type_ {
+public struct TypeIdentifier: Type_ {
     public var names: [String]
     
     public init(names: [String]) {

@@ -3,17 +3,17 @@ import XCTest
 
 class DeclarationsTests: XCTestCase {
     func testConstantDeclaration() {
-        XCTAssertEqual(ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42)).javaScript(with: 0), "const foo = 42;\n")
+        XCTAssertEqual(ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier(names: ["Int"]), expression: IntegerLiteral(value: 42)).javaScript(with: 0), "const foo = 42;\n")
 
         // types
-        XCTAssertEqual(ConstantDeclaration(isStatic: false, name: "foo", type: OptionalType(type: TypeIdentifier­(names: ["Int"])), expression: IntegerLiteral(value: 42)).javaScript(with: 0), "const foo = 42;\n")
+        XCTAssertEqual(ConstantDeclaration(isStatic: false, name: "foo", type: OptionalType(type: TypeIdentifier(names: ["Int"])), expression: IntegerLiteral(value: 42)).javaScript(with: 0), "const foo = 42;\n")
     }
     
     func testVariabletDeclaration() {
-        XCTAssertEqual(VariableDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42)).javaScript(with: 0), "let foo = 42;\n")
+        XCTAssertEqual(VariableDeclaration(isStatic: false, name: "foo", type: TypeIdentifier(names: ["Int"]), expression: IntegerLiteral(value: 42)).javaScript(with: 0), "let foo = 42;\n")
         
         // types
-        XCTAssertEqual(VariableDeclaration(isStatic: false, name: "foo", type: OptionalType(type: TypeIdentifier­(names: ["Int"])), expression: IntegerLiteral(value: 42)).javaScript(with: 0), "let foo = 42;\n")
+        XCTAssertEqual(VariableDeclaration(isStatic: false, name: "foo", type: OptionalType(type: TypeIdentifier(names: ["Int"])), expression: IntegerLiteral(value: 42)).javaScript(with: 0), "let foo = 42;\n")
     }
     
     func testTypeAliasDeclaration() {
@@ -48,13 +48,13 @@ class DeclarationsTests: XCTestCase {
                 Parameter(
                     externalParameterName: nil,
                     localParameterName: "bar",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     defaultArgument: nil
                 ),
                 Parameter(
                     externalParameterName: nil,
                     localParameterName: "baz",
-                    type: TypeIdentifier­(names: ["String"]),
+                    type: TypeIdentifier(names: ["String"]),
                     defaultArgument: nil
                 ),
             ],
@@ -71,17 +71,17 @@ class DeclarationsTests: XCTestCase {
                 Parameter(
                     externalParameterName: "bar",
                     localParameterName: "x",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     defaultArgument: nil
                 ),
                 Parameter(
                     externalParameterName: "baz",
                     localParameterName: "y",
-                    type: TypeIdentifier­(names: ["String"]),
+                    type: TypeIdentifier(names: ["String"]),
                     defaultArgument: nil
                 ),
             ],
-            result: TypeIdentifier­(names: ["Void"]),
+            result: TypeIdentifier(names: ["Void"]),
             hasThrows: true,
             body: []
         ).javaScript(with: 0), "function foo(x, y) {\n}\n")
@@ -94,13 +94,13 @@ class DeclarationsTests: XCTestCase {
                 Parameter(
                     externalParameterName: nil,
                     localParameterName: "x",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     defaultArgument: nil
                 ),
                 Parameter(
                     externalParameterName: nil,
                     localParameterName: "y",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     defaultArgument: nil
                 ),
             ],
@@ -123,13 +123,13 @@ class DeclarationsTests: XCTestCase {
                 Parameter(
                     externalParameterName: nil,
                     localParameterName: "x",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     defaultArgument: nil
                 ),
                 Parameter(
                     externalParameterName: nil,
                     localParameterName: "y",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     defaultArgument: nil
                 ),
             ],
@@ -145,22 +145,22 @@ class DeclarationsTests: XCTestCase {
         ).javaScript(with: 1), "    function foo(x, y) {\n        return x + y;\n    }\n")
     }
     
-    func testClassDeclaration­() {
-        XCTAssertEqual(ClassDeclaration­(
+    func testClassDeclaration() {
+        XCTAssertEqual(ClassDeclaration(
             name: "Foo",
             superTypes: [],
             members: []
         ).javaScript(with: 0), "class Foo {\n}\n")
         
         // properties
-        XCTAssertEqual(ClassDeclaration­(
+        XCTAssertEqual(ClassDeclaration(
             name: "Foo",
             superTypes: [],
             members: [
                 VariableDeclaration(
                     isStatic: false,
                     name: "bar",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     expression: nil
                 ),
                 ConstantDeclaration(
@@ -169,12 +169,12 @@ class DeclarationsTests: XCTestCase {
                     type: nil,
                     expression: StringLiteral(value: "xyz")
                 ),
-                InitializerDeclaration­(
+                InitializerDeclaration(
                     arguments: [
                         Parameter(
                             externalParameterName: nil,
                             localParameterName: "bar",
-                            type: TypeIdentifier­(names: ["Int"]),
+                            type: TypeIdentifier(names: ["Int"]),
                             defaultArgument: nil
                         ),
                     ],
@@ -195,7 +195,7 @@ class DeclarationsTests: XCTestCase {
         ).javaScript(with: 0), "class Foo {\n    constructor(bar) {\n        this.bar = 42;\n        this.baz = \"xyz\";\n    }\n}\n")
         
         // methods
-        XCTAssertEqual(ClassDeclaration­(
+        XCTAssertEqual(ClassDeclaration(
             name: "Foo",
             superTypes: [],
             members: [
@@ -211,14 +211,14 @@ class DeclarationsTests: XCTestCase {
         ).javaScript(with: 0), "class Foo {\n    bar() {\n    }\n}\n")
         
         // indentLevel + 1
-        XCTAssertEqual(ClassDeclaration­(
+        XCTAssertEqual(ClassDeclaration(
             name: "Foo",
             superTypes: [],
             members: [
                 VariableDeclaration(
                     isStatic: false,
                     name: "bar",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     expression: nil
                 ),
                 ConstantDeclaration(
@@ -227,12 +227,12 @@ class DeclarationsTests: XCTestCase {
                     type: nil,
                     expression: StringLiteral(value: "xyz")
                 ),
-                InitializerDeclaration­(
+                InitializerDeclaration(
                     arguments: [
                         Parameter(
                             externalParameterName: nil,
                             localParameterName: "bar",
-                            type: TypeIdentifier­(names: ["Int"]),
+                            type: TypeIdentifier(names: ["Int"]),
                             defaultArgument: nil
                         ),
                     ],
@@ -253,8 +253,8 @@ class DeclarationsTests: XCTestCase {
             ).javaScript(with: 1), "    class Foo {\n        constructor(bar) {\n            this.bar = 42;\n            this.baz = \"xyz\";\n        }\n    }\n")
     }
     
-    func testInitializerDeclaration­() {
-        XCTAssertEqual(InitializerDeclaration­(
+    func testInitializerDeclaration() {
+        XCTAssertEqual(InitializerDeclaration(
             arguments: [],
             isFailable: false,
             hasThrows: false,
@@ -268,18 +268,18 @@ class DeclarationsTests: XCTestCase {
         ).javaScript(with: 0), "constructor() {\n    this.foo = 42;\n}\n")
         
         // arguments
-        XCTAssertEqual(InitializerDeclaration­(
+        XCTAssertEqual(InitializerDeclaration(
             arguments: [
                 Parameter(
                     externalParameterName: nil,
                     localParameterName: "bar",
-                    type: TypeIdentifier­(names: ["Int"]),
+                    type: TypeIdentifier(names: ["Int"]),
                     defaultArgument: nil
                 ),
                 Parameter(
                     externalParameterName: nil,
                     localParameterName: "baz",
-                    type: TypeIdentifier­(names: ["String"]),
+                    type: TypeIdentifier(names: ["String"]),
                     defaultArgument: nil
                 ),
             ],
@@ -299,7 +299,7 @@ class DeclarationsTests: XCTestCase {
         ).javaScript(with: 0), "constructor(bar, baz) {\n    this.foo = bar + baz;\n}\n")
         
         // indent
-        XCTAssertEqual(InitializerDeclaration­(
+        XCTAssertEqual(InitializerDeclaration(
             arguments: [],
             isFailable: false,
             hasThrows: false,

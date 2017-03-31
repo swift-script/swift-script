@@ -36,7 +36,7 @@ class ExpressionsTests: XCTestCase {
             hasThrows: false,
             result: nil,
             statements: [
-                DeclarationStatement(ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42))),
+                DeclarationStatement(ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier(names: ["Int"]), expression: IntegerLiteral(value: 42))),
                 ReturnStatement(expression: IdentifierExpression(identifier: "foo"))
             ]
         ).javaScript(with: 0), "() => {\n    const foo = 42;\n    return foo;\n}")
@@ -47,7 +47,7 @@ class ExpressionsTests: XCTestCase {
             hasThrows: false,
             result: nil,
             statements: [
-                DeclarationStatement(ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier­(names: ["Int"]), expression: IntegerLiteral(value: 42))),
+                DeclarationStatement(ConstantDeclaration(isStatic: false, name: "foo", type: TypeIdentifier(names: ["Int"]), expression: IntegerLiteral(value: 42))),
                 ReturnStatement(expression: IdentifierExpression(identifier: "foo"))
             ]
         ).javaScript(with: 1), "() => {\n        const foo = 42;\n        return foo;\n    }")
@@ -74,9 +74,9 @@ class ExpressionsTests: XCTestCase {
         
         // arguments with types
         XCTAssertEqual(ClosureExpression(
-            arguments: [("x", TypeIdentifier­(names: ["Int"])), ("y", TypeIdentifier­(names: ["Int"]))],
+            arguments: [("x", TypeIdentifier(names: ["Int"])), ("y", TypeIdentifier(names: ["Int"]))],
             hasThrows: false,
-            result: TypeIdentifier­(names: ["Int"]),
+            result: TypeIdentifier(names: ["Int"]),
             statements: [ExpressionStatement(BinaryOperation(
                 leftOperand: IdentifierExpression(identifier: "x"),
                 operatorSymbol: "+",
