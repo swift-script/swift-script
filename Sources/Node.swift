@@ -1,4 +1,4 @@
-public protocol Node: JavaScriptConvertible {
+public protocol Node {
     
 }
 
