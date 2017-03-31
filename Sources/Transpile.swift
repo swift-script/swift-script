@@ -19,3 +19,13 @@ public func transpileBlock(statements: [Statement], indentLevel: Int) -> String 
 public func indent(of level: Int) -> String {
     return "    " * level
 }
+
+internal struct JavaScriptTranslator: StatementVisitor, ExpressionVisitor, DeclarationVisitor {
+    typealias StatementResult = String
+    typealias ExpressionResult = String
+    typealias DeclarationResult = String
+    
+    let indentLevel: Int
+}
+
+internal struct UnimplementedError: Error {}

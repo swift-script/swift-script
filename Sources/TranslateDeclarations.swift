@@ -1,36 +1,41 @@
-extension ConstantDeclaration {
-    public func javaScript(with indentLevel: Int) -> String {
-        guard !isStatic else {
+extension JavaScriptTranslator {
+    func visit(_: ImportDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
+    
+    func visit(_ n: ConstantDeclaration) throws -> String {
+        guard !n.isStatic else {
             // static properties must be translated in type layers
             return ""
         }
         
-        if let expression = expression {
-            return "\(indent(of: indentLevel))const \(name) = \(expression.javaScript(with: indentLevel));\n"
+        if let expression = n.expression {
+            return "\(indent(of: indentLevel))const \(n.name) = \(expression.javaScript(with: indentLevel));\n"
         } else {
-            return "\(indent(of: indentLevel))const \(name);\n"
+            return "\(indent(of: indentLevel))const \(n.name);\n"
         }
     }
-}
-
-extension VariableDeclaration {
-    public func javaScript(with indentLevel: Int) -> String {
-        guard !isStatic else {
+    
+    func visit(_ n: VariableDeclaration) throws -> String {
+        guard !n.isStatic else {
             // static properties must be translated in type layers
             return ""
         }
         
-        if let expression = expression {
-            return "\(indent(of: indentLevel))let \(name) = \(expression.javaScript(with: indentLevel));\n"
+        if let expression = n.expression {
+            return "\(indent(of: indentLevel))let \(n.name) = \(expression.javaScript(with: indentLevel));\n"
         } else {
-            return "\(indent(of: indentLevel))let \(name);\n"
+            return "\(indent(of: indentLevel))let \(n.name);\n"
         }
     }
-}
+    
+    func visit(_: TypeAliasDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
 
-extension FunctionDeclaration {
-    public func javaScript(with indentLevel: Int) -> String {
-        let jsArguments: [String] = arguments.map { param in
+    
+    func visit(_ n: FunctionDeclaration) throws -> String {
+        let jsArguments: [String] = n.arguments.map { param in
             if let initialValue = param.defaultArgument {
                 return "\(param.localParameterName) = \(initialValue)"
             } else {
@@ -39,13 +44,18 @@ extension FunctionDeclaration {
         }
         
         // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
-        return "\(indent(of: indentLevel))\(isStatic ? "static " : "")function \(name)(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: body!, indentLevel: indentLevel))\n"
+        return "\(indent(of: indentLevel))\(n.isStatic ? "static " : "")function \(n.name)(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: n.body!, indentLevel: indentLevel))\n"
     }
-}
-
-extension ClassDeclaration {
-    public func javaScript(with indentLevel: Int) -> String {
-        let propertiesWithInitialValues = members.filter {
+    
+    func visit(_: EnumDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
+    func visit(_: StructDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
+    
+    func visit(_ n: ClassDeclaration) throws -> String {
+        let propertiesWithInitialValues = n.members.filter {
             switch $0 {
             case let variable as VariableDeclaration:
                 return variable.expression != nil
@@ -55,7 +65,7 @@ extension ClassDeclaration {
                 return false
             }
         }
-        let membersExcludingProperties = members.filter { !($0 is VariableDeclaration || $0 is ConstantDeclaration) }
+        let membersExcludingProperties = n.members.filter { !($0 is VariableDeclaration || $0 is ConstantDeclaration) }
         let adjustedMembers = membersExcludingProperties.map { member -> Declaration in
             guard var initializer = member as? InitializerDeclaration else {
                 return member
@@ -98,13 +108,15 @@ extension ClassDeclaration {
             return "\(indent(of: indentLevel + 1))\(String(characters))"
         }
         
-        return "\(indent(of: indentLevel))class \(name) {\n\(jsMembers.joined())\(indent(of: indentLevel))}\n"
+        return "\(indent(of: indentLevel))class \(n.name) {\n\(jsMembers.joined())\(indent(of: indentLevel))}\n"
     }
-}
+    
+    func visit(_: ProtocolDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
 
-extension InitializerDeclaration {
-    public func javaScript(with indentLevel: Int) -> String {
-        let jsArguments: [String] = arguments.map { param in
+    func visit(_ n: InitializerDeclaration) throws -> String {
+        let jsArguments: [String] = n.arguments.map { param in
             if let initialValue = param.defaultArgument {
                 return "\(param.localParameterName) = \(initialValue)"
             } else {
@@ -112,6 +124,26 @@ extension InitializerDeclaration {
             }
         }
         // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
-        return "\(indent(of: indentLevel))constructor(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: body!, indentLevel: indentLevel))\n"
+        return "\(indent(of: indentLevel))constructor(\(jsArguments.joined(separator: ", "))) \(transpileBlock(statements: n.body!, indentLevel: indentLevel))\n"
+    }
+
+    func visit(_: DeinitializerDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
+    
+    func visit(_: ExtensionDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
+    
+    func visit(_: SubscriptDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
+    
+    func visit(_: OperatorDeclaration) throws -> String {
+        throw UnimplementedError()
+    }
+    
+    func visit(_: PrecedenceGroupDeclaration) throws -> String {
+        throw UnimplementedError()
     }
 }
