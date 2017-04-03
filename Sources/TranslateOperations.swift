@@ -1,8 +1,8 @@
-extension BinaryOperation {
-    public func javaScript(with indentLevel: Int) -> String {
-        let lhs = leftOperand.javaScript(with: indentLevel + 1)
-        let rhs = rightOperand.javaScript(with: indentLevel + 1)
-        switch operatorSymbol {
+extension JavaScriptTranslator {
+    func visit(_ n: BinaryOperation) throws -> String {
+        let lhs = try n.leftOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        let rhs = try n.rightOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        switch n.operatorSymbol {
         case "as":
             return lhs
         case "as?":
@@ -18,17 +18,15 @@ extension BinaryOperation {
         case "..<":
             return "range(\(lhs), \(rhs)" // TODO: should make specific range function
         case "&&=", "||=":
-            return "\(lhs) = \(lhs) \(operatorSymbol) \(rhs)"
+            return "\(lhs) = \(lhs) \(n.operatorSymbol) \(rhs)"
         default:
-            return "\(lhs) \(operatorSymbol) \(rhs)"
+            return "\(lhs) \(n.operatorSymbol) \(rhs)"
         }
     }
-}
-
-extension PrefixUnaryOperation {
-    public func javaScript(with indentLevel: Int) -> String {
-        let value = operand.javaScript(with: indentLevel + 1)
-        switch operatorSymbol {
+    
+    func visit(_ n: PrefixUnaryOperation) throws -> String {
+        let value = try n.operand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        switch n.operatorSymbol {
         case "try":
             return value
         case "try!":
@@ -36,30 +34,26 @@ extension PrefixUnaryOperation {
         case "try?":
             return "tryq(\(value))"
         default:
-            return "\(operatorSymbol)\(value)"
+            return "\(n.operatorSymbol)\(value)"
         }
     }
-}
-
-extension PostfixUnaryOperation {
-    public func javaScript(with indentLevel: Int) -> String {
-        let value = operand.javaScript(with: indentLevel + 1)
-        switch operatorSymbol {
+    
+    func visit(_ n: PostfixUnaryOperation) throws -> String {
+        let value = try n.operand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        switch n.operatorSymbol {
         case "?":
             fatalError("Never reaches here if semantic analysis is implemented.")
         case "!":
             return "x(\(value))"
         default:
-            return "\(value)\(operatorSymbol)"
+            return "\(value)\(n.operatorSymbol)"
         }
     }
-}
-
-extension TernaryOperation {
-    public func javaScript(with indentLevel: Int) -> String {
-        let first = firstOperand.javaScript(with: indentLevel + 1)
-        let second = secondOperand.javaScript(with: indentLevel + 1)
-        let third = thirdOperand.javaScript(with: indentLevel + 1)
+    
+    func visit(_ n: TernaryOperation) throws -> String {
+        let first = try n.firstOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        let second = try n.secondOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        let third = try n.thirdOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))
         return "\(first) ? \(second) : \(third)"
     }
 }
