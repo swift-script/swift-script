@@ -3,19 +3,75 @@ import XCTest
 
 class ParseExprTests: XCTestCase {
     func testExpr() {
-        XCTAssertTrue(parseSuccess(
-            expr, "a + try! b + try? c as C is C*12 + !X"))
-        XCTAssertTrue(parseSuccess(
-            expr, "[foo, x[12]]"))
+        ParseAssertEqual(
+            expr,
+            "a + try! b + try? c as C is C*12 + !X",
+            BinaryOperation(
+                leftOperand: BinaryOperation(
+                    leftOperand: BinaryOperation(
+                        leftOperand: BinaryOperation(
+                            leftOperand: BinaryOperation(
+                                leftOperand: BinaryOperation(
+                                    leftOperand: IdentifierExpression(identifier: "a"),
+                                    operatorSymbol: "+",
+                                    rightOperand: PrefixUnaryOperation(
+                                        operatorSymbol: "try!",
+                                        operand: IdentifierExpression(identifier: "b")
+                                    )
+                                ),
+                                operatorSymbol: "+",
+                                rightOperand: PrefixUnaryOperation(
+                                    operatorSymbol: "try?",
+                                    operand: IdentifierExpression(identifier: "c")
+                                )
+                            ),
+                            operatorSymbol: "as",
+                            rightOperand: IdentifierExpression(identifier: "C")
+                        ),
+                        operatorSymbol: "is",
+                        rightOperand: IdentifierExpression(identifier: "C")
+                    ),
+                    operatorSymbol: "*",
+                    rightOperand: IntegerLiteral(value: 12)
+                ),
+                operatorSymbol: "+",
+                rightOperand: PrefixUnaryOperation(
+                    operatorSymbol: "!",
+                    operand: IdentifierExpression(identifier: "X")
+                )
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "[foo, x[12]]",
+            ArrayLiteral(value: [
+                IdentifierExpression(identifier: "foo"),
+                SubscriptExpression(
+                    expression: IdentifierExpression(identifier: "x"),
+                    arguments: [
+                        IntegerLiteral(value: 12),
+                    ]
+                )
+            ])
+        )
     }
     
     func testExprIdentifier() {
-        XCTAssertTrue(parseSuccess(
-            exprIdentifier, "foo"))
-        XCTAssertTrue(parseSuccess(
-            exprIdentifier, "$12"))
-        XCTAssertTrue(parseSuccess(
-            exprIdentifier, "foo<A, B>"))
+        ParseAssertEqual(
+            expr,
+            "foo",
+            IdentifierExpression(identifier: "foo")
+        )
+        ParseAssertEqual(
+            expr,
+            "$12",
+            IdentifierExpression(identifier: "$12")
+        )
+        ParseAssertEqual(
+            expr,
+            "foo<A, B>",
+            IdentifierExpression(identifier: "foo")
+        )
         XCTAssertFalse(parseSuccess(
             exprIdentifier, "self"))
         XCTAssertFalse(parseSuccess(
@@ -23,14 +79,26 @@ class ParseExprTests: XCTestCase {
     }
     
     func testExprExplicitMember() {
-        XCTAssertTrue(parseSuccess(
-            expr, "foo.bar"))
-        XCTAssertTrue(parseSuccess(
-            expr, "foo.bar<A>"))
+        ParseAssertEqual(
+            expr,
+            "foo.bar",
+            ExplicitMemberExpression(
+                expression: IdentifierExpression(identifier: "foo"),
+                member: "bar"
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "foo.bar<A>",
+            ExplicitMemberExpression(
+                expression: IdentifierExpression(identifier: "foo"),
+                member: "bar"
+            )
+        )
     }
     
     func testExprCall() {
-        ParseEqual(
+        ParseAssertEqual(
             expr,
             "foo(x)",
             FunctionCallExpression(
@@ -39,7 +107,7 @@ class ParseExprTests: XCTestCase {
                 trailingClosure: nil
             )
         )
-        ParseEqual(
+        ParseAssertEqual(
             expr,
             "foo.bar<Int>(x: 1)",
             FunctionCallExpression(
@@ -52,7 +120,7 @@ class ParseExprTests: XCTestCase {
             )
         )
 
-        ParseEqual(
+        ParseAssertEqual(
             expr,
             "foo(x: 1) { x in }",
             FunctionCallExpression(
@@ -72,46 +140,185 @@ class ParseExprTests: XCTestCase {
     }
 
     func testExprTrailingClosure() {
-        XCTAssertTrue(parseSuccess(
-            expr, "foo {}"))
-        XCTAssertTrue(parseSuccess(
-            expr, "foo.bar { x, y in (x, y) }"))
+        ParseAssertEqual(
+            expr,
+            "foo {}",
+            FunctionCallExpression(
+                expression: IdentifierExpression(identifier: "foo"),
+                arguments: [],
+                trailingClosure: ClosureExpression(
+                    arguments: [],
+                    hasThrows: false,
+                    result: nil,
+                    statements: []
+                )
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "foo.bar { x, y in (x, y) }",
+            FunctionCallExpression(
+                expression: ExplicitMemberExpression(
+                    expression: IdentifierExpression(identifier: "foo"),
+                    member: "bar"
+                ),
+                arguments: [],
+                trailingClosure: ClosureExpression(
+                    arguments: [
+                        ("x", nil),
+                        ("y", nil),
+                    ],
+                    hasThrows: false,
+                    result: nil,
+                    statements: [
+                        ExpressionStatement(TupleExpression(elements: [
+                            (nil, IdentifierExpression(identifier: "x")),
+                            (nil, IdentifierExpression(identifier: "y")),
+                        ]))
+                    ]
+                )
+            )
+        )
     }
     
     func testExprSubscript() {
-        XCTAssertTrue(parseSuccess(
-            expr, "foo[x]"))
-        XCTAssertTrue(parseSuccess(
-            expr, "foo.bar[1, 2]"))
+        ParseAssertEqual(
+            expr,
+            "foo[x]",
+            SubscriptExpression(
+                expression: IdentifierExpression(identifier: "foo"),
+                arguments: [
+                    IdentifierExpression(identifier: "x"),
+                ]
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "foo.bar[1, 2]",
+            SubscriptExpression(
+                expression: ExplicitMemberExpression(
+                    expression: IdentifierExpression(identifier: "foo"),
+                    member: "bar"
+                ),
+                arguments: [
+                    IntegerLiteral(value: 1),
+                    IntegerLiteral(value: 2),
+                ]
+            )
+        )
     }
 
     func testExprPostixUnary() {
-        XCTAssertTrue(parseSuccess(
-            exprAtom(isBasic: false), "foo!"))
-        XCTAssertTrue(parseSuccess(
-            exprAtom(isBasic: false), "foo!.bar"))
-        XCTAssertTrue(parseSuccess(
-            exprAtom(isBasic: false), "foo?.bar"))
-        XCTAssertTrue(parseSuccess(
-            exprAtom(isBasic: false), "foo?()"))
-        XCTAssertTrue(parseSuccess(
-            exprAtom(isBasic: false), "foo?(bar)"))
-        XCTAssertTrue(parseSuccess(
-            exprAtom(isBasic: false), "foo?[bar]"))
+        ParseAssertEqual(
+            expr,
+            "foo!",
+            PostfixUnaryOperation(
+                operand: IdentifierExpression(identifier: "foo"),
+                operatorSymbol: "!"
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "foo!.bar",
+            ExplicitMemberExpression(
+                expression:  PostfixUnaryOperation(
+                    operand: IdentifierExpression(identifier: "foo"),
+                    operatorSymbol: "!"
+                ),
+                member: "bar"
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "foo?.bar",
+            ExplicitMemberExpression(
+                expression:  PostfixUnaryOperation(
+                    operand: IdentifierExpression(identifier: "foo"),
+                    operatorSymbol: "?"
+                ),
+                member: "bar"
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "foo?()",
+            FunctionCallExpression(
+                expression:  PostfixUnaryOperation(
+                    operand: IdentifierExpression(identifier: "foo"),
+                    operatorSymbol: "?"
+                ),
+                arguments: [],
+                trailingClosure: nil
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "foo?(bar)",
+            FunctionCallExpression(
+                expression:  PostfixUnaryOperation(
+                    operand: IdentifierExpression(identifier: "foo"),
+                    operatorSymbol: "?"
+                ),
+                arguments: [
+                    (nil, IdentifierExpression(identifier: "bar")),
+                ],
+                trailingClosure: nil
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "foo?[bar]",
+            SubscriptExpression(
+                expression:  PostfixUnaryOperation(
+                    operand: IdentifierExpression(identifier: "foo"),
+                    operatorSymbol: "?"
+                ),
+                arguments: [
+                    IdentifierExpression(identifier: "bar"),
+                ]
+            )
+        )
     }
     
     func testExprParen() {
-        XCTAssertTrue(parseSuccess(
-            exprParenthesized, "(x)"))
-        XCTAssertTrue(parseSuccess(
-            exprParenthesized, "(foo.bar())"))
+        ParseAssertEqual(
+            expr,
+            "(x)",
+            ParenthesizedExpression(expression: IdentifierExpression(identifier: "x"))
+        )
+        ParseAssertEqual(
+            expr,
+            "(foo.bar())",
+            ParenthesizedExpression(
+                expression: FunctionCallExpression(
+                    expression: ExplicitMemberExpression(
+                        expression: IdentifierExpression(identifier: "foo"),
+                        member: "bar"
+                    ),
+                    arguments: [],
+                    trailingClosure: nil
+                )
+            )
+        )
     }
     
     func testExprTuple() {
-        XCTAssertTrue(parseSuccess(
-            exprTuple, "(x, 1)"))
-        XCTAssertTrue(parseSuccess(
-            exprTuple, "(foo: 1, bar: 2)"))
+        ParseAssertEqual(
+            expr,
+            "(x, 1)",
+            TupleExpression(elements: [
+                (nil, IdentifierExpression(identifier: "x")),
+                (nil, IntegerLiteral(value: 1)),
+            ])
+        )
+        ParseAssertEqual(
+            expr,
+            "(foo: 1, bar: 2)",
+            TupleExpression(elements: [
+                ("foo", IntegerLiteral(value: 1)),
+                ("bar", IntegerLiteral(value: 2)),
+            ])
+        )
     }
     
     func testExprImplicitMember() {
@@ -122,51 +329,184 @@ class ParseExprTests: XCTestCase {
     }
     
     func testExprWildcard() {
-        XCTAssertTrue(parseSuccess(
-            exprWildcard, "_"))
-        XCTAssertTrue(parseSuccess(
-            expr, "_.self"))
+        ParseAssertEqual(
+            expr,
+            "_",
+            WildcardExpression()
+        )
+        ParseAssertEqual(
+            expr,
+            "_.foo",
+            ExplicitMemberExpression(
+                expression: WildcardExpression(),
+                member: "foo"
+            )
+        )
     }
     
     func testExprSelf() {
-        XCTAssertTrue(parseSuccess(
-            exprSelf, "self"))
-        XCTAssertTrue(parseSuccess(
-            expr, "self.foo()"))
+        ParseAssertEqual(
+            expr,
+            "self",
+            SelfExpression()
+        )
+        ParseAssertEqual(
+            expr,
+            "self.foo()",
+            FunctionCallExpression(
+                expression: ExplicitMemberExpression(
+                    expression: SelfExpression(),
+                    member: "foo"),
+                arguments: [],
+                trailingClosure: nil
+            )
+        )
     }
     
     func testExprSuper() {
-        XCTAssertTrue(parseSuccess(
-            exprSuper, "super"))
-        XCTAssertTrue(parseSuccess(
-            expr, "super.foo()"))
+        ParseAssertEqual(
+            expr,
+            "super",
+            SuperclassExpression()
+        )
+        ParseAssertEqual(
+            expr,
+            "super.foo()",
+            FunctionCallExpression(
+                expression: ExplicitMemberExpression(
+                    expression: SuperclassExpression(),
+                    member: "foo"),
+                arguments: [],
+                trailingClosure: nil
+            )
+        )
     }
 
     func testExprClosure() {
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{}"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ _ in x }"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ x in }"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ x, y in }"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ (x, y) in }"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ (x: Int, y: Int) in }"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ (x: Int, y: Int) -> Int in 1 }"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ (x: Int, y: Int) throws -> Int in 1 }"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ $0.foo[12] }"))
-        XCTAssertTrue(parseSuccess(
-            exprClosure, "{ let x = 1\n return $0 + 12\n}"))
+        ParseAssertEqual(
+            expr,
+            "{}",
+            ClosureExpression(arguments: [], hasThrows: false, result: nil, statements: [])
+        )
+        ParseAssertEqual(
+            expr,
+            "{ _ in x }",
+            ClosureExpression(arguments: [("_", nil)], hasThrows: false, result: nil, statements: [
+                ExpressionStatement(IdentifierExpression(identifier: "x")),
+            ])
+        )
+        ParseAssertEqual(
+            expr,
+            "{ x in }",
+            ClosureExpression(arguments: [("x", nil)], hasThrows: false, result: nil, statements: [])
+        )
+        ParseAssertEqual(
+            expr,
+            "{ x, y in }",
+            ClosureExpression(arguments: [("x", nil), ("y", nil)], hasThrows: false, result: nil, statements: [])
+        )
+        ParseAssertEqual(
+            expr,
+            "{ (x, y) in }",
+            ClosureExpression(arguments: [("x", nil), ("y", nil)], hasThrows: false, result: nil, statements: [])
+        )
+        ParseAssertEqual(
+            expr,
+            "{ (x: Int, y: Int) in }",
+            ClosureExpression(
+                arguments: [
+                    ("x", TypeIdentifier(names: ["Int"])),
+                    ("y", TypeIdentifier(names: ["Int"])),
+                ],
+                hasThrows: false,
+                result: nil,
+                statements: []
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "{ (x: Int, y: Int) -> Int in }",
+            ClosureExpression(
+                arguments: [
+                    ("x", TypeIdentifier(names: ["Int"])),
+                    ("y", TypeIdentifier(names: ["Int"])),
+                    ],
+                hasThrows: false,
+                result: TypeIdentifier(names: ["Int"]),
+                statements: []
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "{ (x: Int, y: Int) throws -> Int in }",
+            ClosureExpression(
+                arguments: [
+                    ("x", TypeIdentifier(names: ["Int"])),
+                    ("y", TypeIdentifier(names: ["Int"])),
+                ],
+                hasThrows: true,
+                result: TypeIdentifier(names: ["Int"]),
+                statements: []
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "{ $0.foo[12] }",
+            ClosureExpression(
+                arguments: [],
+                hasThrows: false,
+                result: nil,
+                statements: [
+                    ExpressionStatement(SubscriptExpression(
+                        expression: ExplicitMemberExpression(
+                            expression: IdentifierExpression(identifier: "$0"),
+                            member: "foo"
+                        ),
+                        arguments: [
+                            IntegerLiteral(value: 12),
+                        ]
+                    )),
+                ]
+            )
+        )
+        ParseAssertEqual(
+            expr,
+            "{ let x = 1\n return $0 + 12\n}",
+            ClosureExpression(
+                arguments: [],
+                hasThrows: false,
+                result: nil,
+                statements: [
+                    DeclarationStatement(ConstantDeclaration(
+                        isStatic: false,
+                        name: "x",
+                        type: nil,
+                        expression: IntegerLiteral(value: 1)
+                    )),
+                    ReturnStatement(
+                        expression: BinaryOperation(
+                            leftOperand: IdentifierExpression(identifier: "$0"),
+                            operatorSymbol: "+",
+                            rightOperand: IntegerLiteral(value: 12)
+                        )
+                    ),
+                ]
+            )
+        )
     }
 
     func testExprAssign() {
-        XCTAssertTrue(parseSuccess(
-            expr, "self.x = 1"))
+        ParseAssertEqual(
+            expr,
+            "self.x = 1",
+            BinaryOperation(
+                leftOperand: ExplicitMemberExpression(
+                    expression: SelfExpression(),
+                    member: "x"
+                ),
+                operatorSymbol: "=",
+                rightOperand: IntegerLiteral(value: 1)
+            )
+        )
     }
 }

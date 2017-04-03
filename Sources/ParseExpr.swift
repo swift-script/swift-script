@@ -23,7 +23,7 @@ let binOp = oper_infix <|> oper_infix("as") <|> oper_infix("is") <|> oper_infix(
 func binarySuffix(lhs: Expression, isBasic: Bool) -> SwiftParser<Expression> {
     let bin: SwiftParser<Expression> = { op in { rhs in
         BinaryOperation(leftOperand: lhs, operatorSymbol: op, rightOperand: rhs) }}
-        <^> binOp <*> _expr(isBasic: isBasic)
+        <^> binOp <*> exprSequenceElement(isBasic: isBasic)
     return (bin >>- { lhs in binarySuffix(lhs: lhs, isBasic: isBasic) })
         <|> pure(lhs)
 }

@@ -3,8 +3,8 @@ import XCTest
 
 class ParseStmtTests: XCTestCase {
     func testStmtIf() {
-        ParseEqual(
-            stmtIf,
+        ParseAssertEqual(
+            stmt,
             "if foo {\n"
                 + "  expr() \n"
                 + "  bar\n"
@@ -23,8 +23,8 @@ class ParseStmtTests: XCTestCase {
             )
         )
         
-        ParseEqual(
-            stmtIf,
+        ParseAssertEqual(
+            stmt,
             "if foo {\n"
                 + "} else if(foo){\n"
                 + "}else if foo{\n"
@@ -45,8 +45,8 @@ class ParseStmtTests: XCTestCase {
             )
         )
 
-        ParseEqual(
-            stmtIf,
+        ParseAssertEqual(
+            stmt,
             "if let foo = bar {\n"
                 + "  expr() \n"
                 + "  bar\n"
@@ -65,8 +65,8 @@ class ParseStmtTests: XCTestCase {
             )
         )
 
-        ParseEqual(
-            stmtIf,
+        ParseAssertEqual(
+            stmt,
             "if var foo = bar {\n"
                 + "  expr() \n"
                 + "  bar\n"
@@ -87,51 +87,127 @@ class ParseStmtTests: XCTestCase {
     }
     
     func testStmtGuard() {
-        XCTAssertTrue(parseSuccess(
-            stmtGuard,
+        ParseAssertEqual(
+            stmt,
             "guard foo else {\n"
                 + "  expr() \n"
                 + "  bar\n"
-                + "}"))
-        XCTAssertTrue(parseSuccess(
-            stmtGuard,
+                + "}",
+            GuardStatement(
+                condition: .boolean(IdentifierExpression(identifier: "foo")),
+                statements: [
+                    ExpressionStatement(FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "expr"),
+                        arguments: [],
+                        trailingClosure: nil
+                    )),
+                    ExpressionStatement(IdentifierExpression(identifier: "bar")),
+                ]
+            )
+        )
+        ParseAssertEqual(
+            stmt,
             "guard let foo = bar else {\n"
                 + "  expr() \n"
                 + "  bar\n"
-                + "}"))
-        XCTAssertTrue(parseSuccess(
-            stmtGuard,
+                + "}",
+            GuardStatement(
+                condition: .optionalBinding(false, "foo", IdentifierExpression(identifier: "bar")),
+                statements: [
+                    ExpressionStatement(FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "expr"),
+                        arguments: [],
+                        trailingClosure: nil
+                    )),
+                    ExpressionStatement(IdentifierExpression(identifier: "bar")),
+                ]
+            )
+        )
+        ParseAssertEqual(
+            stmt,
             "guard var foo = bar else {\n"
                 + "  expr() \n"
                 + "  bar\n"
-                + "}"))
+                + "}",
+            GuardStatement(
+                condition: .optionalBinding(true, "foo", IdentifierExpression(identifier: "bar")),
+                statements: [
+                    ExpressionStatement(FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "expr"),
+                        arguments: [],
+                        trailingClosure: nil
+                    )),
+                    ExpressionStatement(IdentifierExpression(identifier: "bar")),
+                ]
+            )
+        )
     }
     
     func testStmtWhile() {
-        XCTAssertTrue(parseSuccess(
-            stmtWhile,
+        ParseAssertEqual(
+            stmt,
             "while foo {\n"
                 + "  expr() \n"
                 + "  bar\n"
-                + "}"))
+                + "}",
+            WhileStatement(
+                condition: IdentifierExpression(identifier: "foo"),
+                statements: [
+                    ExpressionStatement(FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "expr"),
+                        arguments: [],
+                        trailingClosure: nil
+                    )),
+                    ExpressionStatement(IdentifierExpression(identifier: "bar")),
+                ]
+            )
+        )
     }
     
     func testStmtRepeatWhile() {
-        XCTAssertTrue(parseSuccess(
-            stmtRepeatWhile,
+        ParseAssertEqual(
+            stmt,
             "repeat {\n"
                 + "  expr() \n"
                 + "  bar\n"
-                + "} while foo"))
+                + "} while foo",
+            RepeatWhileStatement(
+                statements: [
+                    ExpressionStatement(FunctionCallExpression(
+                        expression: IdentifierExpression(identifier: "expr"),
+                        arguments: [],
+                        trailingClosure: nil
+                    )),
+                    ExpressionStatement(IdentifierExpression(identifier: "bar")),
+                ],
+                condition: IdentifierExpression(identifier: "foo")
+            )
+        )
     }
 
     func testStmtForIn() {
-        XCTAssertTrue(parseSuccess(
-            stmtForIn,
-            "for x in y {\n}"))
-        XCTAssertTrue(parseSuccess(
-            stmtForIn,
-            "for x in[1,2,3]{}"))
+        ParseAssertEqual(
+            stmt,
+            "for x in y {\n}",
+            ForInStatement(
+                item: "x",
+                collection: IdentifierExpression(identifier: "y"),
+                statements: []
+            )
+        )
+        ParseAssertEqual(
+            stmt,
+            "for x in[1,2,3]{}",
+            ForInStatement(
+                item: "x",
+                collection: ArrayLiteral(value: [
+                    IntegerLiteral(value: 1),
+                    IntegerLiteral(value: 2),
+                    IntegerLiteral(value: 3),
+                ]),
+                statements: []
+            )
+        )
     }
 
     func testStmtLabeled() {
@@ -148,10 +224,16 @@ class ParseStmtTests: XCTestCase {
     }
 
     func testStmtBreak() {
-        XCTAssertTrue(parseSuccess(
-            stmtBreak, "break"))
-        XCTAssertTrue(parseSuccess(
-            stmtBreak, "break LABEL"))
+        ParseAssertEqual(
+            stmt,
+            "break",
+            BreakStatement(labelName: nil)
+        )
+        ParseAssertEqual(
+            stmt,
+            "break LABEL",
+            BreakStatement(labelName: "LABEL")
+        )
         XCTAssertFalse(parseSuccess(
             stmtBreak, "break 23"))
         XCTAssertFalse(parseSuccess(
@@ -163,10 +245,16 @@ class ParseStmtTests: XCTestCase {
     }
     
     func testStmtContinue() {
-        XCTAssertTrue(parseSuccess(
-            stmtContinue, "continue"))
-        XCTAssertTrue(parseSuccess(
-            stmtContinue, "continue LABEL"))
+        ParseAssertEqual(
+            stmt,
+            "continue",
+            ContinueStatement(labelName: nil)
+        )
+        ParseAssertEqual(
+            stmt,
+            "continue LABEL",
+            ContinueStatement(labelName: "LABEL")
+        )
         XCTAssertFalse(parseSuccess(
             stmtContinue, "continue 42"))
         XCTAssertFalse(parseSuccess(
@@ -178,32 +266,61 @@ class ParseStmtTests: XCTestCase {
     }
     
     func testStmtFallthrough() {
-        XCTAssertTrue(parseSuccess(
-            stmtFallthrough, "fallthrough"))
+        ParseAssertEqual(
+            stmt,
+            "fallthrough",
+            FallthroughStatement()
+        )
         XCTAssertFalse(parseSuccess(
             stmtFallthrough, "fallthrough LABEL"))
     }
 
     func testStmtReturn() {
-        XCTAssertTrue(parseSuccess(
-            stmtReturn, "return"))
-        XCTAssertTrue(parseSuccess(
-            stmtReturn, "return(1)"))
-        XCTAssertTrue(parseSuccess(
-            stmtReturn, "return 1"))
+        ParseAssertEqual(
+            stmt,
+            "return",
+            ReturnStatement(expression: nil)
+        )
+        ParseAssertEqual(
+            stmt,
+            "return(1)",
+            ReturnStatement(
+                expression: ParenthesizedExpression(
+                    expression: IntegerLiteral(value: 1)
+                )
+            )
+        )
+        ParseAssertEqual(
+            stmt,
+            "return 1",
+            ReturnStatement(expression: IntegerLiteral(value: 1))
+        )
     }
     
     func testStmtThrow() {
-        XCTAssertTrue(parseSuccess(
-            stmtThrow, "throw foo"))
-        XCTAssertTrue(parseSuccess(
-            stmtThrow, "throw(foo)"))
+        ParseAssertEqual(
+            stmt,
+            "throw foo",
+            ThrowStatement(expression: IdentifierExpression(identifier: "foo"))
+        )
+        ParseAssertEqual(
+            stmt,
+            "throw(foo)",
+            ThrowStatement(
+                expression: ParenthesizedExpression(
+                    expression: IdentifierExpression(identifier: "foo")
+                )
+            )
+        )
         XCTAssertFalse(parseSuccess(
             stmtThrow, "throw"))
     }
     
     func testStmtDo() {
-        XCTAssertTrue(parseSuccess(
-            stmtDo, "do {}"))
+        ParseAssertEqual(
+            stmt,
+            "do {}",
+            DoStatement(statements: [], catchClauses: [])
+        )
     }
 }
