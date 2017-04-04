@@ -55,10 +55,10 @@ extension JavaScriptTranslator {
             if let expressionStatement = statement as? ExpressionStatement {
                 return "(\(jsArguments)) => \(try expressionStatement.expression.accept(JavaScriptTranslator(indentLevel: indentLevel)))"
             } else {
-                return "(\(jsArguments)) => \(try transpileBlock(statements: n.statements, indentLevel: indentLevel))"
+                return "(\(jsArguments)) => \(try translateBlock(statements: n.statements, indentLevel: indentLevel))"
             }
         default:
-            return "(\(jsArguments)) => \(try transpileBlock(statements: n.statements, indentLevel: indentLevel))"
+            return "(\(jsArguments)) => \(try translateBlock(statements: n.statements, indentLevel: indentLevel))"
         }
     }
     

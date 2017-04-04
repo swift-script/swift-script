@@ -46,7 +46,7 @@ extension JavaScriptTranslator {
         }
         
         // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
-        return "\(indent(of: indentLevel))\(n.isStatic ? "static " : "")function \(n.name)(\(jsArguments.joined(separator: ", "))) \(try transpileBlock(statements: n.body!, indentLevel: indentLevel))\n"
+        return "\(indent(of: indentLevel))\(n.isStatic ? "static " : "")function \(n.name)(\(jsArguments.joined(separator: ", "))) \(try translateBlock(statements: n.body!, indentLevel: indentLevel))\n"
     }
     
     func visit(_: EnumDeclaration) throws -> String {
@@ -123,7 +123,7 @@ extension JavaScriptTranslator {
             }
         }
         // `body!` because `FunctionDeclaration` without `body` is for `protocol`s and thier `javaScript` is never called
-        return "\(indent(of: indentLevel))constructor(\(jsArguments.joined(separator: ", "))) \(try transpileBlock(statements: n.body!, indentLevel: indentLevel))\n"
+        return "\(indent(of: indentLevel))constructor(\(jsArguments.joined(separator: ", "))) \(try translateBlock(statements: n.body!, indentLevel: indentLevel))\n"
     }
 
     func visit(_: DeinitializerDeclaration) throws -> String {
