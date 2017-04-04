@@ -1,3 +1,5 @@
+import SwiftScriptAST
+
 extension JavaScriptTranslator {
     func visit(_ n: ForInStatement) throws -> String {
         return "\(indent(of: indentLevel))for (\(n.item) of \(try n.collection.accept(JavaScriptTranslator(indentLevel: indentLevel)))) \(try transpileBlock(statements: n.statements, indentLevel: indentLevel))\n"

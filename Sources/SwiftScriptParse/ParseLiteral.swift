@@ -1,3 +1,4 @@
+import SwiftScriptAST
 import Runes
 import TryParsec
 
@@ -38,7 +39,7 @@ func _exprArrayLiteral() -> SwiftParser<ArrayLiteral> {
 }
 
 let exprDictionaryLiteral = _exprDictionaryLiteral()
-func _exprDictionaryLiteral() -> SwiftParser<DictionaryLiteral> {
+func _exprDictionaryLiteral() -> SwiftParser<SwiftScriptAST.DictionaryLiteral> {
     let item = { key in { val in (key, val) }}
         <^> (expr <* OWS <* colon) <*> (OWS *> expr)
     let items = sepBy1(item, OWS *> comma <* OWS)

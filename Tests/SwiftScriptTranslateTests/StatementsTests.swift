@@ -1,5 +1,6 @@
 import XCTest
-@testable import SwiftScript
+import SwiftScriptAST
+@testable import SwiftScriptTranslate
 
 class StatementsTests: XCTestCase {
     func testForInStatement() {

@@ -1,7 +1,7 @@
 import XCTest
 import Runes
 import TryParsec
-@testable import SwiftScript
+@testable import SwiftScriptParse
 
 func parseIt<Out>(_ parser: SwiftParser<Out>, _ str: String) throws -> Out {
     let result = parseOnly(parser <* endOfInput(), str.unicodeScalars)

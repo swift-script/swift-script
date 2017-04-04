@@ -1,3 +1,5 @@
+import SwiftScriptAST
+
 extension JavaScriptTranslator {
     func visit(_: ImportDeclaration) throws -> String {
         throw UnimplementedError()

@@ -1,9 +1,6 @@
-import Foundation
+import SwiftScriptAST
 
-public func transpile(code: String) throws -> String {
-    let statements: [Statement] = try parseTopLevel(code)
-    return try transpileStatements(statements: statements, indentLevel: 0)
-}
+internal struct UnimplementedError: Error {}
 
 public func transpileStatements(statements: [Statement], indentLevel: Int) throws -> String {
     let jsStatements: [String] = try statements.map { statement in
@@ -28,4 +25,3 @@ internal struct JavaScriptTranslator: StatementVisitor, ExpressionVisitor, Decla
     let indentLevel: Int
 }
 
-internal struct UnimplementedError: Error {}

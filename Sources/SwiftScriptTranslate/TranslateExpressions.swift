@@ -1,3 +1,5 @@
+import SwiftScriptAST
+
 extension JavaScriptTranslator {
     func visit(_ n: IdentifierExpression) throws -> String {
         switch n.identifier {

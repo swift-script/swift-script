@@ -1,3 +1,5 @@
+import SwiftScriptAST
+
 struct SupportingLibrary {
     static let defaultNamespace = "$ss"
     
