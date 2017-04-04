@@ -9,11 +9,11 @@ public func transpileStatements(statements: [Statement], indentLevel: Int) throw
     return jsStatements.joined()
 }
 
-public func transpileBlock(statements: [Statement], indentLevel: Int) throws -> String {
+internal func transpileBlock(statements: [Statement], indentLevel: Int) throws -> String {
     return "{\n\(try transpileStatements(statements: statements, indentLevel: indentLevel + 1))\(indent(of: indentLevel))}"
 }
 
-public func indent(of level: Int) -> String {
+internal func indent(of level: Int) -> String {
     return "    " * level
 }
 
