@@ -9,7 +9,7 @@ public func translate(_ statements: [Statement], with indentLevel: Int) throws -
     return jsStatements.joined()
 }
 
-internal func translateBlock(statements: [Statement], indentLevel: Int) throws -> String {
+internal func translateBlock(wrapping statements: [Statement], with indentLevel: Int) throws -> String {
     return "{\n\(try translate(statements, with: indentLevel + 1))\(indent(of: indentLevel))}"
 }
 
