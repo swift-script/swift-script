@@ -2,7 +2,7 @@ import SwiftScriptAST
 
 internal struct UnimplementedError: Error {}
 
-public func translateStatements(statements: [Statement], indentLevel: Int) throws -> String {
+public func translate(_ statements: [Statement], with indentLevel: Int) throws -> String {
     let jsStatements: [String] = try statements.map { statement in
         try statement.accept(JavaScriptTranslator(indentLevel: indentLevel))
     }
@@ -10,7 +10,7 @@ public func translateStatements(statements: [Statement], indentLevel: Int) throw
 }
 
 internal func translateBlock(statements: [Statement], indentLevel: Int) throws -> String {
-    return "{\n\(try translateStatements(statements: statements, indentLevel: indentLevel + 1))\(indent(of: indentLevel))}"
+    return "{\n\(try translate(statements, with: indentLevel + 1))\(indent(of: indentLevel))}"
 }
 
 internal func indent(of level: Int) -> String {

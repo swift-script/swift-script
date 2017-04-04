@@ -86,7 +86,7 @@ extension JavaScriptTranslator {
                 ).accept(JavaScriptTranslator(indentLevel: indentLevel))
             }
             
-            return try translateStatements(statements: [
+            return try translate([
                 DeclarationStatement(VariableDeclaration(isStatic: false, name: name, type: nil, expression: nil)),
                 IfStatement(
                     condition: .boolean(BinaryOperation(
@@ -101,7 +101,7 @@ extension JavaScriptTranslator {
                     statements: n.statements,
                     elseClause: nil
                 ),
-            ], indentLevel: indentLevel)
+            ], with: indentLevel)
         }
         
     }
