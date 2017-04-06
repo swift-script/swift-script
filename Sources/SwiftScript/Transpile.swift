@@ -1,7 +1,6 @@
 import Foundation
-import SwiftScriptAST
-import SwiftScriptParse
-import SwiftScriptTranslate
+import SwiftAST
+import SwiftParse
 
 public func transpile(_ code: String) throws -> String {
     let statements: [Statement] = try parse(code) as! [Statement] // temporary implementation of the cast
