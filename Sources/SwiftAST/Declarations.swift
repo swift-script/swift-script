@@ -1,4 +1,4 @@
-public protocol Declaration: Node {
+public protocol Declaration {
     func accept<V: DeclarationVisitor>(_: V) throws -> V.DeclarationResult
 }
 
