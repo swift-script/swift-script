@@ -1,3 +1,5 @@
+import SwiftAST
+
 extension JavaScriptTranslator {
     func visit(_ n: BinaryOperation) throws -> String {
         let lhs = try n.leftOperand.accept(JavaScriptTranslator(indentLevel: indentLevel))

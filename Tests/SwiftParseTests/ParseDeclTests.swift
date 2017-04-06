@@ -1,5 +1,6 @@
 import XCTest
-@testable import SwiftScript
+import SwiftAST
+@testable import SwiftParse
 
 class ParseDeclTests: XCTestCase {
     func testDeclFunction() {

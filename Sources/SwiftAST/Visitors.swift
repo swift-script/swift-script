@@ -279,6 +279,3 @@ extension ImplicitlyUnwrappedOptionalType {
 extension ProtocolCompositionType {
     public func accept<V : TypeVisitor>(_ v: V) throws -> V.TypeResult { return try v.visit(self) }
 }
-
-public protocol ASTVisitor: DeclarationVisitor, ExpressionVisitor, StatementVisitor, TypeVisitor {
-}

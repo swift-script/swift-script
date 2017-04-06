@@ -1,4 +1,4 @@
-import SwiftScript
+import SwiftAST
 
 
 // Helper functions
@@ -120,7 +120,7 @@ struct StatementEqual : StatementVisitor {
 struct ExpressionEqual : ExpressionVisitor {
     // Literal
     func visit(_ lhs: ArrayLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: SwiftScript.DictionaryLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: SwiftAST.DictionaryLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: IntegerLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: FloatingPointLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: StringLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
@@ -384,8 +384,8 @@ extension ArrayLiteral : Equatable {
         return lhs.value == rhs.value
     }
 }
-extension SwiftScript.DictionaryLiteral : Equatable {
-    public static func == (lhs: SwiftScript.DictionaryLiteral, rhs: SwiftScript.DictionaryLiteral) -> Bool {
+extension SwiftAST.DictionaryLiteral : Equatable {
+    public static func == (lhs: SwiftAST.DictionaryLiteral, rhs: SwiftAST.DictionaryLiteral) -> Bool {
         return isElementsEqual(lhs.value, rhs.value) { l, r in
             l.0 == r.0 && l.1 == r.1
         }

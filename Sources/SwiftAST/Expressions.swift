@@ -1,4 +1,4 @@
-public protocol Expression: Node {
+public protocol Expression {
     func accept<V: ExpressionVisitor>(_: V) throws -> V.ExpressionResult
 }
 

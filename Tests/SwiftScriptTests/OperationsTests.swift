@@ -1,4 +1,5 @@
 import XCTest
+import SwiftAST
 @testable import SwiftScript
 
 class OperationsTests: XCTestCase {

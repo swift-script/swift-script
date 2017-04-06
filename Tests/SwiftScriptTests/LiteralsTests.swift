@@ -1,4 +1,5 @@
 import XCTest
+import SwiftAST
 @testable import SwiftScript
 
 class LiteralsTests: XCTestCase {
@@ -11,13 +12,13 @@ class LiteralsTests: XCTestCase {
     }
     
     func testDictionaryLiteral() {
-        XCTAssertEqual(try! SwiftScript.DictionaryLiteral(value: [
+        XCTAssertEqual(try! SwiftAST.DictionaryLiteral(value: [
             (StringLiteral(value: "foo"), IntegerLiteral(value: 2)),
             (StringLiteral(value: "bar"), IntegerLiteral(value: 3)),
             (StringLiteral(value: "baz"), IntegerLiteral(value: 5)),
         ]).accept(JavaScriptTranslator(indentLevel: 0)), "{\n    \"foo\": 2,\n    \"bar\": 3,\n    \"baz\": 5\n}")
         
-        XCTAssertEqual(try! SwiftScript.DictionaryLiteral(value: [
+        XCTAssertEqual(try! SwiftAST.DictionaryLiteral(value: [
             (StringLiteral(value: "foo"), IntegerLiteral(value: 2)),
             (StringLiteral(value: "bar"), IntegerLiteral(value: 3)),
             (StringLiteral(value: "baz"), IntegerLiteral(value: 5)),

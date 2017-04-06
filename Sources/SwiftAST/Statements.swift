@@ -1,4 +1,4 @@
-public protocol Statement: Node {
+public protocol Statement {
     func accept<V: StatementVisitor>(_: V) throws -> V.StatementResult
 }
 
@@ -46,12 +46,12 @@ public struct IfStatement: Statement {
     }
 }
 
-public enum Condition: Node {
+public enum Condition {
     case boolean(Expression)
     case optionalBinding(/*isVar:*/ Bool, String, Expression)
 }
 
-public enum ElseClause: Node {
+public enum ElseClause {
     case else_([Statement])
     indirect case elseIf(IfStatement)
 }
@@ -141,7 +141,7 @@ public struct DoStatement: Statement {
     }
 }
 
-public struct CatchClause: Node {
+public struct CatchClause {
     // TODO
     public init() {}
 }

@@ -1,10 +1,12 @@
+import SwiftAST
+
 extension JavaScriptTranslator {
     func visit(_ n: ArrayLiteral) throws -> String {
         let values: String = try n.value.map { try $0.accept(JavaScriptTranslator(indentLevel: indentLevel)) }.joined(separator: ", ")
         return "[\(values)]"
     }
     
-    func visit(_ n: DictionaryLiteral) throws -> String {
+    func visit(_ n: SwiftAST.DictionaryLiteral) throws -> String {
         let keyValues: String = try n.value.map {
             "\("    " * (indentLevel + 1))\(try $0.0.accept(JavaScriptTranslator(indentLevel: indentLevel + 1))): \(try $0.1.accept(JavaScriptTranslator(indentLevel: indentLevel + 1)))"
         }.joined(separator: ",\n")
