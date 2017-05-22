@@ -47,3 +47,25 @@ func _exprDictionaryLiteral() -> SwiftParser<SwiftAST.DictionaryLiteral> {
     return { items in DictionaryLiteral(value: items) }
         <^> l_square *> OWS *> items <* OWS <* r_square
 }
+
+/// - SeeAlso: https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/swift/grammar/interpolated-string-literal
+let exprStringInterpolationLiteral = _exprStringInterpolationLiteral()
+private func _exprStringInterpolationLiteral() -> SwiftParser<StringInterpolationLiteral> {
+    return char("\"") *> _exprStringInterpolationLiteralNoQuotes() <* char("\"")
+}
+
+/// - Todo: Improve this.
+private func _exprStringInterpolationLiteralNoQuotes() -> SwiftParser<StringInterpolationLiteral> {
+    let backslashed: SwiftParser<Expression> = TryParsec.string("\\(") *> expr <* char(")")
+
+    let stringLiteralForInterpolation: SwiftParser<Expression> =
+        manyTill(not("\""), lookAhead( TryParsec.string("\\(") *> pure()))
+            <&> { StringLiteral(value: String($0)) }
+
+    let head = { x in { rest in StringInterpolationLiteral(segments: cons(x)(rest.segments)) }}
+        <^> (backslashed <|> stringLiteralForInterpolation)
+        <*> _exprStringInterpolationLiteralNoQuotes()
+
+    return head <|> pure(StringInterpolationLiteral(segments: []))
+}
+

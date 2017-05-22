@@ -2,7 +2,7 @@ import SwiftAST
 
 extension JavaScriptTranslator {
     func visit(_: ImportDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
     
     func visit(_ n: ConstantDeclaration) throws -> String {
@@ -12,7 +12,7 @@ extension JavaScriptTranslator {
         }
         
         if let expression = n.expression {
-            return "\(indent(of: indentLevel))const \(n.name) = \(try expression.accept(JavaScriptTranslator(indentLevel: indentLevel)));\n"
+            return "\(indent(of: indentLevel))const \(n.name) = \(try expression.accept(self));\n"
         } else {
             return "\(indent(of: indentLevel))const \(n.name);\n"
         }
@@ -25,16 +25,19 @@ extension JavaScriptTranslator {
         }
         
         if let expression = n.expression {
-            return "\(indent(of: indentLevel))let \(n.name) = \(try expression.accept(JavaScriptTranslator(indentLevel: indentLevel)));\n"
+            return "\(indent(of: indentLevel))let \(n.name) = \(try expression.accept(self));\n"
         } else {
             return "\(indent(of: indentLevel))let \(n.name);\n"
         }
     }
+
+    func visit(_ n: VariableDeclaration.GetSet) throws -> String {
+        throw UnimplementedError(func: #function, file: #file, line: #line)
+    }
     
     func visit(_: TypeAliasDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
-
     
     func visit(_ n: FunctionDeclaration) throws -> String {
         let jsArguments: [String] = n.arguments.map { param in
@@ -50,10 +53,10 @@ extension JavaScriptTranslator {
     }
     
     func visit(_: EnumDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
     func visit(_: StructDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
     
     func visit(_ n: ClassDeclaration) throws -> String {
@@ -98,7 +101,7 @@ extension JavaScriptTranslator {
         }
         
         let jsMembers: [String] = try adjustedMembers.map { member in
-            let js = try member.accept(JavaScriptTranslator(indentLevel: indentLevel + 1))
+            let js = try member.accept(self.indented)
             guard member is FunctionDeclaration else {
                 return js
             }
@@ -111,7 +114,7 @@ extension JavaScriptTranslator {
     }
     
     func visit(_: ProtocolDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
 
     func visit(_ n: InitializerDeclaration) throws -> String {
@@ -127,22 +130,22 @@ extension JavaScriptTranslator {
     }
 
     func visit(_: DeinitializerDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
     
     func visit(_: ExtensionDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
     
     func visit(_: SubscriptDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
     
     func visit(_: OperatorDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
     
     func visit(_: PrecedenceGroupDeclaration) throws -> String {
-        throw UnimplementedError()
+        throw UnimplementedError(func: #function, file: #file, line: #line)
     }
 }

@@ -6,6 +6,30 @@ class ParseStmtTests: XCTestCase {
     func testStmtIf() {
         ParseAssertEqual(
             stmt,
+            "if foo {}",
+            IfStatement(
+                condition: .boolean(IdentifierExpression(identifier: "foo")),
+                statements: [],
+                elseClause: nil
+            )
+        )
+
+        ParseAssertEqual(
+            stmt,
+            "if foo() {}",
+            IfStatement(
+                condition: .boolean(FunctionCallExpression(
+                    expression: IdentifierExpression(identifier: "foo"),
+                    arguments: [],
+                    trailingClosure: nil
+                    )),
+                statements: [],
+                elseClause: nil
+            )
+        )
+
+        ParseAssertEqual(
+            stmt,
             "if foo {\n"
                 + "  expr() \n"
                 + "  bar\n"

@@ -13,7 +13,9 @@ func _decl() -> SwiftParser<Declaration> {
     return (declFunction <&> asDecl)
         <|> (declConstant <&> asDecl)
         <|> (declVariable <&> asDecl)
+        <|> (declStruct <&> asDecl)
         <|> (declClass <&> asDecl)
+        <|> (declProtocol <&> asDecl)
         <|> (declInitializer <&> asDecl)
 }
 
@@ -34,12 +36,13 @@ func _declConstant() -> SwiftParser<ConstantDeclaration> {
 
 let declVariable = _declVariable()
 func _declVariable() -> SwiftParser<VariableDeclaration> {
-    return { isStatic in {  name in { ty in { initializer in
-        VariableDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer) }}}}
+    return { isStatic in {  name in { ty in { initializer in { getSet in
+        VariableDeclaration(isStatic: isStatic != nil, name: name, type: ty, expression: initializer, getSet: getSet) }}}}}
         <^> zeroOrOne(kw_static <* OWS)
         <*> (kw_var *> OWS *> identifier)
         <*> zeroOrOne(OWS *> colon *> OWS *> type)
         <*> zeroOrOne(OWS *> equal *> OWS *> expr)
+        <*> zeroOrOne(OWS *> declProtocolGetSet)
 }
 
 func _declTypeAlias() -> SwiftParser<TypeAliasDeclaration> {
@@ -126,12 +129,29 @@ fileprivate func _declMembers() -> SwiftParser<[Declaration]> {
     return l_brace *> OWS *> sepEndBy(decl, stmtSep) <* OWS <* r_brace
 }
 
+/// Parse `{ get }` or `{ get set }`.
+/// - FIXME: Use permutation.
+fileprivate let declProtocolGetSet = _declProtocolGetSet();
+fileprivate func _declProtocolGetSet() -> SwiftParser<VariableDeclaration.GetSet> {
+    return l_brace *> OWS *>
+        (chars("get set") *> pure(VariableDeclaration.GetSet.getSet)
+            <|> chars("get") *> pure(VariableDeclaration.GetSet.get))
+        <* OWS <* r_brace
+}
+
 func _declEnum() -> SwiftParser<EnumDeclaration> {
     return fail("not implemented")
 }
 
+let declStruct = _declStruct()
 func _declStruct() -> SwiftParser<StructDeclaration> {
-    return fail("not implemented")
+    return { name in { generics in { inherits in { whereClause in { members in
+        StructDeclaration(name: name, superTypes: inherits ?? [], members: members) }}}}}
+        <^> (kw_struct *> WS *> identifier)
+        <*> zeroOrOne(OWS *> declGenericParams)
+        <*> zeroOrOne(OWS *> colon *> OWS *> sepBy1(type, OWS *> comma <* OWS))
+        <*> zeroOrOne(OWS *> declGenericWhere)
+        <*> (OWS *> declMembers)
 }
 
 let declClass = _declClass()
@@ -145,8 +165,14 @@ func _declClass() -> SwiftParser<ClassDeclaration> {
         <*> (OWS *> declMembers)
 }
 
+/// FIXME: Needs improvement (not to use `declMembers`).
+let declProtocol = _declProtocol()
 func _declProtocol() -> SwiftParser<ProtocolDeclaration> {
-    return fail("not implemented")
+    return { name in { inherits in { members in
+        ProtocolDeclaration(name: name, superTypes: inherits ?? [], members: members) }}}
+        <^> (kw_protocol *> WS *> identifier)
+        <*> zeroOrOne(OWS *> colon *> OWS *> sepBy1(type, OWS *> comma <* OWS))
+        <*> (OWS *> declMembers)
 }
 
 let declInitializer = _declInitializer()

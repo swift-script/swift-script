@@ -10,6 +10,7 @@ fileprivate func asExpr(expr: Expression) -> Expression {
 let expr = _expr(isBasic: false)
 let exprBasic = _expr(isBasic: true)
 
+/// - Parameter isBasic: If `isBasic == true`, trailing-closure will NOT be parsed.
 func _expr(isBasic: Bool) -> SwiftParser<Expression> {
     return exprSequence(isBasic: isBasic)
 }
@@ -70,6 +71,7 @@ func _exprPrimitive() -> SwiftParser<Expression> {
         <|> (exprTuple <&> asExpr)
         <|> (exprImplicitMember <&> asExpr)
         <|> (exprWildcard <&> asExpr)
+        <|> (exprStringInterpolationLiteral <&> asExpr)
         <|> (exprClosure <&> asExpr)
 }
 
@@ -163,7 +165,7 @@ func exprSuffix(subj: Expression, isBasic: Bool) -> SwiftParser<Expression> {
     var parser = (_exprPostfixSelf(subj) >>- exprSuffix(isBasic: isBasic))
         <|> (_exprInitializer(subj) >>- exprSuffix(isBasic: isBasic))
         <|> (_exprExplicitMember(subj) >>- exprSuffix(isBasic: isBasic))
-        <|> (_exprFunctionCall(subj) >>- exprSuffix(isBasic: isBasic))
+        <|> (_exprFunctionCall(subj, isBasic: isBasic) >>- exprSuffix(isBasic: isBasic))
         <|> (_exprSubscript(subj) >>- exprSuffix(isBasic: isBasic))
         <|> (_exprPostfixUnary(subj) >>- exprSuffix(isBasic: isBasic))
     if !isBasic {
@@ -178,13 +180,13 @@ func _exprPostfixSelf(_ subj: Expression) -> SwiftParser<PostfixSelfExpression> 
         <^> OWS *> period *> kw_self
 }
 
-func _exprFunctionCall(_ subj: Expression) -> SwiftParser<FunctionCallExpression> {
+func _exprFunctionCall(_ subj: Expression, isBasic: Bool) -> SwiftParser<FunctionCallExpression> {
     let arg = { label in { value in (label, value) }}
         <^> zeroOrOne(keywordOrIdentifier <* OWS <* colon) <* OWS <*> expr
     return { args in { trailingClosure in
         FunctionCallExpression(expression: subj, arguments: args, trailingClosure: trailingClosure) }}
         <^> (OHWS *> list(l_paren, arg, comma, r_paren))
-        <*> zeroOrOne(OWS *> exprClosure)
+        <*> (isBasic ? pure(nil) : zeroOrOne(OWS *> exprClosure))
 }
 
 func _exprTrailingClosure(_ subj: Expression) -> SwiftParser<FunctionCallExpression> {
@@ -194,7 +196,7 @@ func _exprTrailingClosure(_ subj: Expression) -> SwiftParser<FunctionCallExpress
 }
 
 func _exprInitializer(_ subj: Expression) -> SwiftParser<InitializerExpression> {
-    return { _ in InitializerExpression() }
+    return { _ in InitializerExpression(receiverExpression: subj) }
         <^> OWS *> period *> kw_init
 }
 

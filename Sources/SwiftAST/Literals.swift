@@ -42,6 +42,14 @@ public struct StringLiteral: Literal {
     }
 }
 
+public struct StringInterpolationLiteral: Literal {
+    public var segments: [Expression]
+
+    public init(segments: [Expression]) {
+        self.segments = segments
+    }
+}
+
 public struct BooleanLiteral: Literal {
     public var value: Bool
 

@@ -1,14 +1,10 @@
 import SwiftAST
 
-extension JavaScriptTranslator {
+extension KotlinTranslator {
     func visit(_ n: IdentifierExpression) throws -> String {
         switch n.identifier {
-        case "print":
-            return "console.log"
-        case "append":
-            return "push"
-        case "removeLast":
-            return "pop"
+        case "$0":
+            return "it" // TODO: Consider `"$N"` (N = 1,2,...).
         default:
             return n.identifier
         }
@@ -16,25 +12,25 @@ extension JavaScriptTranslator {
     
     func visit(_ n: FunctionCallExpression) throws -> String {
         if let expression = n.expression as? PostfixUnaryOperation, expression.operatorSymbol == "?" {
-            var node = n
-            node.expression = IdentifierExpression(identifier: "x")
-            return try optionalChaining(expression.operand, node, indentLevel: indentLevel)
+            return "\(try expression.operand.accept(self))?.\(try n.accept(self))"
         }
-        var jsArguments: [String] = try n.arguments.map { try $1.accept(self) }
+        var arguments: [String] = try n.arguments.map { paramName, expr in
+            let value = try expr.accept(self)
+            if let paramName = paramName {
+                return "\(paramName) = \(value)"
+            } else {
+                return "\(value)"
+            }
+        }
         if let closure = n.trailingClosure {
-            jsArguments.append(try closure.accept(self))
+            arguments.append(try closure.accept(self))
         }
-        let hasNew: Bool
-        if let firstLetter = ((n.expression as? IdentifierExpression)?.identifier.characters.first.map { String($0) }) {
-            hasNew = firstLetter.uppercased() == firstLetter
-        } else {
-            hasNew = false
-        }
-        var jsExpression: String = "\(hasNew ? "new " : "")\(try n.expression.accept(self))"
+
+        var expression: String = "\(try n.expression.accept(self))"
         if n.expression is ClosureExpression {
-            jsExpression = "(\(jsExpression))"
+            expression = "(\(expression))"
         }
-        return "\(jsExpression)(\(jsArguments.joined(separator: ", ")))"
+        return "\(expression)(\(arguments.joined(separator: ", ")))"
     }
     
     func visit(_ n: SelfExpression) throws -> String {
@@ -46,19 +42,21 @@ extension JavaScriptTranslator {
     }
     
     func visit(_ n: ClosureExpression) throws -> String {
-        let jsArguments: String = n.arguments.map { $0.0 }.joined(separator: ", ")
+        let arguments: String = n.arguments.map { $0.0 }.joined(separator: ", ")
+        let argumentsWithArrow = arguments.isEmpty ? "" : " \(arguments) ->"
+
         switch n.statements.count {
         case 0:
-            return "(\(jsArguments)) => {}"
+            return "{\(argumentsWithArrow)}"
         case 1:
             let statement = n.statements[0]
             if let expressionStatement = statement as? ExpressionStatement {
-                return "(\(jsArguments)) => \(try expressionStatement.expression.accept(self))"
+                return "{\(argumentsWithArrow) \(try expressionStatement.expression.accept(self)) }"
             } else {
-                return "(\(jsArguments)) => \(try translateBlock(wrapping: n.statements, with: indentLevel))"
+                return "{\(argumentsWithArrow)\n\(try translate(n.statements, with: indentLevel + 1))\(indent(of: indentLevel))}"
             }
         default:
-            return "(\(jsArguments)) => \(try translateBlock(wrapping: n.statements, with: indentLevel))"
+            return "{\(argumentsWithArrow)\n\(try translate(n.statements, with: indentLevel + 1))\(indent(of: indentLevel))}"
         }
     }
     
@@ -79,19 +77,13 @@ extension JavaScriptTranslator {
         return "_"
     }
 
-    func visit(_ n: StringInterpolationLiteral) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
-    }
-
-    func visit(_: InitializerExpression) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+    func visit(_ n: InitializerExpression) throws -> String {
+        return try n.receiverExpression.accept(self)
     }
     
     func visit(_ n: ExplicitMemberExpression) throws -> String {
         if let expression = n.expression as? PostfixUnaryOperation, expression.operatorSymbol == "?" {
-            var node = n
-            node.expression = IdentifierExpression(identifier: "x")
-            return try optionalChaining(expression.operand, node, indentLevel: indentLevel)
+            return "\(try expression.operand.accept(self))?.\(n.member)"
         }
         if n.expression is SuperclassExpression, n.member == "init" {
             return "\(try n.expression.accept(self))"
@@ -109,9 +101,7 @@ extension JavaScriptTranslator {
 
     func visit(_ n: SubscriptExpression) throws -> String {
         if let expression = n.expression as? PostfixUnaryOperation, expression.operatorSymbol == "?" {
-            var node = n
-            node.expression = IdentifierExpression(identifier: "x")
-            return try optionalChaining(expression.operand, node, indentLevel: indentLevel)
+            return "\(try expression.operand.accept(self))?.\(try n.accept(self))"
         }
         var jsExpression = try n.expression.accept(self)
         if n.expression is ClosureExpression {
@@ -119,9 +109,4 @@ extension JavaScriptTranslator {
         }
         return "\(jsExpression)[\(try n.arguments.map { try $0.accept(self) }.joined(separator: ", "))]"
     }
-}
-
-private func optionalChaining(_ primary: Expression, _ secondary: Expression, indentLevel: Int) throws -> String {
-    let translator = JavaScriptTranslator(indentLevel: indentLevel)
-    return "q(\(try primary.accept(translator)), (x) => \(try secondary.accept(translator)))"
 }

@@ -159,7 +159,124 @@ class ParseDeclTests: XCTestCase {
             )
         )
     }
-    
+
+//    func testHoge() {
+//        ParseAssertEqual(
+//            decl,
+//            "struct Foo {\n"
+//                + "  var x: Int = 2\n"
+//                + "  init () {}\n"
+//                + "  func foo() {}\n"
+//                + "}",
+//            StructDeclaration(
+//                name: "Foo",
+//                superTypes: [],
+//                members: [
+//                    VariableDeclaration(
+//                        isStatic: false,
+//                        name: "x",
+//                        type: TypeIdentifier(names: ["Int"]),
+//                        expression: IntegerLiteral(value: 2)
+//                    ),
+//                    InitializerDeclaration(
+//                        arguments: [],
+//                        isFailable: false,
+//                        hasThrows: false,
+//                        body: []
+//                    ),
+//                    FunctionDeclaration(
+//                        isStatic: false,
+//                        name: "foo",
+//                        arguments: [],
+//                        result: nil,
+//                        hasThrows: false,
+//                        body: []
+//                    ),
+//                    ]
+//            )
+//        )
+//    }
+
+    func testStructClass() {
+        ParseAssertEqual(
+            decl,
+            "struct Foo {}",
+            StructDeclaration(name: "Foo", superTypes: [], members: [])
+        )
+        ParseAssertEqual(
+            decl,
+            "struct Foo { init() {} }",
+            StructDeclaration(
+                name: "Foo",
+                superTypes: [],
+                members: [
+                    InitializerDeclaration(
+                        arguments: [],
+                        isFailable: false,
+                        hasThrows: false,
+                        body: []
+                    )
+                ]
+            )
+        )
+        ParseAssertEqual(
+            decl,
+            "struct Foo {\n"
+                + "  var x: Int = 2\n"
+                + "  init () {}\n"
+                + "  func foo() {}\n"
+                + "}",
+            StructDeclaration(
+                name: "Foo",
+                superTypes: [],
+                members: [
+                    VariableDeclaration(
+                        isStatic: false,
+                        name: "x",
+                        type: TypeIdentifier(names: ["Int"]),
+                        expression: IntegerLiteral(value: 2)
+                    ),
+                    InitializerDeclaration(
+                        arguments: [],
+                        isFailable: false,
+                        hasThrows: false,
+                        body: []
+                    ),
+                    FunctionDeclaration(
+                        isStatic: false,
+                        name: "foo",
+                        arguments: [],
+                        result: nil,
+                        hasThrows: false,
+                        body: []
+                    ),
+                ]
+            )
+        )
+        ParseAssertEqual(
+            decl,
+            "struct Foo: Base {}",
+            StructDeclaration(
+                name: "Foo",
+                superTypes: [
+                    TypeIdentifier(names: ["Base"]),
+                ],
+                members: []
+            )
+        )
+        ParseAssertEqual(
+            decl,
+            "struct Foo<X>: Base where X: Foo {}",
+            StructDeclaration(
+                name: "Foo",
+                superTypes: [
+                    TypeIdentifier(names: ["Base"]),
+                    ],
+                members: []
+            )
+        )
+    }
+
     func testDeclClass() {
         ParseAssertEqual(
             decl,

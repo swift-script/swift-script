@@ -1,6 +1,6 @@
 import SwiftAST
 
-extension JavaScriptTranslator {
+extension KotlinTranslator {
     func visit(_ n: ArrayLiteral) throws -> String {
         let values: String = try n.value.map { try $0.accept(self) }.joined(separator: ", ")
         return "[\(values)]"
@@ -26,7 +26,21 @@ extension JavaScriptTranslator {
         // TODO: escaping special characters
         return  "\"\(n.value)\""
     }
-    
+
+    func visit(_ n: StringInterpolationLiteral) throws -> String {
+        let string = try n.segments.map { segment in
+            switch segment {
+            case let segment as StringLiteral:
+                return segment.value
+            default:
+                let string = try segment.accept(self)
+                return "${ \(string) }"
+            }
+        }.joined()
+
+        return "\"" + string + "\""
+    }
+
     func visit(_ n: BooleanLiteral) throws -> String {
         return  n.value ? "true" : "false"
     }

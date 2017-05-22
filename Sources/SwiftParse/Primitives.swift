@@ -50,7 +50,6 @@ let equal = char("=")
 // ------------------------------------------------------------------------
 // Litrals
 
-
 let stringLiteral = _stringLiteral()
 private func _stringLiteral() -> SwiftParser<String> {
     let normChar = satisfy { $0 != "\\" && $0 != "\"" }
@@ -197,7 +196,7 @@ private func _keywordOrIdentifier() -> SwiftParser<String> {
 let dollarIdentifier = _dollarIdentifier()
 private func _dollarIdentifier() -> SwiftParser<String> {
     return String.init
-        <^> (cons <^> char("$") <*> many1(satisfy(isDigit))) <* not(satisfy(isValidIdentifierContinuationCodePoint))
+        <^> (cons <^> char("$") <*> many1(satisfy(isDigit))) <* notFollowedBy(satisfy(isValidIdentifierContinuationCodePoint))
 }
 
 // ----------------------------------------------------------------------------------
@@ -266,7 +265,7 @@ private func isKeyword(_ str: String) -> Bool {
 }
 
 private func kw(_ x: String.UnicodeScalarView) -> SwiftParser<String> {
-    return string(x) <* not(satisfy(isValidIdentifierContinuationCodePoint))
+    return string(x) <* notFollowedBy(satisfy(isValidIdentifierContinuationCodePoint))
 }
 
 let kw_associatedtype = kw("associatedtype")
@@ -438,7 +437,7 @@ let VS = _verticalSpace()
 // ------------------------------------------------------------------------
 // Misc
 
-func not<In, Out>(_ p: Parser<In, Out>) -> Parser<In, Void> {
+func notFollowedBy<In, Out>(_ p: Parser<In, Out>) -> Parser<In, Void> {
     return Parser { input in
         let reply = parse(p, input)
         switch reply {

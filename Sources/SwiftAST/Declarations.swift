@@ -21,22 +21,28 @@ public struct ConstantDeclaration: Declaration {
     }
 }
 
-
+/// - Todo: Split to ProtocolPropertyDeclaration.
+/// - SeeAlso: https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Declarations.html#//apple_ref/swift/grammar/protocol-declaration
 public struct VariableDeclaration: Declaration {
     public var isStatic: Bool
     public var name: String
     public var type: Type_?
     public var expression: Expression?
-    // TODO: Computed Property
+    public var getSet: GetSet?  // TODO: Split to ProtocolPropertyDeclaration
+
+    public enum GetSet: Declaration {
+        case get
+        case getSet
+    }
     
-    public init(isStatic: Bool, name: String, type: Type_?, expression: Expression?) {
+    public init(isStatic: Bool, name: String, type: Type_?, expression: Expression?, getSet: GetSet? = .none) {
         self.isStatic = isStatic
         self.name = name
         self.type = type
         self.expression = expression
+        self.getSet = getSet
     }
 }
-
 
 public struct TypeAliasDeclaration: Declaration {
     public var name: String
@@ -88,8 +94,15 @@ public struct EnumDeclaration: Declaration {
 
 
 public struct StructDeclaration: Declaration {
-    // Unsupported
-    public init() {}
+    public var name: String
+    public var superTypes: [Type_]
+    public var members: [Declaration]
+
+    public init(name: String, superTypes: [Type_], members: [Declaration]) {
+        self.name = name
+        self.superTypes = superTypes
+        self.members = members
+    }
 }
 
 
@@ -108,10 +121,13 @@ public struct ClassDeclaration: Declaration {
 
 public struct ProtocolDeclaration: Declaration {
     public var name: String
-    // Only `name` is used
+    public var superTypes: [Type_]
+    public var members: [Declaration]
     
-    public init(name: String) {
+    public init(name: String, superTypes: [Type_], members: [Declaration]) {
         self.name = name
+        self.superTypes = superTypes
+        self.members = members
     }
 }
 
