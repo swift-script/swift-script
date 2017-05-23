@@ -8,6 +8,13 @@ import SwiftParse
 import SwiftKotlin
 
 var swiftCode = [
+
+    "let numbers: [Int] = [2, 3, 5]",
+    "for number in numbers {",
+    "  print(number)",
+    "}",
+    "let squared = numbers.map { $0  * $0 }",
+
     "let x = 1",
     "var x = 2",
 
