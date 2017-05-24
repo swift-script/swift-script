@@ -127,7 +127,7 @@ extension KotlinTranslator {
             .map { try $0.accept(self.indented) }
             .joined()
 
-        return "\(indent(of: indentLevel))protocol \(n.name)\(superTypes) {\n\(members)\(indent(of: indentLevel))}\n"
+        return "\(indent(of: indentLevel))interface \(n.name)\(superTypes) {\n\(members)\(indent(of: indentLevel))}\n"
     }
 
     func visit(_ n: InitializerDeclaration) throws -> String {

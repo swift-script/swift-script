@@ -24,7 +24,11 @@ extension KotlinTranslator {
     /// - Warning: Only uses first type name.
     func visit(_ n: TypeIdentifier) throws -> String {
         guard let firstType = n.names.first else { return "Any" }
-        return firstType
+
+        switch firstType {
+        case "Bool": return "Boolean"
+        default: return firstType
+        }
     }
 
     func visit(_ n: TupleType) throws -> String {
