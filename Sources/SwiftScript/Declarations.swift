@@ -2,7 +2,7 @@ import SwiftAST
 
 extension JavaScriptTranslator {
     func visit(_: ImportDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_ n: ConstantDeclaration) throws -> String {
@@ -32,11 +32,11 @@ extension JavaScriptTranslator {
     }
 
     func visit(_ n: VariableDeclaration.GetSet) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: TypeAliasDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_ n: FunctionDeclaration) throws -> String {
@@ -53,10 +53,10 @@ extension JavaScriptTranslator {
     }
     
     func visit(_: EnumDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     func visit(_: StructDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_ n: ClassDeclaration) throws -> String {
@@ -114,7 +114,7 @@ extension JavaScriptTranslator {
     }
     
     func visit(_: ProtocolDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: InitializerDeclaration) throws -> String {
@@ -130,22 +130,22 @@ extension JavaScriptTranslator {
     }
 
     func visit(_: DeinitializerDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: ExtensionDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: SubscriptDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: OperatorDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: PrecedenceGroupDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 }

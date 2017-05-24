@@ -72,7 +72,7 @@ extension JavaScriptTranslator {
     }
     
     func visit(_: ImplicitMemberExpression) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: WildcardExpression) throws -> String {
@@ -80,11 +80,11 @@ extension JavaScriptTranslator {
     }
 
     func visit(_ n: StringInterpolationLiteral) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_: InitializerExpression) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_ n: ExplicitMemberExpression) throws -> String {
@@ -100,11 +100,11 @@ extension JavaScriptTranslator {
     }
     
     func visit(_: PostfixSelfExpression) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: DynamicTypeExpression) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: SubscriptExpression) throws -> String {

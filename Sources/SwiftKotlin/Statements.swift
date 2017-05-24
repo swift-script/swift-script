@@ -84,7 +84,7 @@ extension KotlinTranslator {
     }
     
     func visit(_: SwitchStatement) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: LabeledStatement) throws -> String {
@@ -127,7 +127,7 @@ extension KotlinTranslator {
     }
     
     func visit(_: DeferStatement) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: DoStatement) throws -> String {

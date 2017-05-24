@@ -2,7 +2,7 @@ import SwiftAST
 
 extension KotlinTranslator {
     func visit(_: ImportDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_ n: ConstantDeclaration) throws -> String {
@@ -46,7 +46,7 @@ extension KotlinTranslator {
     }
     
     func visit(_: TypeAliasDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: FunctionDeclaration) throws -> String {
@@ -69,7 +69,7 @@ extension KotlinTranslator {
     }
     
     func visit(_: EnumDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     /// Convert to Kotlin's `data class` if data only.
@@ -135,7 +135,7 @@ extension KotlinTranslator {
         var superInit = ""
 
         guard var body = n.body else {
-            throw UnimplementedError(func: #function, file: #file, line: #line)
+            throw UnimplementedError()
         }
 
         for (i, stmt) in n.body!.enumerated() {
@@ -162,22 +162,22 @@ extension KotlinTranslator {
     }
 
     func visit(_: DeinitializerDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: ExtensionDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: SubscriptDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: OperatorDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: PrecedenceGroupDeclaration) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 }

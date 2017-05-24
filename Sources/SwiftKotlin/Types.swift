@@ -28,7 +28,7 @@ extension KotlinTranslator {
     }
 
     func visit(_ n: TupleType) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: OptionalType) throws -> String {
@@ -41,7 +41,7 @@ extension KotlinTranslator {
 
     func visit(_ n: ProtocolCompositionType) throws -> String {
         guard let firstType = n.types.first else {
-            throw UnimplementedError(func: #function, file: #file, line: #line)
+            throw UnimplementedError()
         }
         return "\(try firstType.accept(self))"
     }

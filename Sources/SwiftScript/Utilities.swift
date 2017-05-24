@@ -5,7 +5,7 @@ internal struct UnimplementedError: Error {
     let fileName: StaticString
     let lineNumber: Int
 
-    init(func functionName: StaticString, file fileName: StaticString, line lineNumber: Int) {
+    init(func functionName: StaticString = #function, file fileName: StaticString = #file, line lineNumber: Int = #line) {
         self.functionName = functionName
         self.fileName = fileName
         self.lineNumber = lineNumber

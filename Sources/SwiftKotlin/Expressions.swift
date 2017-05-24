@@ -70,7 +70,7 @@ extension KotlinTranslator {
     }
     
     func visit(_: ImplicitMemberExpression) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: WildcardExpression) throws -> String {
@@ -92,11 +92,11 @@ extension KotlinTranslator {
     }
     
     func visit(_: PostfixSelfExpression) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
     
     func visit(_: DynamicTypeExpression) throws -> String {
-        throw UnimplementedError(func: #function, file: #file, line: #line)
+        throw UnimplementedError()
     }
 
     func visit(_ n: SubscriptExpression) throws -> String {
