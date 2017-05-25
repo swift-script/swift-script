@@ -196,7 +196,7 @@ func _exprTrailingClosure(_ subj: Expression) -> SwiftParser<FunctionCallExpress
 }
 
 func _exprInitializer(_ subj: Expression) -> SwiftParser<InitializerExpression> {
-    return { _ in InitializerExpression(receiverExpression: subj) }
+    return { _ in InitializerExpression(postfixExpression: subj) }
         <^> OWS *> period *> kw_init
 }
 

@@ -78,7 +78,7 @@ extension KotlinTranslator {
     }
 
     func visit(_ n: InitializerExpression) throws -> String {
-        return try n.receiverExpression.accept(self)
+        return try n.postfixExpression.accept(self)
     }
     
     func visit(_ n: ExplicitMemberExpression) throws -> String {

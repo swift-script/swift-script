@@ -142,7 +142,7 @@ extension KotlinTranslator {
             if let stmt = stmt as? ExpressionStatement,
                 let funcCallExpr = stmt.expression as? FunctionCallExpression,
                 let initExpr = funcCallExpr.expression as? InitializerExpression,
-                initExpr.receiverExpression is SuperclassExpression {
+                initExpr.postfixExpression is SuperclassExpression {
 
                 superInit = ": \(try funcCallExpr.accept(self))"
                 body.remove(at: i)

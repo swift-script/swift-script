@@ -71,10 +71,10 @@ public struct FunctionCallExpression: Expression {
 
 public struct InitializerExpression: Expression {
     /// e.g. `SelfExpression`, `SuperclassExpression`.
-    public var receiverExpression: Expression
+    public var postfixExpression: Expression
 
-    public init(receiverExpression: Expression) {
-        self.receiverExpression = receiverExpression
+    public init(postfixExpression: Expression) {
+        self.postfixExpression = postfixExpression
     }
 }
 
