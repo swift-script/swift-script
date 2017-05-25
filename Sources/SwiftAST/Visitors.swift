@@ -6,7 +6,7 @@ public protocol ExpressionVisitor {
     func visit(_: IntegerLiteral) throws -> ExpressionResult
     func visit(_: FloatingPointLiteral) throws -> ExpressionResult
     func visit(_: StringLiteral) throws -> ExpressionResult
-    func visit(_: StringInterpolationLiteral) throws -> ExpressionResult
+    func visit(_: InterpolatedStringLiteral) throws -> ExpressionResult
     func visit(_: BooleanLiteral) throws -> ExpressionResult
     func visit(_: NilLiteral) throws -> ExpressionResult
     // Expressions
@@ -46,7 +46,7 @@ extension FloatingPointLiteral {
 extension StringLiteral {
     public func accept<V : ExpressionVisitor>(_ v: V) throws -> V.ExpressionResult { return try v.visit(self) }
 }
-extension StringInterpolationLiteral {
+extension InterpolatedStringLiteral {
     public func accept<V : ExpressionVisitor>(_ v: V) throws -> V.ExpressionResult { return try v.visit(self) }
 }
 extension BooleanLiteral {

@@ -71,7 +71,7 @@ func _exprPrimitive() -> SwiftParser<Expression> {
         <|> (exprTuple <&> asExpr)
         <|> (exprImplicitMember <&> asExpr)
         <|> (exprWildcard <&> asExpr)
-        <|> (exprStringInterpolationLiteral <&> asExpr)
+        <|> (exprInterpolatedStringLiteral <&> asExpr)
         <|> (exprClosure <&> asExpr)
 }
 

@@ -136,7 +136,7 @@ struct ExpressionEqual : ExpressionVisitor {
     func visit(_ lhs: TupleExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: ImplicitMemberExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: WildcardExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
-    func visit(_ lhs: StringInterpolationLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: InterpolatedStringLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: FunctionCallExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: InitializerExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: ExplicitMemberExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
@@ -464,8 +464,8 @@ extension WildcardExpression : Equatable {
         return true
     }
 }
-extension StringInterpolationLiteral : Equatable {
-    public static func == (lhs: StringInterpolationLiteral, rhs: StringInterpolationLiteral) -> Bool {
+extension InterpolatedStringLiteral : Equatable {
+    public static func == (lhs: InterpolatedStringLiteral, rhs: InterpolatedStringLiteral) -> Bool {
         return lhs.segments == rhs.segments
     }
 }

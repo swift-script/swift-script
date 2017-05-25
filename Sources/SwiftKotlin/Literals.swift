@@ -27,7 +27,7 @@ extension KotlinTranslator {
         return  "\"\(n.value)\""
     }
 
-    func visit(_ n: StringInterpolationLiteral) throws -> String {
+    func visit(_ n: InterpolatedStringLiteral) throws -> String {
         let string = try n.segments.map { segment in
             switch segment {
             case let segment as StringLiteral:

@@ -79,7 +79,7 @@ extension JavaScriptTranslator {
         return "_"
     }
 
-    func visit(_ n: StringInterpolationLiteral) throws -> String {
+    func visit(_ n: InterpolatedStringLiteral) throws -> String {
         throw UnimplementedError()
     }
 

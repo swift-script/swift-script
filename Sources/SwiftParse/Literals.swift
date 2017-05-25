@@ -49,23 +49,23 @@ func _exprDictionaryLiteral() -> SwiftParser<SwiftAST.DictionaryLiteral> {
 }
 
 /// - SeeAlso: https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/swift/grammar/interpolated-string-literal
-let exprStringInterpolationLiteral = _exprStringInterpolationLiteral()
-private func _exprStringInterpolationLiteral() -> SwiftParser<StringInterpolationLiteral> {
-    return char("\"") *> _exprStringInterpolationLiteralNoQuotes() <* char("\"")
+let exprInterpolatedStringLiteral = _exprInterpolatedStringLiteral()
+private func _exprInterpolatedStringLiteral() -> SwiftParser<InterpolatedStringLiteral> {
+    return char("\"") *> _exprInterpolatedStringLiteralNoQuotes() <* char("\"")
 }
 
 /// - Todo: Improve this.
-private func _exprStringInterpolationLiteralNoQuotes() -> SwiftParser<StringInterpolationLiteral> {
+private func _exprInterpolatedStringLiteralNoQuotes() -> SwiftParser<InterpolatedStringLiteral> {
     let backslashed: SwiftParser<Expression> = TryParsec.string("\\(") *> expr <* char(")")
 
     let stringLiteralForInterpolation: SwiftParser<Expression> =
         manyTill(not("\""), lookAhead( TryParsec.string("\\(") *> pure()))
             <&> { StringLiteral(value: String($0)) }
 
-    let head = { x in { rest in StringInterpolationLiteral(segments: cons(x)(rest.segments)) }}
+    let head = { x in { rest in InterpolatedStringLiteral(segments: cons(x)(rest.segments)) }}
         <^> (backslashed <|> stringLiteralForInterpolation)
-        <*> _exprStringInterpolationLiteralNoQuotes()
+        <*> _exprInterpolatedStringLiteralNoQuotes()
 
-    return head <|> pure(StringInterpolationLiteral(segments: []))
+    return head <|> pure(InterpolatedStringLiteral(segments: []))
 }
 
