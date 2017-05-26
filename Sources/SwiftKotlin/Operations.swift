@@ -1,26 +1,26 @@
 import SwiftAST
 
-extension JavaScriptTranslator {
+extension KotlinTranslator {
     func visit(_ n: BinaryOperation) throws -> String {
         let lhs = try n.leftOperand.accept(self)
         let rhs = try n.rightOperand.accept(self)
         switch n.operatorSymbol {
         case "as":
-            return lhs
+            return "\(lhs) as \(lhs)"
         case "as?":
-            return "asq(\(lhs), \(lhs) => is(\(lhs), \(rhs)))"
+            return "\(lhs) as? \(lhs)"
         case "as!":
-            return "asx(\(lhs), \(lhs) => is(\(lhs), \(rhs)))"
+            return "\(lhs) as \(lhs)"
         case "is":
-            return "is(\(lhs), \(rhs))"
+            return "\(lhs) is \(rhs)"
         case "??":
-            return "qq(\(lhs), \(rhs))"
+            return "\(lhs) ?: \(rhs)"
         case "...":
-            return "closedRange(\(lhs), \(rhs))"
+            return "\(lhs)..\(rhs)"
         case "..<":
-            return "range(\(lhs), \(rhs))" // TODO: should make specific range function
+            return "\(lhs)..<\(rhs)" // TODO
         case "&&=", "||=":
-            return "\(lhs) = \(lhs) \(n.operatorSymbol) \(rhs)"
+            return "\(lhs) = \(lhs) \(n.operatorSymbol) \(rhs)" // TODO
         default:
             return "\(lhs) \(n.operatorSymbol) \(rhs)"
         }

@@ -6,6 +6,7 @@ public protocol ExpressionVisitor {
     func visit(_: IntegerLiteral) throws -> ExpressionResult
     func visit(_: FloatingPointLiteral) throws -> ExpressionResult
     func visit(_: StringLiteral) throws -> ExpressionResult
+    func visit(_: InterpolatedStringLiteral) throws -> ExpressionResult
     func visit(_: BooleanLiteral) throws -> ExpressionResult
     func visit(_: NilLiteral) throws -> ExpressionResult
     // Expressions
@@ -43,6 +44,9 @@ extension FloatingPointLiteral {
     public func accept<V : ExpressionVisitor>(_ v: V) throws -> V.ExpressionResult { return try v.visit(self) }
 }
 extension StringLiteral {
+    public func accept<V : ExpressionVisitor>(_ v: V) throws -> V.ExpressionResult { return try v.visit(self) }
+}
+extension InterpolatedStringLiteral {
     public func accept<V : ExpressionVisitor>(_ v: V) throws -> V.ExpressionResult { return try v.visit(self) }
 }
 extension BooleanLiteral {
@@ -112,6 +116,7 @@ public protocol DeclarationVisitor {
     func visit(_: ImportDeclaration) throws -> DeclarationResult
     func visit(_: ConstantDeclaration) throws -> DeclarationResult
     func visit(_: VariableDeclaration) throws -> DeclarationResult
+    func visit(_: VariableDeclaration.GetSet) throws -> DeclarationResult
     func visit(_: TypeAliasDeclaration) throws -> DeclarationResult
     func visit(_: FunctionDeclaration) throws -> DeclarationResult
     func visit(_: EnumDeclaration) throws -> DeclarationResult
@@ -133,6 +138,9 @@ extension ConstantDeclaration {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
 extension VariableDeclaration {
+    public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
+}
+extension VariableDeclaration.GetSet {
     public func accept<V : DeclarationVisitor>(_ v: V) throws -> V.DeclarationResult { return try v.visit(self) }
 }
 extension TypeAliasDeclaration {

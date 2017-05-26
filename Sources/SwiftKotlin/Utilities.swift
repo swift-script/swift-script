@@ -14,7 +14,7 @@ internal struct UnimplementedError: Error {
 
 internal func translate(_ statements: [Statement], with indentLevel: Int) throws -> String {
     let jsStatements: [String] = try statements.map { statement in
-        try statement.accept(JavaScriptTranslator(indentLevel: indentLevel))
+        try statement.accept(KotlinTranslator(indentLevel: indentLevel))
     }
     return jsStatements.joined()
 }
@@ -27,15 +27,15 @@ internal func indent(of level: Int) -> String {
     return "    " * level
 }
 
-internal struct JavaScriptTranslator: StatementVisitor, ExpressionVisitor, DeclarationVisitor {
+internal struct KotlinTranslator: StatementVisitor, ExpressionVisitor, DeclarationVisitor, TypeVisitor {
     typealias StatementResult = String
     typealias ExpressionResult = String
     typealias DeclarationResult = String
+    typealias TypeResult = String
     
     let indentLevel: Int
 
-    var indented: JavaScriptTranslator {
-        return JavaScriptTranslator(indentLevel: indentLevel + 1)
+    var indented: KotlinTranslator {
+        return KotlinTranslator(indentLevel: indentLevel + 1)
     }
 }
-

@@ -70,8 +70,12 @@ public struct FunctionCallExpression: Expression {
 }
 
 public struct InitializerExpression: Expression {
-    // Unsupported
-    public init() {}
+    /// e.g. `SelfExpression`, `SuperclassExpression`.
+    public var postfixExpression: Expression
+
+    public init(postfixExpression: Expression) {
+        self.postfixExpression = postfixExpression
+    }
 }
 
 public struct ExplicitMemberExpression: Expression {

@@ -84,6 +84,7 @@ struct DeclarationEqual: DeclarationVisitor {
     func visit(_ lhs: ImportDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: ConstantDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: VariableDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: VariableDeclaration.GetSet) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: TypeAliasDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: FunctionDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: EnumDeclaration) -> (Declaration) -> Bool { return sameTypeAndEqual(to: lhs) }
@@ -135,6 +136,7 @@ struct ExpressionEqual : ExpressionVisitor {
     func visit(_ lhs: TupleExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: ImplicitMemberExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: WildcardExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
+    func visit(_ lhs: InterpolatedStringLiteral) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: FunctionCallExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: InitializerExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
     func visit(_ lhs: ExplicitMemberExpression) -> (Expression) -> Bool { return sameTypeAndEqual(to: lhs) }
@@ -236,7 +238,9 @@ extension EnumDeclaration : Equatable {
 }
 extension StructDeclaration : Equatable {
     public static func == (lhs: StructDeclaration, rhs: StructDeclaration) -> Bool {
-        fatalError("unsupported")
+        return lhs.name == rhs.name
+            && lhs.superTypes == rhs.superTypes
+            && lhs.members == rhs.members
     }
 }
 extension ClassDeclaration : Equatable {
@@ -458,6 +462,11 @@ extension ImplicitMemberExpression : Equatable {
 extension WildcardExpression : Equatable {
     public static func == (lhs: WildcardExpression, rhs: WildcardExpression) -> Bool {
         return true
+    }
+}
+extension InterpolatedStringLiteral : Equatable {
+    public static func == (lhs: InterpolatedStringLiteral, rhs: InterpolatedStringLiteral) -> Bool {
+        return lhs.segments == rhs.segments
     }
 }
 extension FunctionCallExpression : Equatable {

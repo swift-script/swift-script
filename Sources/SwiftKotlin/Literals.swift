@@ -1,17 +1,17 @@
 import SwiftAST
 
-extension JavaScriptTranslator {
+extension KotlinTranslator {
     func visit(_ n: ArrayLiteral) throws -> String {
         let values: String = try n.value.map { try $0.accept(self) }.joined(separator: ", ")
-        return "[\(values)]"
+        return "arrayOf(\(values))"
     }
     
     func visit(_ n: SwiftAST.DictionaryLiteral) throws -> String {
         let keyValues: String = try n.value.map {
-            "\(indent(of: indentLevel + 1))\(try $0.0.accept(self.indented)): \(try $0.1.accept(self.indented))"
+            "\(indent(of: indentLevel + 1))\(try $0.0.accept(self.indented)) to \(try $0.1.accept(self.indented))"
         }.joined(separator: ",\n")
         
-        return "{\n\(keyValues)\n\(indent(of: indentLevel))}"
+        return "mapOf(\n\(keyValues)\n\(indent(of: indentLevel)))"
     }
     
     func visit(_ n: IntegerLiteral) throws -> String {
@@ -26,7 +26,21 @@ extension JavaScriptTranslator {
         // TODO: escaping special characters
         return  "\"\(n.value)\""
     }
-    
+
+    func visit(_ n: InterpolatedStringLiteral) throws -> String {
+        let string = try n.segments.map { segment in
+            switch segment {
+            case let segment as StringLiteral:
+                return segment.value
+            default:
+                let string = try segment.accept(self)
+                return "${ \(string) }"
+            }
+        }.joined()
+
+        return "\"" + string + "\""
+    }
+
     func visit(_ n: BooleanLiteral) throws -> String {
         return  n.value ? "true" : "false"
     }
